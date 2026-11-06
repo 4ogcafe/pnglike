@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PngLike (RemBG Admin Portal) — Powered by Div Sri</title>
+  <title>PngLike Admin Portal — Powered by Div Sri</title>
   <link rel="icon" type="image/svg+xml" href="/static/brand/favicon.svg">
   <link rel="apple-touch-icon" href="/static/brand/logo-icon.svg">
   <script src="https://cdn.tailwindcss.com"></script>
@@ -40,7 +40,7 @@
           <div class="flex items-center gap-2">
             <img src="/static/brand/logo-dark-text.svg" alt="PngLike" width="115" height="32" class="h-6 w-auto block dark:hidden object-contain">
             <img src="/static/brand/logo-white-text.svg" alt="PngLike" width="115" height="32" class="h-6 w-auto hidden dark:block object-contain">
-            <span class="sr-only">RemBG Admin Portal</span>
+            <span class="sr-only">PngLike Admin Portal</span>
           </div>
           <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Admin Control Center • <span class="text-rose-500 font-semibold">Powered by Div Sri</span></p>
         </div>
@@ -132,19 +132,31 @@
             <i data-lucide="database" class="w-4 h-4"></i>
             <span>MySQL & Security</span>
           </button>
+          <button data-tab="profile" class="admin-nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+            <i data-lucide="user-cog" class="w-4 h-4"></i>
+            <span>Admin Profile</span>
+          </button>
         </nav>
       </div>
 
       <!-- Bottom User Card -->
-      <div class="p-4 border-t border-slate-200 dark:border-slate-800 space-y-2">
-        <div class="flex items-center justify-between text-xs">
-          <div class="flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span id="adminUserLabel" class="font-bold text-slate-800 dark:text-slate-200">admin</span>
+      <div class="p-3.5 border-t border-slate-200 dark:border-slate-800 space-y-2">
+        <div id="adminSidebarProfileBtn" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/80 cursor-pointer transition group" title="Click to view & edit Profile">
+          <div id="adminSidebarAvatar" class="w-9 h-9 rounded-xl flex items-center justify-center text-white font-extrabold text-xs shadow-sm ring-2 ring-indigo-500/20 shrink-0 overflow-hidden bg-indigo-600">
+            AD
           </div>
-          <span class="text-[10px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500">superadmin</span>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-1.5">
+              <span id="adminSidebarFullName" class="font-bold text-xs text-slate-900 dark:text-white truncate">Administrator</span>
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" title="Active Administrator"></span>
+            </div>
+            <div class="flex items-center gap-1 text-[10px] text-slate-400 truncate">
+              <span id="adminUserLabel">@admin</span> • <span id="adminSidebarRole">superadmin</span>
+            </div>
+          </div>
+          <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-400 group-hover:text-indigo-500 transition shrink-0"></i>
         </div>
-        <button id="logoutBtn" class="w-full py-2 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:text-rose-600 text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+        <button id="logoutBtn" class="w-full py-2 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:text-rose-600 text-slate-600 dark:text-slate-400 text-xs font-semibold flex items-center justify-center gap-1.5 transition">
           <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
           <span>Sign Out</span>
         </button>
@@ -171,6 +183,13 @@
             <span>View Live Frontend</span>
             <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
           </a>
+          <button id="adminHeaderProfileBtn" class="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-indigo-400 dark:hover:border-indigo-600 bg-slate-50 dark:bg-slate-800/60 transition group cursor-pointer" title="Manage Administrator Profile">
+            <div id="adminHeaderAvatar" class="w-6 h-6 rounded-lg flex items-center justify-center text-white font-bold text-[10px] bg-indigo-600 shrink-0 overflow-hidden">
+              AD
+            </div>
+            <span id="adminHeaderName" class="text-xs font-bold text-slate-800 dark:text-slate-200 max-w-[120px] truncate">Administrator</span>
+            <span class="text-[9px] px-1.5 py-0.5 rounded bg-indigo-100 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 font-semibold uppercase">Superadmin</span>
+          </button>
           <button id="adminThemeBtn" class="p-2 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
             <i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i>
             <i data-lucide="moon" class="w-4 h-4 block dark:hidden"></i>
@@ -967,6 +986,413 @@
             </div>
             <div id="admSmtpStatusBox" class="hidden p-3 rounded-xl text-xs font-semibold"></div>
           </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 10: ADMIN PROFILE & SECURITY CENTER     -->
+        <!-- ========================================== -->
+        <section id="tab-profile" class="admin-section hidden space-y-6">
+
+          <!-- Hidden File Input for Avatar Upload -->
+          <input type="file" id="adminAvatarFileInput" accept="image/png,image/jpeg,image/webp" class="hidden">
+
+          <!-- Profile Hero Card -->
+          <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-900 via-slate-900 to-slate-950 text-white p-6 sm:p-8 shadow-xl border border-indigo-900/40">
+            <!-- Decorative Background Glow -->
+            <div class="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-indigo-500/10 blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-24 -left-24 w-80 h-80 rounded-full bg-blue-500/10 blur-3xl pointer-events-none"></div>
+
+            <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <!-- Left: Avatar + Details -->
+              <div class="flex items-center gap-5">
+                <!-- Interactive Avatar -->
+                <div class="relative group cursor-pointer shrink-0" id="profAvatarContainer" title="Click to upload custom profile picture">
+                  <div id="profHeroAvatar" class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl flex items-center justify-center font-black text-2xl sm:text-3xl shadow-lg ring-4 ring-white/10 overflow-hidden bg-indigo-600 transition group-hover:scale-105 duration-200">
+                    AD
+                  </div>
+                  <!-- Camera Overlay on Hover -->
+                  <div class="absolute inset-0 bg-black/50 rounded-2xl flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition duration-200 text-white">
+                    <i data-lucide="camera" class="w-5 h-5 mb-0.5"></i>
+                    <span class="text-[9px] font-bold uppercase tracking-wider">Change</span>
+                  </div>
+                </div>
+
+                <div class="space-y-1.5 min-w-0">
+                  <div class="flex flex-wrap items-center gap-2">
+                    <h2 id="profHeroFullName" class="text-xl sm:text-2xl font-black text-white truncate">Administrator</h2>
+                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                      <span>Verified Admin</span>
+                    </span>
+                  </div>
+                  <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-indigo-200/80">
+                    <span id="profHeroUsername" class="font-mono text-indigo-300 font-medium">@admin</span>
+                    <span>•</span>
+                    <span id="profHeroDesignation">Lead AI Systems Architect</span>
+                    <span>•</span>
+                    <span id="profHeroDepartment" class="text-slate-400">DevOps &amp; Infrastructure</span>
+                  </div>
+                  <div class="flex flex-wrap items-center gap-2 pt-1 text-[11px] text-slate-400">
+                    <span class="flex items-center gap-1">
+                      <i data-lucide="map-pin" class="w-3 h-3 text-indigo-400"></i>
+                      <span id="profHeroLocation">Tokyo, Japan</span>
+                    </span>
+                    <span>•</span>
+                    <span class="flex items-center gap-1">
+                      <i data-lucide="clock" class="w-3 h-3 text-indigo-400"></i>
+                      <span id="profHeroTimezone">Asia/Tokyo (UTC+9)</span>
+                    </span>
+                    <span>•</span>
+                    <span class="flex items-center gap-1">
+                      <i data-lucide="shield" class="w-3 h-3 text-indigo-400"></i>
+                      <span>Role: <strong id="profHeroRole" class="text-white">Superadmin</strong></span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right: Quick Stat Tiles -->
+              <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-2 lg:grid-cols-4 gap-2.5 shrink-0">
+                <div class="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-3 text-center min-w-[90px]">
+                  <div class="text-[10px] uppercase font-bold tracking-wider text-slate-400">Total Jobs</div>
+                  <div id="profStatJobs" class="text-lg font-black text-white mt-0.5">0</div>
+                </div>
+                <div class="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-3 text-center min-w-[90px]">
+                  <div class="text-[10px] uppercase font-bold tracking-wider text-slate-400">Users</div>
+                  <div id="profStatUsers" class="text-lg font-black text-white mt-0.5">0</div>
+                </div>
+                <div class="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-3 text-center min-w-[90px]">
+                  <div class="text-[10px] uppercase font-bold tracking-wider text-slate-400">Articles</div>
+                  <div id="profStatPosts" class="text-lg font-black text-white mt-0.5">0</div>
+                </div>
+                <div class="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-3 text-center min-w-[90px]">
+                  <div class="text-[10px] uppercase font-bold tracking-wider text-slate-400">Sessions</div>
+                  <div id="profStatSessions" class="text-lg font-black text-emerald-400 mt-0.5">1</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main 2-Column Responsive Grid -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+            <!-- Left Column: Personal & Professional Profile (7 cols) -->
+            <div class="lg:col-span-7 space-y-6">
+
+              <!-- Personal Information Card -->
+              <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-7 shadow-sm space-y-5">
+                <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                      <i data-lucide="user" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                      <h3 class="font-bold text-base text-slate-900 dark:text-white">Personal &amp; Contact Details</h3>
+                      <p class="text-xs text-slate-500">Manage your identity, communications, and organizational profile.</p>
+                    </div>
+                  </div>
+                  <span class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                    Administrator Profile
+                  </span>
+                </div>
+
+                <form id="adminProfileForm" class="space-y-4">
+                  <!-- Row 1: Full Name & Username -->
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                        Full Name <span class="text-rose-500">*</span>
+                      </label>
+                      <input type="text" id="profFullName" required placeholder="e.g. Mohan" class="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition">
+                    </div>
+                    <div>
+                      <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                        Username (Handle)
+                      </label>
+                      <div class="relative">
+                        <span class="absolute left-3.5 top-2.5 text-xs text-slate-400 font-mono">@</span>
+                        <input type="text" id="profUsername" disabled class="w-full bg-slate-100 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 rounded-xl pl-8 pr-3.5 py-2.5 text-xs font-mono text-slate-500 dark:text-slate-400 cursor-not-allowed">
+                      </div>
+                      <p class="text-[10px] text-slate-400 mt-1">Username is your primary MySQL login identifier.</p>
+                    </div>
+                  </div>
+
+                  <!-- Row 2: Email & Phone -->
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                        Official Email Address
+                      </label>
+                      <div class="relative">
+                        <i data-lucide="mail" class="w-4 h-4 absolute left-3.5 top-3 text-slate-400"></i>
+                        <input type="email" id="profEmail" placeholder="admin@pnglike.studio" class="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl pl-10 pr-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition">
+                      </div>
+                      <p class="text-[10px] text-slate-400 mt-1">Used for system alerts, error logs, and verification.</p>
+                    </div>
+                    <div>
+                      <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                        Phone / WhatsApp
+                      </label>
+                      <div class="relative">
+                        <i data-lucide="phone" class="w-4 h-4 absolute left-3.5 top-3 text-slate-400"></i>
+                        <input type="tel" id="profPhone" placeholder="+81 90-1234-5678" class="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl pl-10 pr-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition">
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Row 3: Designation & Department -->
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                        Job Title / Designation
+                      </label>
+                      <input type="text" id="profDesignation" placeholder="Lead AI Systems Architect" class="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition">
+                    </div>
+                    <div>
+                      <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                        Department / Team
+                      </label>
+                      <input type="text" id="profDepartment" placeholder="DevOps &amp; Infrastructure" class="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition">
+                    </div>
+                  </div>
+
+                  <!-- Row 4: Location & Timezone -->
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                        Office Location / Country
+                      </label>
+                      <input type="text" id="profLocation" placeholder="Tokyo, Japan" class="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition">
+                    </div>
+                    <div>
+                      <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                        Preferred Timezone
+                      </label>
+                      <select id="profTimezone" class="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition">
+                        <option value="Asia/Tokyo (UTC+9)">Asia/Tokyo (UTC+9)</option>
+                        <option value="UTC">UTC (Universal Time)</option>
+                        <option value="America/New_York (UTC-5)">America/New_York (UTC-5)</option>
+                        <option value="America/Los_Angeles (UTC-8)">America/Los_Angeles (UTC-8)</option>
+                        <option value="Europe/London (UTC+0)">Europe/London (UTC+0)</option>
+                        <option value="Europe/Berlin (UTC+1)">Europe/Berlin (UTC+1)</option>
+                        <option value="Asia/Singapore (UTC+8)">Asia/Singapore (UTC+8)</option>
+                        <option value="Asia/Kolkata (UTC+5:30)">Asia/Kolkata (UTC+5:30)</option>
+                        <option value="Asia/Kathmandu (UTC+5:45)">Asia/Kathmandu (UTC+5:45)</option>
+                        <option value="Australia/Sydney (UTC+11)">Australia/Sydney (UTC+11)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Row 5: Bio -->
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                      Professional Biography &amp; Admin Notes
+                    </label>
+                    <textarea id="profBio" rows="3" placeholder="Add a short bio, team notes, or responsibilities..." class="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"></textarea>
+                  </div>
+
+                  <!-- Row 6: Avatar Appearance Swatches -->
+                  <div class="border-t border-slate-100 dark:border-slate-800 pt-4">
+                    <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                      Avatar Theme Color &amp; Photo
+                    </label>
+                    <div class="flex flex-wrap items-center justify-between gap-4">
+                      <!-- Swatches -->
+                      <div class="flex items-center gap-2">
+                        <button type="button" data-color="#4f46e5" class="prof-color-swatch w-7 h-7 rounded-xl bg-indigo-600 ring-2 ring-offset-2 ring-indigo-500 transition"></button>
+                        <button type="button" data-color="#2563eb" class="prof-color-swatch w-7 h-7 rounded-xl bg-blue-600 hover:scale-110 transition"></button>
+                        <button type="button" data-color="#0d9488" class="prof-color-swatch w-7 h-7 rounded-xl bg-teal-600 hover:scale-110 transition"></button>
+                        <button type="button" data-color="#059669" class="prof-color-swatch w-7 h-7 rounded-xl bg-emerald-600 hover:scale-110 transition"></button>
+                        <button type="button" data-color="#d97706" class="prof-color-swatch w-7 h-7 rounded-xl bg-amber-600 hover:scale-110 transition"></button>
+                        <button type="button" data-color="#dc2626" class="prof-color-swatch w-7 h-7 rounded-xl bg-rose-600 hover:scale-110 transition"></button>
+                        <button type="button" data-color="#db2777" class="prof-color-swatch w-7 h-7 rounded-xl bg-pink-600 hover:scale-110 transition"></button>
+                        <button type="button" data-color="#7c3aed" class="prof-color-swatch w-7 h-7 rounded-xl bg-violet-600 hover:scale-110 transition"></button>
+                        <button type="button" data-color="#0f172a" class="prof-color-swatch w-7 h-7 rounded-xl bg-slate-900 hover:scale-110 transition"></button>
+                        <input type="hidden" id="profAvatarColor" value="#4f46e5">
+                      </div>
+
+                      <!-- Photo Action Buttons -->
+                      <div class="flex items-center gap-2">
+                        <button type="button" id="profUploadPhotoBtn" class="px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition">
+                          <i data-lucide="upload" class="w-3.5 h-3.5"></i>
+                          <span>Upload Photo</span>
+                        </button>
+                        <button type="button" id="profRemovePhotoBtn" class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-rose-600 text-xs font-semibold flex items-center gap-1 transition" title="Reset to initial badge">
+                          <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                          <span>Remove</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Save Button -->
+                  <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                    <span id="profLastUpdated" class="text-[11px] text-slate-400">Never updated</span>
+                    <button type="submit" id="saveAdminProfileBtn" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white text-xs font-bold flex items-center gap-2 shadow-md hover:shadow-indigo-500/25 transition">
+                      <i data-lucide="save" class="w-4 h-4"></i>
+                      <span>Save Profile Changes</span>
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+            </div>
+
+            <!-- Right Column: Security, Password & Sessions (5 cols) -->
+            <div class="lg:col-span-5 space-y-6">
+
+              <!-- Account Security & Password Card -->
+              <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm space-y-4">
+                <div class="flex items-center gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
+                  <div class="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                    <i data-lucide="shield-check" class="w-4 h-4"></i>
+                  </div>
+                  <div>
+                    <h3 class="font-bold text-sm text-slate-900 dark:text-white">Change Admin Password</h3>
+                    <p class="text-[11px] text-slate-500">Requires verification of your current password.</p>
+                  </div>
+                </div>
+
+                <form id="adminPasswordForm" class="space-y-3">
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">
+                      Current Password <span class="text-rose-500">*</span>
+                    </label>
+                    <input type="password" id="admCurrPassword" required placeholder="••••••••••••" class="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-mono text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-emerald-500">
+                  </div>
+
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">
+                      New Password <span class="text-rose-500">*</span>
+                    </label>
+                    <input type="password" id="admNewPasswordInput" required placeholder="Min 8 chars, mixed case, symbols" class="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-mono text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-emerald-500">
+
+                    <!-- Strength Meter -->
+                    <div class="mt-2 space-y-1">
+                      <div class="flex items-center justify-between text-[10px]">
+                        <span class="text-slate-400">Password Strength:</span>
+                        <span id="profPwdStrengthText" class="font-semibold text-slate-400">Enter password</span>
+                      </div>
+                      <div class="h-1.5 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden flex">
+                        <div id="profPwdStrengthBar" class="h-full w-0 transition-all duration-300 rounded-full bg-slate-400"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">
+                      Confirm New Password <span class="text-rose-500">*</span>
+                    </label>
+                    <input type="password" id="admConfirmPasswordInput" required placeholder="Re-enter new password" class="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-mono text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-emerald-500">
+                  </div>
+
+                  <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/60 text-[11px] text-slate-500 space-y-1">
+                    <div class="font-semibold text-slate-700 dark:text-slate-300">Security Requirement:</div>
+                    <ul class="list-disc list-inside space-y-0.5 text-[10px] text-slate-400">
+                      <li>Minimum 8 characters</li>
+                      <li>Includes uppercase, lowercase &amp; numerical digit</li>
+                      <li>Cannot contain username or common sequences</li>
+                    </ul>
+                  </div>
+
+                  <button type="submit" id="admUpdatePasswordBtn" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition">
+                    <i data-lucide="key" class="w-3.5 h-3.5"></i>
+                    <span>Update Password in MySQL</span>
+                  </button>
+                </form>
+              </div>
+
+              <!-- Notifications & Alert Toggles Card -->
+              <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm space-y-4">
+                <div class="flex items-center gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
+                  <div class="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+                    <i data-lucide="bell" class="w-4 h-4"></i>
+                  </div>
+                  <div>
+                    <h3 class="font-bold text-sm text-slate-900 dark:text-white">Admin Alert Preferences</h3>
+                    <p class="text-[11px] text-slate-500">Configure automated admin notifications.</p>
+                  </div>
+                </div>
+
+                <div class="space-y-3 text-xs">
+                  <label class="flex items-start gap-3 cursor-pointer p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
+                    <input type="checkbox" id="profEmailNotifToggle" checked class="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 mt-0.5">
+                    <div>
+                      <span class="font-semibold text-slate-800 dark:text-slate-200 block">System &amp; Error Alerts</span>
+                      <span class="text-[10px] text-slate-400">Receive alerts if ONNX inference or database storage fails.</span>
+                    </div>
+                  </label>
+
+                  <label class="flex items-start gap-3 cursor-pointer p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
+                    <input type="checkbox" id="profSecurityAlertToggle" checked class="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 mt-0.5">
+                    <div>
+                      <span class="font-semibold text-slate-800 dark:text-slate-200 block">Security &amp; Brute-Force Alerts</span>
+                      <span class="text-[10px] text-slate-400">Immediate warning upon multiple failed administrator login attempts.</span>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Active Sessions & Access Control Card -->
+              <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+                  <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 flex items-center justify-center">
+                      <i data-lucide="smartphone" class="w-4 h-4"></i>
+                    </div>
+                    <div>
+                      <h3 class="font-bold text-sm text-slate-900 dark:text-white">Active Login Sessions</h3>
+                      <p class="text-[11px] text-slate-500">Devices currently authenticated to Admin Portal.</p>
+                    </div>
+                  </div>
+                  <button type="button" id="refreshSessionsBtn" class="text-xs text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 flex items-center gap-1 font-semibold" title="Refresh Sessions">
+                    <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                  </button>
+                </div>
+
+                <!-- Sessions List -->
+                <div id="adminSessionsContainer" class="space-y-2 max-h-56 overflow-y-auto pr-1">
+                  <!-- Dynamically populated -->
+                  <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
+                    <div class="flex items-center gap-2.5">
+                      <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                      <div>
+                        <div class="font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                          <span>Current Session</span>
+                          <span class="text-[9px] px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 font-bold">THIS DEVICE</span>
+                        </div>
+                        <div class="text-[10px] text-slate-400 font-mono">Active token</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <button type="button" id="revokeOtherSessionsBtn" class="w-full py-2 rounded-xl border border-rose-200 dark:border-rose-900/50 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-rose-600 dark:text-rose-400 text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+                  <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+                  <span>Sign Out All Other Devices</span>
+                </button>
+              </div>
+
+              <!-- Export Profile & Audit Data Card -->
+              <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm space-y-3">
+                <div class="flex items-center gap-3">
+                  <div class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 flex items-center justify-center">
+                    <i data-lucide="download" class="w-4 h-4"></i>
+                  </div>
+                  <div>
+                    <h3 class="font-bold text-sm text-slate-900 dark:text-white">Admin Audit Export</h3>
+                    <p class="text-[11px] text-slate-500">Download complete profile, sessions, and system status.</p>
+                  </div>
+                </div>
+                <button type="button" id="exportAdminProfileBtn" class="w-full py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold flex items-center justify-center gap-2 transition">
+                  <i data-lucide="file-json" class="w-4 h-4 text-indigo-500"></i>
+                  <span>Export Admin Profile &amp; Audit JSON</span>
+                </button>
+              </div>
+
+            </div>
+          </div>
+
         </section>
 
       </main>

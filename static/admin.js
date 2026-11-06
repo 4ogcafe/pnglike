@@ -1,6 +1,6 @@
-// RemBG Admin Portal Client Logic
+// PngLike Admin Portal Client Logic
 document.addEventListener("DOMContentLoaded", () => {
-  let adminToken = localStorage.getItem("rembg_admin_token") || "";
+  let adminToken = localStorage.getItem("pnglike_admin_token") || localStorage.getItem("rembg_admin_token") || "";
   let currentSettings = {};
 
   // DOM References
@@ -49,8 +49,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function onLoginSuccess(admin) {
     loginOverlay.classList.add("hidden");
-    adminUserLabel.innerText = admin.username || "admin";
+    adminUserLabel.innerText = "@" + (admin.username || "admin");
     document.getElementById("admNewUsername").value = admin.username || "admin";
+    loadAdminProfile(true);
     loadOverview();
   }
 
@@ -65,6 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
       presets: "MySQL Workflow Presets",
       jobs: "Jobs & Storage Moderation",
       database: "MySQL Connection & Admin Security",
+      profile: "Admin Profile & Security Center",
     };
 
     document.querySelectorAll(".admin-nav-btn").forEach(btn => {
@@ -78,7 +80,8 @@ document.addEventListener("DOMContentLoaded", () => {
         btn.className = "admin-nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 transition";
 
         document.querySelectorAll(".admin-section").forEach(sec => sec.classList.add("hidden"));
-        document.getElementById(`tab-${tab}`).classList.remove("hidden");
+        const targetSection = document.getElementById(`tab-${tab}`);
+        if (targetSection) targetSection.classList.remove("hidden");
 
         if (tab === "overview") loadOverview();
         if (tab === "cms") loadCmsSettings();
@@ -89,8 +92,26 @@ document.addEventListener("DOMContentLoaded", () => {
         if (tab === "presets") loadAdminPresets();
         if (tab === "jobs") loadAdminJobs();
         if (tab === "database") loadDatabaseTab();
+        if (tab === "profile") loadAdminProfile();
       });
     });
+
+    // Quick navigation triggers to Profile tab
+    const sidebarProfileBtn = document.getElementById("adminSidebarProfileBtn");
+    if (sidebarProfileBtn) {
+      sidebarProfileBtn.addEventListener("click", () => {
+        const profBtn = document.querySelector('[data-tab="profile"]');
+        if (profBtn) profBtn.click();
+      });
+    }
+
+    const headerProfileBtn = document.getElementById("adminHeaderProfileBtn");
+    if (headerProfileBtn) {
+      headerProfileBtn.addEventListener("click", () => {
+        const profBtn = document.querySelector('[data-tab="profile"]');
+        if (profBtn) profBtn.click();
+      });
+    }
   }
 
   function setupEventListeners() {
@@ -186,6 +207,54 @@ document.addEventListener("DOMContentLoaded", () => {
         insertBlogFormattingSnippet(tagType);
       });
     });
+
+    // Admin Profile & Security Center Listeners
+    const adminProfileForm = document.getElementById("adminProfileForm");
+    if (adminProfileForm) {
+      adminProfileForm.addEventListener("submit", handleSaveAdminProfile);
+    }
+
+    const adminPasswordForm = document.getElementById("adminPasswordForm");
+    if (adminPasswordForm) {
+      adminPasswordForm.addEventListener("submit", handleAdminPasswordChange);
+    }
+
+    const admNewPasswordInput = document.getElementById("admNewPasswordInput");
+    if (admNewPasswordInput) {
+      admNewPasswordInput.addEventListener("input", (e) => updatePasswordStrength(e.target.value));
+    }
+
+    const adminAvatarFileInput = document.getElementById("adminAvatarFileInput");
+    if (adminAvatarFileInput) {
+      adminAvatarFileInput.addEventListener("change", handleAdminAvatarUpload);
+    }
+
+    document.getElementById("profUploadPhotoBtn")?.addEventListener("click", () => {
+      adminAvatarFileInput?.click();
+    });
+
+    document.getElementById("profAvatarContainer")?.addEventListener("click", () => {
+      adminAvatarFileInput?.click();
+    });
+
+    document.getElementById("profRemovePhotoBtn")?.addEventListener("click", handleRemoveAdminAvatar);
+
+    document.querySelectorAll(".prof-color-swatch").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const color = btn.getAttribute("data-color");
+        document.getElementById("profAvatarColor").value = color;
+        document.querySelectorAll(".prof-color-swatch").forEach(b => b.classList.remove("ring-2", "ring-offset-2", "ring-indigo-500"));
+        btn.classList.add("ring-2", "ring-offset-2", "ring-indigo-500");
+        const heroAvatar = document.getElementById("profHeroAvatar");
+        if (heroAvatar && !heroAvatar.querySelector("img")) {
+          heroAvatar.style.backgroundColor = color;
+        }
+      });
+    });
+
+    document.getElementById("refreshSessionsBtn")?.addEventListener("click", loadAdminSessions);
+    document.getElementById("revokeOtherSessionsBtn")?.addEventListener("click", handleRevokeOtherAdminSessions);
+    document.getElementById("exportAdminProfileBtn")?.addEventListener("click", handleExportAdminProfile);
   }
 
   // --------------------------------------------------------
@@ -1275,6 +1344,425 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (e) {
       showToast(e.message, "error");
     }
+  }
+
+  // --------------------------------------------------------
+  // ADMIN PROFILE & SECURITY CENTER
+  // --------------------------------------------------------
+  let currentAdminProfile = null;
+
+  function getInitials(name) {
+    if (!name) return "AD";
+    const parts = name.trim().split(/\s+/);
+    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  }
+
+  function updateAdminIdentityUI(profile) {
+    if (!profile) return;
+    const fullName = profile.full_name || profile.username || "Administrator";
+    const handle = "@" + (profile.username || "admin");
+    const role = profile.role || "superadmin";
+    const initials = getInitials(fullName);
+    const color = profile.avatar_color || "#4f46e5";
+
+    // Sidebar Identity
+    const sideName = document.getElementById("adminSidebarFullName");
+    if (sideName) sideName.innerText = fullName;
+    const sideRole = document.getElementById("adminSidebarRole");
+    if (sideRole) sideRole.innerText = role;
+    if (adminUserLabel) adminUserLabel.innerText = handle;
+
+    const sideAvatar = document.getElementById("adminSidebarAvatar");
+    if (sideAvatar) {
+      if (profile.avatar_url) {
+        sideAvatar.innerHTML = `<img src="${profile.avatar_url}" alt="${fullName}" class="w-full h-full object-cover">`;
+      } else {
+        sideAvatar.innerText = initials;
+        sideAvatar.style.backgroundColor = color;
+      }
+    }
+
+    // Top Header Identity
+    const headName = document.getElementById("adminHeaderName");
+    if (headName) headName.innerText = fullName;
+    const headAvatar = document.getElementById("adminHeaderAvatar");
+    if (headAvatar) {
+      if (profile.avatar_url) {
+        headAvatar.innerHTML = `<img src="${profile.avatar_url}" alt="${fullName}" class="w-full h-full object-cover">`;
+      } else {
+        headAvatar.innerText = initials;
+        headAvatar.style.backgroundColor = color;
+      }
+    }
+
+    // Hero Avatar
+    const heroAvatar = document.getElementById("profHeroAvatar");
+    if (heroAvatar) {
+      if (profile.avatar_url) {
+        heroAvatar.innerHTML = `<img src="${profile.avatar_url}" alt="${fullName}" class="w-full h-full object-cover">`;
+      } else {
+        heroAvatar.innerText = initials;
+        heroAvatar.style.backgroundColor = color;
+      }
+    }
+  }
+
+  async function loadAdminProfile(background = false) {
+    try {
+      const res = await adminFetch("/api/admin/profile");
+      if (!res.ok) throw new Error("Failed to load admin profile");
+      const data = await res.json();
+      currentAdminProfile = data.profile;
+
+      updateAdminIdentityUI(currentAdminProfile);
+
+      if (background) return;
+
+      const p = currentAdminProfile;
+      // Populate Hero Card
+      const heroName = document.getElementById("profHeroFullName");
+      if (heroName) heroName.innerText = p.full_name || p.username;
+      const heroUser = document.getElementById("profHeroUsername");
+      if (heroUser) heroUser.innerText = "@" + p.username;
+      const heroDesig = document.getElementById("profHeroDesignation");
+      if (heroDesig) heroDesig.innerText = p.designation || "Lead AI Systems Architect";
+      const heroDept = document.getElementById("profHeroDepartment");
+      if (heroDept) heroDept.innerText = p.department || "DevOps & Infrastructure";
+      const heroLoc = document.getElementById("profHeroLocation");
+      if (heroLoc) heroLoc.innerText = p.location || "Tokyo, Japan";
+      const heroTz = document.getElementById("profHeroTimezone");
+      if (heroTz) heroTz.innerText = p.timezone_pref || "Asia/Tokyo (UTC+9)";
+      const heroRole = document.getElementById("profHeroRole");
+      if (heroRole) heroRole.innerText = (p.role || "superadmin").toUpperCase();
+
+      if (p.stats) {
+        const sj = document.getElementById("profStatJobs");
+        if (sj) sj.innerText = p.stats.total_jobs ?? 0;
+        const su = document.getElementById("profStatUsers");
+        if (su) su.innerText = p.stats.total_users ?? 0;
+        const sp = document.getElementById("profStatPosts");
+        if (sp) sp.innerText = p.stats.total_blog_posts ?? 0;
+        const ss = document.getElementById("profStatSessions");
+        if (ss) ss.innerText = p.stats.active_sessions ?? 1;
+      }
+
+      // Populate Form Fields
+      const fn = document.getElementById("profFullName");
+      if (fn) fn.value = p.full_name || "";
+      const un = document.getElementById("profUsername");
+      if (un) un.value = p.username || "";
+      const em = document.getElementById("profEmail");
+      if (em) em.value = p.email || "";
+      const ph = document.getElementById("profPhone");
+      if (ph) ph.value = p.phone || "";
+      const ds = document.getElementById("profDesignation");
+      if (ds) ds.value = p.designation || "";
+      const dp = document.getElementById("profDepartment");
+      if (dp) dp.value = p.department || "";
+      const lc = document.getElementById("profLocation");
+      if (lc) lc.value = p.location || "";
+      const bio = document.getElementById("profBio");
+      if (bio) bio.value = p.bio || "";
+      const tz = document.getElementById("profTimezone");
+      if (tz) tz.value = p.timezone_pref || "Asia/Tokyo (UTC+9)";
+      const ac = document.getElementById("profAvatarColor");
+      if (ac) ac.value = p.avatar_color || "#4f46e5";
+
+      // Color Swatches Selection
+      document.querySelectorAll(".prof-color-swatch").forEach(btn => {
+        const c = btn.getAttribute("data-color");
+        if (c && c.toLowerCase() === (p.avatar_color || "#4f46e5").toLowerCase()) {
+          btn.classList.add("ring-2", "ring-offset-2", "ring-indigo-500");
+        } else {
+          btn.classList.remove("ring-2", "ring-offset-2", "ring-indigo-500");
+        }
+      });
+
+      // Toggles
+      const notifSystem = document.getElementById("profEmailNotifToggle");
+      if (notifSystem) notifSystem.checked = Boolean(p.email_notifications);
+      const notifSec = document.getElementById("profSecurityAlertToggle");
+      if (notifSec) notifSec.checked = Boolean(p.security_alerts);
+
+      const lastUpd = document.getElementById("profLastUpdated");
+      if (lastUpd) {
+        lastUpd.innerText = p.updated_at ? `Last saved: ${p.updated_at}` : "Profile up to date";
+      }
+
+      loadAdminSessions();
+      lucide.createIcons();
+    } catch (e) {
+      if (!background) showToast(e.message, "error");
+    }
+  }
+
+  async function handleSaveAdminProfile(e) {
+    if (e) e.preventDefault();
+    const btn = document.getElementById("saveAdminProfileBtn");
+    const origHTML = btn ? btn.innerHTML : "";
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Saving...</span>`;
+      lucide.createIcons();
+    }
+
+    const payload = {
+      full_name: document.getElementById("profFullName")?.value.trim() || "",
+      email: document.getElementById("profEmail")?.value.trim() || "",
+      phone: document.getElementById("profPhone")?.value.trim() || "",
+      designation: document.getElementById("profDesignation")?.value.trim() || "",
+      department: document.getElementById("profDepartment")?.value.trim() || "",
+      location: document.getElementById("profLocation")?.value.trim() || "",
+      timezone_pref: document.getElementById("profTimezone")?.value || "Asia/Tokyo (UTC+9)",
+      bio: document.getElementById("profBio")?.value.trim() || "",
+      avatar_color: document.getElementById("profAvatarColor")?.value || "#4f46e5",
+      email_notifications: Boolean(document.getElementById("profEmailNotifToggle")?.checked),
+      security_alerts: Boolean(document.getElementById("profSecurityAlertToggle")?.checked),
+    };
+
+    try {
+      const res = await adminFetch("/api/admin/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || "Failed to update profile");
+      currentAdminProfile = data.profile;
+      updateAdminIdentityUI(currentAdminProfile);
+      showToast("Administrator profile saved successfully in MySQL!", "success");
+      const lastUpd = document.getElementById("profLastUpdated");
+      if (lastUpd) lastUpd.innerText = "Last saved: Just now";
+    } catch (err) {
+      showToast(err.message, "error");
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = origHTML;
+        lucide.createIcons();
+      }
+    }
+  }
+
+  async function handleAdminAvatarUpload(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      showToast("Avatar file exceeds 5 MB limit.", "error");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      showToast("Uploading and optimizing profile photo...", "info");
+      const res = await fetch("/api/admin/profile/avatar", {
+        method: "POST",
+        headers: { "X-Admin-Token": adminToken },
+        body: formData,
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || "Failed to upload avatar");
+      currentAdminProfile = data.profile;
+      updateAdminIdentityUI(currentAdminProfile);
+      showToast("Profile avatar updated successfully!", "success");
+    } catch (err) {
+      showToast(err.message, "error");
+    } finally {
+      e.target.value = "";
+    }
+  }
+
+  async function handleRemoveAdminAvatar() {
+    if (!confirm("Remove custom avatar photo and restore initials badge?")) return;
+    try {
+      const res = await adminFetch("/api/admin/profile/avatar", { method: "DELETE" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || "Failed to remove avatar");
+      currentAdminProfile = data.profile;
+      updateAdminIdentityUI(currentAdminProfile);
+      showToast("Avatar removed. Restored color initials badge.", "info");
+    } catch (err) {
+      showToast(err.message, "error");
+    }
+  }
+
+  async function handleAdminPasswordChange(e) {
+    if (e) e.preventDefault();
+    const curr = document.getElementById("admCurrPassword")?.value || "";
+    const newPwd = document.getElementById("admNewPasswordInput")?.value || "";
+    const confPwd = document.getElementById("admConfirmPasswordInput")?.value || "";
+
+    if (!curr) {
+      showToast("Please enter your current password.", "error");
+      return;
+    }
+    if (!newPwd || newPwd.length < 8) {
+      showToast("New password must be at least 8 characters.", "error");
+      return;
+    }
+    if (newPwd !== confPwd) {
+      showToast("New password and confirmation do not match.", "error");
+      return;
+    }
+
+    try {
+      const res = await adminFetch("/api/admin/profile/password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          current_password: curr,
+          new_password: newPwd,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || "Password change failed");
+      const cp = document.getElementById("admCurrPassword");
+      if (cp) cp.value = "";
+      const np = document.getElementById("admNewPasswordInput");
+      if (np) np.value = "";
+      const cnp = document.getElementById("admConfirmPasswordInput");
+      if (cnp) cnp.value = "";
+      updatePasswordStrength("");
+      showToast("Password updated in MySQL! Other sessions revoked.", "success");
+      loadAdminSessions();
+    } catch (err) {
+      showToast(err.message, "error");
+    }
+  }
+
+  function updatePasswordStrength(val) {
+    const bar = document.getElementById("profPwdStrengthBar");
+    const text = document.getElementById("profPwdStrengthText");
+    if (!bar || !text) return;
+
+    if (!val) {
+      bar.style.width = "0%";
+      bar.className = "h-full w-0 transition-all duration-300 rounded-full bg-slate-400";
+      text.innerText = "Enter password";
+      text.className = "font-semibold text-slate-400";
+      return;
+    }
+
+    let score = 0;
+    if (val.length >= 8) score += 1;
+    if (val.length >= 12) score += 1;
+    if (/[A-Z]/.test(val) && /[a-z]/.test(val)) score += 1;
+    if (/[0-9]/.test(val)) score += 1;
+    if (/[^A-Za-z0-9]/.test(val)) score += 1;
+
+    if (score <= 2) {
+      bar.style.width = "30%";
+      bar.className = "h-full transition-all duration-300 rounded-full bg-rose-500";
+      text.innerText = "Weak";
+      text.className = "font-semibold text-rose-500";
+    } else if (score <= 4) {
+      bar.style.width = "70%";
+      bar.className = "h-full transition-all duration-300 rounded-full bg-amber-500";
+      text.innerText = "Good";
+      text.className = "font-semibold text-amber-500";
+    } else {
+      bar.style.width = "100%";
+      bar.className = "h-full transition-all duration-300 rounded-full bg-emerald-500";
+      text.innerText = "Strong (Optimal)";
+      text.className = "font-semibold text-emerald-500";
+    }
+  }
+
+  async function loadAdminSessions() {
+    const container = document.getElementById("adminSessionsContainer");
+    if (!container) return;
+    try {
+      const res = await adminFetch("/api/admin/profile/sessions");
+      if (!res.ok) throw new Error("Failed to load sessions");
+      const data = await res.json();
+      const sessions = data.sessions || [];
+      const statEl = document.getElementById("profStatSessions");
+      if (statEl) statEl.innerText = sessions.length;
+
+      if (!sessions.length) {
+        container.innerHTML = `<p class="text-xs text-slate-400 py-3 text-center">No active sessions found.</p>`;
+        return;
+      }
+
+      container.innerHTML = sessions.map(s => `
+        <div class="p-3 rounded-2xl ${s.is_current ? 'bg-indigo-50/70 dark:bg-indigo-950/40 border-indigo-200 dark:border-indigo-800/80' : 'bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700/60'} border flex items-center justify-between text-xs transition">
+          <div class="flex items-center gap-2.5">
+            <span class="w-2 h-2 rounded-full ${s.is_current ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'}"></span>
+            <div>
+              <div class="font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                <span>Session #${s.id}</span>
+                ${s.is_current ? '<span class="text-[9px] px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 font-bold uppercase">THIS DEVICE</span>' : ''}
+              </div>
+              <div class="text-[10px] text-slate-400 font-mono">
+                Token: ${s.token_preview || '••••••••'} • Created: ${s.created_at || 'Recently'}
+              </div>
+            </div>
+          </div>
+          ${!s.is_current ? `
+            <button type="button" onclick="handleRevokeSingleSession(${s.id})" class="px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-rose-600 text-[10px] font-semibold flex items-center gap-1 transition">
+              <i data-lucide="trash-2" class="w-3 h-3"></i>
+              <span>Revoke</span>
+            </button>
+          ` : '<span class="text-[10px] text-slate-400 font-medium">Active now</span>'}
+        </div>
+      `).join("");
+      lucide.createIcons();
+    } catch (e) {
+      container.innerHTML = `<p class="text-xs text-rose-500 py-2">Failed to load active sessions.</p>`;
+    }
+  }
+
+  window.handleRevokeSingleSession = async function(sessionId) {
+    if (!confirm(`Are you sure you want to revoke session #${sessionId}?`)) return;
+    try {
+      const res = await adminFetch(`/api/admin/profile/sessions/${sessionId}`, { method: "DELETE" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || "Failed to revoke session");
+      showToast("Session revoked.", "info");
+      loadAdminSessions();
+    } catch (err) {
+      showToast(err.message, "error");
+    }
+  };
+
+  async function handleRevokeOtherAdminSessions() {
+    if (!confirm("Are you sure you want to sign out all other devices and browser sessions?")) return;
+    try {
+      const res = await adminFetch("/api/admin/profile/sessions/revoke-others", { method: "POST" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || "Failed to revoke other sessions");
+      showToast(data.message || "All other sessions revoked.", "success");
+      loadAdminSessions();
+    } catch (err) {
+      showToast(err.message, "error");
+    }
+  }
+
+  function handleExportAdminProfile() {
+    if (!currentAdminProfile) {
+      showToast("Profile data not loaded yet.", "error");
+      return;
+    }
+    const exportData = {
+      profile: currentAdminProfile,
+      system: {
+        exported_at: new Date().toISOString(),
+        user_agent: navigator.userAgent,
+        screen_resolution: `${window.screen.width}x${window.screen.height}`,
+      }
+    };
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `admin_profile_${currentAdminProfile.username || "admin"}_${Date.now()}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast("Admin profile and audit data downloaded!", "success");
   }
 
   // --------------------------------------------------------

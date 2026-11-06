@@ -1,4 +1,4 @@
-# PngLike (RemBG Studio) — 9-in-1 AI Image Suite & Neural Background Remover
+# PngLike — 9-in-1 AI Image Suite & Neural Background Remover
 > **High-Performance Neural Computer Vision Platform & Content Studio**  
 > *Powered by Div Sri*
 
@@ -13,7 +13,7 @@
 
 ## 🌟 Overview
 
-**PngLike (RemBG Studio)** is a full-stack, production-grade AI image processing studio that delivers **9 neural computer vision tools** running in-memory with local ONNX models. Built with **FastAPI**, **ONNX Runtime**, **OpenCV**, and modern responsive **Tailwind CSS**, PngLike provides studio-quality photo editing, background removal, skin enhancement, super-resolution upscaling, and 3D relighting without sending private images to third-party cloud APIs.
+**PngLike** is a full-stack, production-grade AI image processing studio that delivers **9 neural computer vision tools** running in-memory with local ONNX models. Built with **FastAPI**, **ONNX Runtime**, **OpenCV**, and modern responsive **Tailwind CSS**, PngLike provides studio-quality photo editing, background removal, skin enhancement, super-resolution upscaling, and 3D relighting without sending private images to third-party cloud APIs.
 
 ```mermaid
 graph TD
@@ -235,6 +235,6 @@ python verify_all_functionality.py
 ## 👨‍💻 Author & Attribution
 
 * **Founder & Lead Architect**: **Div Sri**
-* **Project**: **PngLike (RemBG Studio)**
+* **Project**: **PngLike**
 * **Official URL**: [https://pnglike.studio](https://pnglike.studio)
 * **Copyright**: © 2026 PngLike Studio. All Rights Reserved.

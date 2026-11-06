@@ -35,8 +35,8 @@ load_dotenv(ENV_PATH)
 Base = declarative_base()
 
 DEFAULT_SITE_SETTINGS: Dict[str, str] = {
-    "site_title": "RemBG Studio",
-    "site_tagline": "Deep Learning Background Removal",
+    "site_title": "PngLike",
+    "site_tagline": "9-in-1 AI Image Suite & Background Remover",
     "site_badge": "AI Powered",
     "hero_title": "Remove Image Backgrounds",
     "hero_highlight": "Instantly with AI",
@@ -62,7 +62,7 @@ DEFAULT_SITE_SETTINGS: Dict[str, str] = {
     "registered_max_mb": "50",
     "guest_restricted_tools": "image-upscaler,image-extender,variations,cinematic-shot,relight,change-camera",
     "maintenance_mode": "false",
-    "maintenance_message": "RemBG Studio is currently undergoing scheduled maintenance. Please check back shortly.",
+    "maintenance_message": "PngLike is currently undergoing scheduled maintenance. Please check back shortly.",
     "smtp_enabled": "true",
     "smtp_host": "smtp.gmail.com",
     "smtp_port": "587",
@@ -416,17 +416,43 @@ class AdminUser(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     username = Column(String(64), unique=True, nullable=False)
+    full_name = Column(String(128), nullable=False, default="System Administrator")
+    email = Column(String(128), nullable=False, default="")
+    avatar_url = Column(String(512), nullable=True, default="")
+    avatar_color = Column(String(32), nullable=False, default="#4f46e5")
+    phone = Column(String(32), nullable=False, default="")
+    designation = Column(String(128), nullable=False, default="Lead AI Systems Architect")
+    department = Column(String(128), nullable=False, default="DevOps & AI Infrastructure")
+    location = Column(String(128), nullable=False, default="Tokyo, Japan")
+    bio = Column(Text, nullable=False, default="")
+    timezone_pref = Column(String(64), nullable=False, default="Asia/Tokyo (UTC+9)")
+    email_notifications = Column(Boolean, nullable=False, default=True)
+    security_alerts = Column(Boolean, nullable=False, default=True)
     password_hash = Column(String(255), nullable=False)
     role = Column(String(32), nullable=False, default="superadmin")
     last_login = Column(DateTime, nullable=True)
+    updated_at = Column(DateTime, nullable=True)
     created_at = Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
 
     def to_dict(self) -> Dict[str, Any]:
         return {
             "id": self.id,
             "username": self.username,
-            "role": self.role,
+            "full_name": self.full_name or self.username,
+            "email": self.email or "",
+            "avatar_url": self.avatar_url or "",
+            "avatar_color": self.avatar_color or "#4f46e5",
+            "phone": self.phone or "",
+            "designation": self.designation or "Lead AI Systems Architect",
+            "department": self.department or "DevOps & AI Infrastructure",
+            "location": self.location or "Tokyo, Japan",
+            "bio": self.bio or "",
+            "timezone_pref": self.timezone_pref or "Asia/Tokyo (UTC+9)",
+            "email_notifications": bool(self.email_notifications),
+            "security_alerts": bool(self.security_alerts),
+            "role": self.role or "superadmin",
             "last_login": self.last_login.strftime("%Y-%m-%d %H:%M:%S") if self.last_login else None,
+            "updated_at": self.updated_at.strftime("%Y-%m-%d %H:%M:%S") if self.updated_at else None,
             "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S") if self.created_at else None,
         }
 
@@ -712,6 +738,33 @@ class DatabaseManager:
                 except Exception:
                     pass
 
+        # 3. Migrate admin_users profile columns
+        admin_cols = [
+            ("full_name", "VARCHAR(128) NOT NULL DEFAULT 'System Administrator'"),
+            ("email", "VARCHAR(128) NOT NULL DEFAULT ''"),
+            ("avatar_url", "VARCHAR(512) NULL DEFAULT ''"),
+            ("avatar_color", "VARCHAR(32) NOT NULL DEFAULT '#4f46e5'"),
+            ("phone", "VARCHAR(32) NOT NULL DEFAULT ''"),
+            ("designation", "VARCHAR(128) NOT NULL DEFAULT 'Lead AI Systems Architect'"),
+            ("department", "VARCHAR(128) NOT NULL DEFAULT 'DevOps & AI Infrastructure'"),
+            ("location", "VARCHAR(128) NOT NULL DEFAULT 'Tokyo, Japan'"),
+            ("bio", "TEXT NULL"),
+            ("timezone_pref", "VARCHAR(64) NOT NULL DEFAULT 'Asia/Tokyo (UTC+9)'"),
+            ("email_notifications", "BOOLEAN NOT NULL DEFAULT TRUE"),
+            ("security_alerts", "BOOLEAN NOT NULL DEFAULT TRUE"),
+            ("updated_at", "DATETIME NULL"),
+        ]
+        for col_name, col_type in admin_cols:
+            try:
+                with self.engine.connect() as conn:
+                    conn.execute(text(f"SELECT {col_name} FROM admin_users LIMIT 1"))
+            except Exception:
+                try:
+                    with self.engine.begin() as conn:
+                        conn.execute(text(f"ALTER TABLE admin_users ADD COLUMN {col_name} {col_type}"))
+                except Exception:
+                    pass
+
     def initialize_connection(self) -> bool:
         try:
             self._ensure_mysql_database_exists()
@@ -875,6 +928,16 @@ class DatabaseManager:
                     db.add(
                         AdminUser(
                             username=default_admin_user,
+                            full_name=os.getenv("ADMIN_NAME", "System Administrator"),
+                            email=os.getenv("ADMIN_EMAIL", "admin@pnglike.studio"),
+                            designation="Lead AI Systems Architect",
+                            department="DevOps & AI Infrastructure",
+                            location="Tokyo, Japan",
+                            bio="Managing PngLike AI image suite engine, ONNX models, and infrastructure.",
+                            avatar_color="#4f46e5",
+                            timezone_pref="Asia/Tokyo (UTC+9)",
+                            email_notifications=True,
+                            security_alerts=True,
                             password_hash=hash_password(default_admin_pass),
                             role="superadmin",
                         )
@@ -1014,7 +1077,7 @@ class DatabaseManager:
                 raw[r.setting_key] = r.setting_value
 
         return {
-            "site_title": raw.get("site_title", "RemBG Studio"),
+            "site_title": raw.get("site_title", "PngLike"),
             "site_tagline": raw.get("site_tagline", "Deep Learning Background Removal"),
             "site_badge": raw.get("site_badge", "AI Powered"),
             "hero_title": raw.get("hero_title", "Remove Image Backgrounds"),
@@ -1114,9 +1177,175 @@ class DatabaseManager:
                 db.query(AdminSession).filter(AdminSession.admin_id == user.id).delete()
             if new_username and new_username.strip():
                 user.username = new_username.strip()
+            user.updated_at = datetime.now(timezone.utc).replace(tzinfo=None)
             db.commit()
             db.refresh(user)
             return user.to_dict()
+
+    def get_admin_profile(self, admin_id: int) -> Optional[Dict[str, Any]]:
+        """Fetch admin profile with aggregate system statistics."""
+        with self.get_session() as db:
+            user = db.query(AdminUser).filter(AdminUser.id == admin_id).first()
+            if not user:
+                user = db.query(AdminUser).first()
+            if not user:
+                return None
+            profile = user.to_dict()
+            now = datetime.now(timezone.utc).replace(tzinfo=None)
+            profile["stats"] = {
+                "total_jobs": db.query(RemovalJob).count(),
+                "total_users": db.query(AppUser).count(),
+                "total_blog_posts": db.query(BlogPost).count(),
+                "active_sessions": db.query(AdminSession).filter(
+                    AdminSession.admin_id == user.id,
+                    AdminSession.expires_at > now
+                ).count(),
+            }
+            return profile
+
+    def update_admin_profile(self, admin_id: int, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Update admin user profile metadata, contact info, bio, and preferences."""
+        with self.get_session() as db:
+            user = db.query(AdminUser).filter(AdminUser.id == admin_id).first()
+            if not user:
+                user = db.query(AdminUser).first()
+            if not user:
+                raise ValueError("Admin account not found.")
+
+            if "full_name" in data and data["full_name"] is not None:
+                clean_name = data["full_name"].strip()
+                if clean_name:
+                    user.full_name = clean_name[:128]
+
+            if "email" in data and data["email"] is not None:
+                clean_email = data["email"].strip().lower()
+                if clean_email:
+                    validate_registration_email(clean_email)
+                    user.email = clean_email[:128]
+                else:
+                    user.email = ""
+
+            if "phone" in data and data["phone"] is not None:
+                user.phone = data["phone"].strip()[:32]
+
+            if "designation" in data and data["designation"] is not None:
+                user.designation = data["designation"].strip()[:128]
+
+            if "department" in data and data["department"] is not None:
+                user.department = data["department"].strip()[:128]
+
+            if "location" in data and data["location"] is not None:
+                user.location = data["location"].strip()[:128]
+
+            if "bio" in data and data["bio"] is not None:
+                user.bio = data["bio"].strip()
+
+            if "avatar_color" in data and data["avatar_color"] is not None:
+                color = data["avatar_color"].strip()
+                if re.match(r"^#[0-9a-fA-F]{6}$", color):
+                    user.avatar_color = color
+
+            if "timezone_pref" in data and data["timezone_pref"] is not None:
+                user.timezone_pref = data["timezone_pref"].strip()[:64]
+
+            if "email_notifications" in data and data["email_notifications"] is not None:
+                user.email_notifications = bool(data["email_notifications"])
+
+            if "security_alerts" in data and data["security_alerts"] is not None:
+                user.security_alerts = bool(data["security_alerts"])
+
+            user.updated_at = datetime.now(timezone.utc).replace(tzinfo=None)
+            db.commit()
+            db.refresh(user)
+            return user.to_dict()
+
+    def update_admin_avatar(self, admin_id: int, avatar_url: Optional[str]) -> Dict[str, Any]:
+        """Update or remove the custom avatar URL for an administrator."""
+        with self.get_session() as db:
+            user = db.query(AdminUser).filter(AdminUser.id == admin_id).first()
+            if not user:
+                user = db.query(AdminUser).first()
+            if not user:
+                raise ValueError("Admin account not found.")
+
+            user.avatar_url = (avatar_url or "").strip()[:512]
+            user.updated_at = datetime.now(timezone.utc).replace(tzinfo=None)
+            db.commit()
+            db.refresh(user)
+            return user.to_dict()
+
+    def change_admin_password(
+        self,
+        admin_id: int,
+        current_password: str,
+        new_password: str,
+        current_token: Optional[str] = None,
+    ) -> Dict[str, Any]:
+        """Securely change admin password, with credential verification and session invalidation."""
+        with self.get_session() as db:
+            user = db.query(AdminUser).filter(AdminUser.id == admin_id).first()
+            if not user:
+                user = db.query(AdminUser).first()
+            if not user:
+                raise ValueError("Admin account not found.")
+
+            if not current_password or not verify_password(current_password.strip(), user.password_hash):
+                raise ValueError("Current password is incorrect. Verification failed.")
+
+            validate_registration_password(new_password.strip(), username=user.username, email=user.email or "")
+            user.password_hash = hash_password(new_password.strip())
+            user.updated_at = datetime.now(timezone.utc).replace(tzinfo=None)
+
+            # Invalidate all OTHER admin sessions to prevent stolen session reuse
+            sess_q = db.query(AdminSession).filter(AdminSession.admin_id == user.id)
+            if current_token:
+                sess_q = sess_q.filter(AdminSession.token != current_token.strip())
+            sess_q.delete(synchronize_session=False)
+
+            db.commit()
+            db.refresh(user)
+            return user.to_dict()
+
+    def list_admin_sessions(self, admin_id: int, current_token: Optional[str] = None) -> List[Dict[str, Any]]:
+        """List active sessions for this administrator."""
+        now = datetime.now(timezone.utc).replace(tzinfo=None)
+        with self.get_session() as db:
+            sessions = (
+                db.query(AdminSession)
+                .filter(AdminSession.admin_id == admin_id, AdminSession.expires_at > now)
+                .order_by(AdminSession.created_at.desc())
+                .all()
+            )
+            result = []
+            for s in sessions:
+                d = s.to_dict()
+                d["is_current"] = (current_token is not None and s.token == current_token.strip())
+                # Mask token for security
+                d["token_preview"] = s.token[:6] + "..." + s.token[-4:] if len(s.token) > 10 else "******"
+                result.append(d)
+            return result
+
+    def revoke_other_admin_sessions(self, admin_id: int, current_token: str) -> int:
+        """Revoke all active sessions for this admin except the current one."""
+        with self.get_session() as db:
+            count = (
+                db.query(AdminSession)
+                .filter(AdminSession.admin_id == admin_id, AdminSession.token != current_token.strip())
+                .delete(synchronize_session=False)
+            )
+            db.commit()
+            return count
+
+    def revoke_admin_session_by_id(self, admin_id: int, session_id: int) -> bool:
+        """Revoke a specific admin session by ID."""
+        with self.get_session() as db:
+            deleted = (
+                db.query(AdminSession)
+                .filter(AdminSession.admin_id == admin_id, AdminSession.id == session_id)
+                .delete(synchronize_session=False)
+            )
+            db.commit()
+            return bool(deleted)
 
     # --------------------------------------------------------
     # SAMPLE IMAGES MANAGEMENT

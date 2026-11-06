@@ -1,4 +1,4 @@
-// RemBG Studio Client Application Logic
+// PngLike Studio Client Application Logic
 document.addEventListener("DOMContentLoaded", () => {
   // Default 9 IMAGE Tools Catalog (Free tools listed first; Background Remover is default)
   const DEFAULT_TOOLS = [
@@ -733,7 +733,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Apply Dynamic Branding & Copy
       if (s.site_title) {
-        if (s.site_title !== "RemBG Studio") {
+        if (s.site_title !== "PngLike") {
           document.title = `${s.site_title} — ${s.site_tagline || "9-in-1 AI Image Suite"}`;
         }
         const titleEl = document.getElementById("brandSiteTitle");

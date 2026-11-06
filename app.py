@@ -23,6 +23,8 @@ SAMPLES_DIR = BASE_DIR / "static" / "samples"
 SAMPLES_DIR.mkdir(parents=True, exist_ok=True)
 BLOG_IMAGES_DIR = BASE_DIR / "static" / "blog"
 BLOG_IMAGES_DIR.mkdir(parents=True, exist_ok=True)
+AVATARS_DIR = BASE_DIR / "static" / "avatars"
+AVATARS_DIR.mkdir(parents=True, exist_ok=True)
 os.environ["U2NET_HOME"] = str(MODELS_DIR)
 
 from PIL import Image, ImageColor
@@ -45,8 +47,8 @@ import image_tools
 from email_service import send_verification_email, test_smtp_connection, get_smtp_config
 
 app = FastAPI(
-    title="RemBG Studio - AI Background Remover & Admin Backend System",
-    description="High-performance background removal web application & MySQL Admin CMS powered by Rembg & ONNX Runtime",
+    title="PngLike - 9-in-1 AI Image Suite & Background Remover",
+    description="High-performance 9-in-1 neural image suite & background removal platform powered by ONNX Runtime",
     version="3.0.0",
 )
 
@@ -178,6 +180,25 @@ class AdminCredentialsPayload(BaseModel):
     new_username: str
     new_password: Optional[str] = None
     current_password: Optional[str] = None
+
+
+class AdminProfileUpdatePayload(BaseModel):
+    full_name: Optional[str] = None
+    email: Optional[str] = None
+    phone: Optional[str] = None
+    designation: Optional[str] = None
+    department: Optional[str] = None
+    location: Optional[str] = None
+    bio: Optional[str] = None
+    avatar_color: Optional[str] = None
+    timezone_pref: Optional[str] = None
+    email_notifications: Optional[bool] = None
+    security_alerts: Optional[bool] = None
+
+
+class AdminPasswordChangePayload(BaseModel):
+    current_password: str
+    new_password: str
 
 
 class SiteSettingsPayload(BaseModel):
@@ -1520,6 +1541,139 @@ async def admin_update_credentials(
     return {"admin": updated}
 
 
+# --------------------------------------------------------
+# ADMIN PROFILE & SESSION MANAGEMENT
+# --------------------------------------------------------
+@app.get("/api/admin/profile")
+async def admin_get_profile(admin: Dict[str, Any] = Depends(require_admin)):
+    """Fetch current logged-in administrator's complete profile and system metrics."""
+    profile = await run_in_threadpool(db_manager.get_admin_profile, admin["id"])
+    if not profile:
+        raise HTTPException(status_code=404, detail="Admin profile not found.")
+    return {"profile": profile}
+
+
+@app.put("/api/admin/profile")
+async def admin_update_profile(
+    payload: AdminProfileUpdatePayload,
+    admin: Dict[str, Any] = Depends(require_admin),
+    x_admin_token: Optional[str] = Header(None),
+):
+    """Update administrator profile fields (full name, email, bio, department, location, preferences)."""
+    try:
+        updated = await run_in_threadpool(
+            db_manager.update_admin_profile,
+            admin["id"],
+            payload.model_dump(exclude_unset=True),
+        )
+        if x_admin_token and x_admin_token in _admin_tokens:
+            _admin_tokens[x_admin_token].update(updated)
+        return {"profile": updated, "message": "Admin profile updated successfully."}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logger.error(f"Error updating admin profile: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Failed to update admin profile.")
+
+
+@app.post("/api/admin/profile/avatar")
+async def admin_upload_avatar(
+    file: UploadFile = File(...),
+    admin: Dict[str, Any] = Depends(require_admin),
+    x_admin_token: Optional[str] = Header(None),
+):
+    """Upload and optimize a custom avatar photo for the administrator."""
+    allowed_types = {"image/png", "image/jpeg", "image/jpg", "image/webp"}
+    if file.content_type not in allowed_types:
+        raise HTTPException(status_code=400, detail="Invalid image type. Supported formats: PNG, JPG, WEBP.")
+
+    content = await file.read()
+    if len(content) > 5 * 1024 * 1024:
+        raise HTTPException(status_code=413, detail="Avatar image size cannot exceed 5 MB.")
+
+    try:
+        img = Image.open(io.BytesIO(content))
+        img = img.convert("RGBA")
+        img.thumbnail((512, 512), Image.Resampling.LANCZOS)
+        filename = f"admin_{admin['id']}_{secrets.token_hex(6)}.png"
+        filepath = AVATARS_DIR / filename
+        img.save(filepath, format="PNG", optimize=True)
+        avatar_url = f"/static/avatars/{filename}"
+        updated = await run_in_threadpool(db_manager.update_admin_avatar, admin["id"], avatar_url)
+        if x_admin_token and x_admin_token in _admin_tokens:
+            _admin_tokens[x_admin_token]["avatar_url"] = avatar_url
+        return {"avatar_url": avatar_url, "profile": updated, "message": "Avatar uploaded successfully."}
+    except Exception as e:
+        logger.error(f"Failed to process admin avatar: {e}", exc_info=True)
+        raise HTTPException(status_code=400, detail="Invalid image file or corrupted data.")
+
+
+@app.delete("/api/admin/profile/avatar")
+async def admin_delete_avatar(
+    admin: Dict[str, Any] = Depends(require_admin),
+    x_admin_token: Optional[str] = Header(None),
+):
+    """Remove custom admin avatar and reset to default color badge."""
+    updated = await run_in_threadpool(db_manager.update_admin_avatar, admin["id"], "")
+    if x_admin_token and x_admin_token in _admin_tokens:
+        _admin_tokens[x_admin_token]["avatar_url"] = ""
+    return {"profile": updated, "message": "Avatar removed. Using default color badge."}
+
+
+@app.post("/api/admin/profile/password")
+async def admin_change_password(
+    payload: AdminPasswordChangePayload,
+    admin: Dict[str, Any] = Depends(require_admin),
+    x_admin_token: Optional[str] = Header(None),
+):
+    """Securely change administrator password with current password verification."""
+    try:
+        updated = await run_in_threadpool(
+            db_manager.change_admin_password,
+            admin["id"],
+            payload.current_password,
+            payload.new_password,
+            x_admin_token,
+        )
+        return {"profile": updated, "message": "Password changed successfully. All other sessions revoked."}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.get("/api/admin/profile/sessions")
+async def admin_get_sessions(
+    admin: Dict[str, Any] = Depends(require_admin),
+    x_admin_token: Optional[str] = Header(None),
+):
+    """List active login sessions for the administrator."""
+    sessions = await run_in_threadpool(db_manager.list_admin_sessions, admin["id"], x_admin_token)
+    return {"sessions": sessions}
+
+
+@app.post("/api/admin/profile/sessions/revoke-others")
+async def admin_revoke_other_sessions(
+    admin: Dict[str, Any] = Depends(require_admin),
+    x_admin_token: Optional[str] = Header(None),
+):
+    """Revoke all active sessions for this admin except the current active session."""
+    if not x_admin_token:
+        raise HTTPException(status_code=400, detail="Missing active session token.")
+    revoked_count = await run_in_threadpool(db_manager.revoke_other_admin_sessions, admin["id"], x_admin_token)
+    return {"revoked_count": revoked_count, "message": f"Successfully revoked {revoked_count} other sessions."}
+
+
+@app.delete("/api/admin/profile/sessions/{session_id}")
+async def admin_revoke_session(
+    session_id: int,
+    admin: Dict[str, Any] = Depends(require_admin),
+):
+    """Revoke a specific admin session by ID."""
+    success = await run_in_threadpool(db_manager.revoke_admin_session_by_id, admin["id"], session_id)
+    if not success:
+        raise HTTPException(status_code=404, detail="Session not found or already revoked.")
+    return {"success": True, "message": "Session revoked."}
+
+
 @app.get("/api/admin/overview")
 async def admin_overview(admin: Dict[str, Any] = Depends(require_admin)):
     """Executive overview for the Admin Dashboard."""
@@ -2418,7 +2572,7 @@ async def serve_llms_txt():
         f"- [{p['title']}](http://127.0.0.1:7860/blog/{p['slug']}): {p['excerpt']}"
         for p in blog_data.get("posts", [])
     )
-    llms_md = f"""# PngLike (RemBG Studio) — 9-in-1 AI Image Suite & Neural Background Remover (Powered by Div Sri)
+    llms_md = f"""# PngLike — 9-in-1 AI Image Suite & Neural Background Remover (Powered by Div Sri)
 
 > Single-page AI image processing web application Powered by Div Sri, built on ONNX Runtime (U2-Net, IS-Net, Silueta), Pillow/NumPy computer vision pipelines, and a persistent MySQL telemetry & blog CMS backend.
 
@@ -2660,11 +2814,11 @@ async def serve_index():
     index_file = BASE_DIR / "static" / "index.html"
     if index_file.exists():
         return FileResponse(index_file)
-    return {"message": "RemBG Studio API is operational. Static UI not found."}
+    return {"message": "PngLike API is operational. Static UI not found."}
 
 
 if __name__ == "__main__":
     import uvicorn
 
-    print(f"Starting RemBG Studio on http://127.0.0.1:7860 (Admin Portal: http://127.0.0.1:7860/admin)...")
+    print(f"Starting PngLike on http://127.0.0.1:7860 (Admin Portal: http://127.0.0.1:7860/admin)...")
     uvicorn.run(app, host="127.0.0.1", port=7860, log_level="info")

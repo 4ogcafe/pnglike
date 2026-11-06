@@ -75,13 +75,26 @@ CREATE TABLE IF NOT EXISTS sample_images (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 5. Table: admin_users
--- Stores administrator credentials for the /admin portal
+-- Stores administrator credentials and full profile for the /admin portal
 CREATE TABLE IF NOT EXISTS admin_users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(64) NOT NULL UNIQUE,
+    full_name VARCHAR(128) NOT NULL DEFAULT 'System Administrator',
+    email VARCHAR(128) NOT NULL DEFAULT '',
+    avatar_url VARCHAR(512) NULL DEFAULT '',
+    avatar_color VARCHAR(32) NOT NULL DEFAULT '#4f46e5',
+    phone VARCHAR(32) NOT NULL DEFAULT '',
+    designation VARCHAR(128) NOT NULL DEFAULT 'Lead AI Systems Architect',
+    department VARCHAR(128) NOT NULL DEFAULT 'DevOps & AI Infrastructure',
+    location VARCHAR(128) NOT NULL DEFAULT 'Tokyo, Japan',
+    bio TEXT NULL,
+    timezone_pref VARCHAR(64) NOT NULL DEFAULT 'Asia/Tokyo (UTC+9)',
+    email_notifications BOOLEAN NOT NULL DEFAULT TRUE,
+    security_alerts BOOLEAN NOT NULL DEFAULT TRUE,
     password_hash VARCHAR(255) NOT NULL,
     role VARCHAR(32) NOT NULL DEFAULT 'superadmin',
     last_login DATETIME NULL,
+    updated_at DATETIME NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
