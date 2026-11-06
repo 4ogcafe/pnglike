@@ -1,5 +1,12 @@
 // PngLike Public Blog Client Logic
 document.addEventListener("DOMContentLoaded", () => {
+  function safeCreateIcons() {
+    try {
+      if (window.lucide && typeof window.lucide.createIcons === "function") {
+        window.lucide.createIcons();
+      }
+    } catch (_) {}
+  }
   let activeCategory = "all";
   let searchQuery = "";
   let allPosts = [];
@@ -231,7 +238,7 @@ document.addEventListener("DOMContentLoaded", () => {
       blogPostsGrid.appendChild(card);
     });
 
-    if (window.lucide) window.lucide.createIcons();
+    safeCreateIcons();
   }
 
   async function openArticleBySlug(slug, pushHistory = true) {
@@ -307,7 +314,7 @@ document.addEventListener("DOMContentLoaded", () => {
       blogListView.classList.add("hidden");
       blogArticleView.classList.remove("hidden");
       window.scrollTo({ top: 0, behavior: "smooth" });
-      if (window.lucide) window.lucide.createIcons();
+      safeCreateIcons();
     } catch (e) {
       console.error(e);
     }
@@ -332,7 +339,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const nextDark = !document.documentElement.classList.contains("dark");
       document.documentElement.classList.toggle("dark", nextDark);
       localStorage.setItem("theme", nextDark ? "dark" : "light");
-      if (window.lucide) window.lucide.createIcons();
+      safeCreateIcons();
     });
   }
 

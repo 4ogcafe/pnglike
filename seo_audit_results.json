@@ -47,7 +47,7 @@
               "@type": "WebSite",
               "@id": "https://pnglike.studio/#website",
               "url": "https://pnglike.studio/",
-              "name": "PngLike (RemBG Studio) \u2014 Powered by Div Sri",
+              "name": "PngLike \u2014 Powered by Div Sri",
               "publisher": {
                 "@id": "https://pnglike.studio/#organization"
               }
@@ -159,8 +159,8 @@
       "status": 200,
       "title": "PngLike Blog \u2014 AI Image Tutorials, Computer Vision & Product Photography | Powered by Div Sri",
       "title_len": 93,
-      "description": "Official PngLike (RemBG Studio) blog Powered by Div Sri. Deep-dive tutorials on U2-Net AI background removal, alpha matting, 4x upscaling, e-commerce product photography, and 3D relighting.",
-      "description_len": 189,
+      "description": "Official PngLike blog Powered by Div Sri. Deep-dive tutorials on U2-Net AI background removal, alpha matting, 4x upscaling, e-commerce product photography, and 3D relighting.",
+      "description_len": 174,
       "canonical": "https://pnglike.studio/blog",
       "robots": "index, follow, max-image-preview:large, max-snippet:-1",
       "og_title": "PngLike Blog \u2014 AI Image Studio Tutorials & Guides | Powered by Div Sri",
@@ -903,7 +903,7 @@
   "robots_txt": {
     "status": 200,
     "has_sitemap": true,
-    "content_sample": "User-agent: *\nAllow: /\nAllow: /blog\nAllow: /about\nAllow: /faq\nAllow: /contact\nAllow: /privacy\nAllow: /terms\nAllow: /cookies\nDisallow: /admin\nDisallow: /api/admin/\nDisallow: /dashboard\nDisallow: /api/user/\n\nUser-agent: GPTBot\nAllow: /\n\nUser-agent: OAI"
+    "content_sample": "# Robots.txt for PngLike \u2014 Powered by Div Sri\n# Production Domain: https://pnglike.studio/\n\nUser-agent: *\nAllow: /\nAllow: /blog\nAllow: /about\nAllow: /faq\nAllow: /contact\nAllow: /privacy\nAllow: /terms\nAllow: /cookies\nAllow: /static/\nDisallow: /admin\nD"
   },
   "sitemap_xml": {
     "status": 200,

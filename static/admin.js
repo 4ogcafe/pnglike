@@ -1,7 +1,13 @@
 // PngLike Admin Portal Client Logic
 document.addEventListener("DOMContentLoaded", () => {
   let adminToken = localStorage.getItem("pnglike_admin_token") || localStorage.getItem("rembg_admin_token") || "";
-  let currentSettings = {};
+  function safeCreateIcons() {
+    try {
+      if (window.lucide && typeof window.lucide.createIcons === "function") {
+        window.safeCreateIcons();
+      }
+    } catch (_) {}
+  }
 
   // DOM References
   const loginOverlay = document.getElementById("loginOverlay");
@@ -824,7 +830,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         grid.appendChild(card);
       });
-      lucide.createIcons();
+      safeCreateIcons();
     } catch (e) {
       console.error(e);
     }
@@ -894,7 +900,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         list.appendChild(card);
       });
-      lucide.createIcons();
+      safeCreateIcons();
     } catch (e) {
       console.error(e);
     }
@@ -1491,7 +1497,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       loadAdminSessions();
-      lucide.createIcons();
+      safeCreateIcons();
     } catch (e) {
       if (!background) showToast(e.message, "error");
     }
@@ -1504,7 +1510,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (btn) {
       btn.disabled = true;
       btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Saving...</span>`;
-      lucide.createIcons();
+      safeCreateIcons();
     }
 
     const payload = {
@@ -1540,7 +1546,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (btn) {
         btn.disabled = false;
         btn.innerHTML = origHTML;
-        lucide.createIcons();
+        safeCreateIcons();
       }
     }
   }
@@ -1708,7 +1714,7 @@ document.addEventListener("DOMContentLoaded", () => {
           ` : '<span class="text-[10px] text-slate-400 font-medium">Active now</span>'}
         </div>
       `).join("");
-      lucide.createIcons();
+      safeCreateIcons();
     } catch (e) {
       container.innerHTML = `<p class="text-xs text-rose-500 py-2">Failed to load active sessions.</p>`;
     }
@@ -1776,7 +1782,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const nextDark = !document.documentElement.classList.contains("dark");
       document.documentElement.classList.toggle("dark", nextDark);
       localStorage.setItem("theme", nextDark ? "dark" : "light");
-      lucide.createIcons();
+      safeCreateIcons();
     });
   }
 
@@ -1795,7 +1801,7 @@ document.addEventListener("DOMContentLoaded", () => {
     toast.className = `${bg} pointer-events-auto border px-4 py-3 rounded-2xl shadow-xl flex items-center gap-3 text-xs font-semibold`;
     toast.innerHTML = `<i data-lucide="${icon}" class="w-4 h-4"></i><span>${message}</span>`;
     container.appendChild(toast);
-    lucide.createIcons();
+    safeCreateIcons();
     setTimeout(() => toast.remove(), 3500);
   }
 });

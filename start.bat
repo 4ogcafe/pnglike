@@ -1,6 +1,6 @@
 @echo off
-title RemBG Studio - AI Background Remover
+title PngLike - 9-in-1 AI Image Suite & Background Remover
 cd /d "%~dp0"
-echo Starting RemBG Studio...
+echo Starting PngLike...
 python run_app.py
 pause

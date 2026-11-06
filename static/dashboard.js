@@ -3,10 +3,18 @@
  * Powered by Div Sri
  */
 
-let userToken = localStorage.getItem("rembg_user_token") || "";
+let userToken = localStorage.getItem("pnglike_user_token") || localStorage.getItem("rembg_user_token") || "";
 let currentUser = null;
 let userJobsCache = [];
 let pendingVerificationEmail = "";
+
+function safeCreateIcons() {
+  try {
+    if (window.lucide && typeof window.lucide.createIcons === "function") {
+      window.lucide.createIcons();
+    }
+  } catch (_) {}
+}
 
 const tabTitles = {
   overview: "My Studio Overview",
@@ -231,7 +239,7 @@ function renderRecentOverview(jobs) {
       }
     )
     .join("");
-  if (window.lucide) lucide.createIcons();
+  safeCreateIcons();
 }
 
 function renderModelBreakdown(breakdown, totalJobs) {
@@ -320,7 +328,7 @@ function renderUserGallery(jobs) {
       }
     )
     .join("");
-  if (window.lucide) lucide.createIcons();
+  safeCreateIcons();
 }
 
 async function deleteUserJobItem(jobId) {
@@ -366,7 +374,7 @@ async function loadUserDashboard() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  if (window.lucide) lucide.createIcons();
+  safeCreateIcons();
 
   // Check URL query/hash for ?mode=register
   if (window.location.search.includes("register") || window.location.hash === "#register") {
@@ -516,7 +524,7 @@ document.addEventListener("DOMContentLoaded", () => {
       updateRule("chkUpper", hasUpper);
       updateRule("chkLower", hasLower);
       updateRule("chkNumSpec", hasNumAndSpec);
-      if (window.lucide) lucide.createIcons();
+      safeCreateIcons();
 
       let score = 0;
       if (hasLen) score += 1;
@@ -879,7 +887,7 @@ document.addEventListener("DOMContentLoaded", () => {
         statusEl.classList.remove("hidden");
         setTimeout(() => statusEl.classList.add("hidden"), 4000);
       }
-      if (window.lucide) lucide.createIcons();
+      safeCreateIcons();
     } catch (err) {
       if (errEl && errMsg) {
         errMsg.textContent = err.message || "Network error updating profile";

@@ -17,7 +17,7 @@ if __name__ == "__main__":
     os.environ["U2NET_HOME"] = models_dir
 
     print("=" * 60)
-    print("  RemBG Studio - AI Background Remover")
+    print("  PngLike - 9-in-1 AI Image Suite & Background Remover")
     print("=" * 60)
     print(f"Working Directory : {base_dir}")
     print(f"Models Directory  : {models_dir}")
