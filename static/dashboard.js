@@ -120,6 +120,12 @@ function switchUserTab(tabId) {
 
   const mobileSelect = document.getElementById("mobileTabSelect");
   if (mobileSelect && mobileSelect.value !== tabId) mobileSelect.value = tabId;
+
+  // Auto-close mobile drawer if open
+  const userSidebar = document.getElementById("userSidebar");
+  const userBackdrop = document.getElementById("userMobileBackdrop");
+  if (userSidebar) userSidebar.classList.add("-translate-x-full");
+  if (userBackdrop) userBackdrop.classList.add("hidden");
 }
 
 window.switchUserTab = switchUserTab;
@@ -383,6 +389,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("tabBtnLogin")?.addEventListener("click", () => switchAuthMode("login"));
   document.getElementById("tabBtnRegister")?.addEventListener("click", () => switchAuthMode("register"));
+
+  // Mobile Drawer Navigation
+  function closeUserMobileDrawer() {
+    const sidebar = document.getElementById("userSidebar");
+    const backdrop = document.getElementById("userMobileBackdrop");
+    if (sidebar) sidebar.classList.add("-translate-x-full");
+    if (backdrop) backdrop.classList.add("hidden");
+  }
+
+  function openUserMobileDrawer() {
+    const sidebar = document.getElementById("userSidebar");
+    const backdrop = document.getElementById("userMobileBackdrop");
+    if (sidebar) sidebar.classList.remove("-translate-x-full");
+    if (backdrop) backdrop.classList.remove("hidden");
+  }
+
+  document.getElementById("dashboardMobileMenuBtn")?.addEventListener("click", openUserMobileDrawer);
+  document.getElementById("userMobileCloseBtn")?.addEventListener("click", closeUserMobileDrawer);
+  document.getElementById("userMobileBackdrop")?.addEventListener("click", closeUserMobileDrawer);
 
   // Sidebar navigation
   document.querySelectorAll(".user-nav-btn").forEach((btn) => {

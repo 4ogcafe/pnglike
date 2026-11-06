@@ -234,13 +234,16 @@
   <!-- ============================================== -->
   <!-- USER DASHBOARD SHELL (SIDEBAR + MAIN CONTENT)  -->
   <!-- ============================================== -->
-  <div class="flex-1 flex min-h-screen">
+  <div class="flex-1 flex min-h-screen relative overflow-x-hidden">
 
-    <!-- Left Sidebar -->
-    <aside class="w-64 bg-white dark:bg-dark-900 border-r border-slate-200 dark:border-slate-800 hidden md:flex flex-col justify-between shrink-0">
+    <!-- Mobile Drawer Backdrop Overlay -->
+    <div id="userMobileBackdrop" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-40 hidden md:hidden transition-opacity"></div>
+
+    <!-- Left Sidebar (Responsive Drawer on Mobile, Fixed Sidebar on Desktop) -->
+    <aside id="userSidebar" class="w-72 md:w-64 bg-white dark:bg-dark-900 border-r border-slate-200 dark:border-slate-800 flex flex-col justify-between shrink-0 fixed md:static inset-y-0 left-0 z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out shadow-2xl md:shadow-none">
       <div>
-        <!-- Brand Header -->
-        <div class="h-16 px-5 border-b border-slate-200 dark:border-slate-800 flex items-center gap-3">
+        <!-- Brand Header with Mobile Close Button -->
+        <div class="h-16 px-4 sm:px-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
           <a href="/" class="flex items-center gap-3">
             <img src="/static/brand/favicon.svg" alt="PngLike Icon" width="36" height="36" class="w-9 h-9 rounded-xl shadow-md">
             <div>
@@ -251,6 +254,9 @@
               <span class="text-[10px] text-rose-500 font-bold uppercase tracking-wider block mt-0.5">Powered by Div Sri</span>
             </div>
           </a>
+          <button id="userMobileCloseBtn" type="button" class="md:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition" aria-label="Close menu">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
         </div>
 
         <!-- User Mini Card -->
@@ -315,10 +321,13 @@
     <div class="flex-1 flex flex-col min-w-0">
 
       <!-- Top Bar -->
-      <header class="h-16 bg-white/80 dark:bg-dark-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30">
-        <div class="flex items-center gap-3">
-          <h1 id="activeUserTabTitle" class="text-base sm:text-lg font-extrabold tracking-tight">My Studio Overview</h1>
-          <span id="headerUsernameBadge" class="hidden sm:inline-flex px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">@demo</span>
+      <header class="h-16 bg-white/80 dark:bg-dark-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-3 sm:px-6 flex items-center justify-between sticky top-0 z-30">
+        <div class="flex items-center gap-2 min-w-0">
+          <button id="dashboardMobileMenuBtn" type="button" class="md:hidden p-2 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition shrink-0 -ml-1" aria-label="Open navigation menu">
+            <i data-lucide="menu" class="w-5 h-5"></i>
+          </button>
+          <h1 id="activeUserTabTitle" class="text-sm sm:text-lg font-extrabold tracking-tight truncate">My Studio Overview</h1>
+          <span id="headerUsernameBadge" class="hidden sm:inline-flex px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 shrink-0">@demo</span>
         </div>
 
         <div class="flex items-center gap-2 sm:gap-3">

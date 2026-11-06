@@ -75,8 +75,27 @@ document.addEventListener("DOMContentLoaded", () => {
       profile: "Admin Profile & Security Center",
     };
 
+    function closeAdminMobileDrawer() {
+      const sidebar = document.getElementById("adminSidebar");
+      const backdrop = document.getElementById("adminMobileBackdrop");
+      if (sidebar) sidebar.classList.add("-translate-x-full");
+      if (backdrop) backdrop.classList.add("hidden");
+    }
+
+    function openAdminMobileDrawer() {
+      const sidebar = document.getElementById("adminSidebar");
+      const backdrop = document.getElementById("adminMobileBackdrop");
+      if (sidebar) sidebar.classList.remove("-translate-x-full");
+      if (backdrop) backdrop.classList.remove("hidden");
+    }
+
+    document.getElementById("adminMobileMenuBtn")?.addEventListener("click", openAdminMobileDrawer);
+    document.getElementById("adminMobileCloseBtn")?.addEventListener("click", closeAdminMobileDrawer);
+    document.getElementById("adminMobileBackdrop")?.addEventListener("click", closeAdminMobileDrawer);
+
     document.querySelectorAll(".admin-nav-btn").forEach(btn => {
       btn.addEventListener("click", () => {
+        closeAdminMobileDrawer();
         const tab = btn.getAttribute("data-tab");
         pageHeaderTitle.innerText = tabTitles[tab] || "Admin Dashboard";
 

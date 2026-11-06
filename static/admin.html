@@ -76,21 +76,29 @@
   <!-- ============================================== -->
   <!-- ADMIN SHELL (SIDEBAR + MAIN CONTENT)           -->
   <!-- ============================================== -->
-  <div class="flex-1 flex min-h-screen">
+  <div class="flex-1 flex min-h-screen relative overflow-x-hidden">
 
-    <!-- Left Sidebar -->
-    <aside class="w-64 bg-white dark:bg-dark-900 border-r border-slate-200 dark:border-slate-800 flex flex-col justify-between shrink-0">
+    <!-- Mobile Drawer Backdrop Overlay -->
+    <div id="adminMobileBackdrop" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-40 hidden lg:hidden transition-opacity"></div>
+
+    <!-- Left Sidebar (Responsive Drawer on Mobile, Fixed Sidebar on Desktop) -->
+    <aside id="adminSidebar" class="w-72 lg:w-64 bg-white dark:bg-dark-900 border-r border-slate-200 dark:border-slate-800 flex flex-col justify-between shrink-0 fixed lg:static inset-y-0 left-0 z-50 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none">
       <div>
-        <!-- Brand Header -->
-        <div class="h-16 px-5 border-b border-slate-200 dark:border-slate-800 flex items-center gap-3">
-          <img src="/static/brand/favicon.svg" alt="PngLike Icon" width="36" height="36" class="w-9 h-9 rounded-xl shadow-md">
-          <div>
-            <div class="flex items-center gap-1.5">
-              <img src="/static/brand/logo-dark-text.svg" alt="PngLike" width="92" height="26" class="h-5 w-auto block dark:hidden object-contain">
-              <img src="/static/brand/logo-white-text.svg" alt="PngLike" width="92" height="26" class="h-5 w-auto hidden dark:block object-contain">
+        <!-- Brand Header with Mobile Close Button -->
+        <div class="h-16 px-4 sm:px-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <img src="/static/brand/favicon.svg" alt="PngLike Icon" width="36" height="36" class="w-9 h-9 rounded-xl shadow-md shrink-0">
+            <div>
+              <div class="flex items-center gap-1.5">
+                <img src="/static/brand/logo-dark-text.svg" alt="PngLike" width="92" height="26" class="h-5 w-auto block dark:hidden object-contain">
+                <img src="/static/brand/logo-white-text.svg" alt="PngLike" width="92" height="26" class="h-5 w-auto hidden dark:block object-contain">
+              </div>
+              <span class="text-[10px] text-rose-500 font-bold uppercase tracking-wider block mt-0.5">Powered by Div Sri</span>
             </div>
-            <span class="text-[10px] text-rose-500 font-bold uppercase tracking-wider block mt-0.5">Powered by Div Sri</span>
           </div>
+          <button id="adminMobileCloseBtn" type="button" class="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition" aria-label="Close menu">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
         </div>
 
         <!-- Navigation Menu -->
@@ -166,30 +174,34 @@
     <div class="flex-1 flex flex-col min-w-0">
 
       <!-- Top Header -->
-      <header class="h-16 bg-white/80 dark:bg-dark-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-6 flex items-center justify-between sticky top-0 z-30">
-        <div>
-          <h1 id="pageHeaderTitle" class="font-extrabold text-base text-slate-900 dark:text-white">Overview & Analytics</h1>
+      <header class="h-16 bg-white/80 dark:bg-dark-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-3 sm:px-6 flex items-center justify-between sticky top-0 z-30">
+        <div class="flex items-center gap-2 min-w-0">
+          <button id="adminMobileMenuBtn" type="button" class="lg:hidden p-2 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition shrink-0" aria-label="Open navigation menu">
+            <i data-lucide="menu" class="w-5 h-5"></i>
+          </button>
+          <h1 id="pageHeaderTitle" class="font-extrabold text-sm sm:text-base text-slate-900 dark:text-white truncate">Overview & Analytics</h1>
         </div>
-        <div class="flex items-center gap-3">
-          <span id="headerDbBadge" class="text-xs px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 font-medium">
+        <div class="flex items-center gap-1.5 sm:gap-3 shrink-0">
+          <span id="headerDbBadge" class="hidden md:inline-flex text-[11px] sm:text-xs px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 font-medium">
             MySQL Connected
           </span>
-          <a href="/blog" target="_blank" class="px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition">
-            <i data-lucide="book-open" class="w-3.5 h-3.5 text-indigo-500"></i>
-            <span>View Blog</span>
+          <a href="/blog" target="_blank" class="p-2 sm:px-3.5 sm:py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition" title="View Blog">
+            <i data-lucide="book-open" class="w-4 h-4 text-indigo-500"></i>
+            <span class="hidden sm:inline">View Blog</span>
           </a>
-          <a href="/" target="_blank" class="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold flex items-center gap-1.5 shadow-sm transition">
-            <span>View Live Frontend</span>
-            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+          <a href="/" target="_blank" class="p-2 sm:px-3.5 sm:py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold flex items-center gap-1.5 shadow-sm transition" title="View Live Frontend">
+            <i data-lucide="external-link" class="w-4 h-4 sm:hidden"></i>
+            <span class="hidden sm:inline">View Live Frontend</span>
+            <i data-lucide="external-link" class="w-3.5 h-3.5 hidden sm:inline"></i>
           </a>
-          <button id="adminHeaderProfileBtn" class="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-indigo-400 dark:hover:border-indigo-600 bg-slate-50 dark:bg-slate-800/60 transition group cursor-pointer" title="Manage Administrator Profile">
+          <button id="adminHeaderProfileBtn" class="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:pl-2 sm:pr-3 sm:py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-indigo-400 dark:hover:border-indigo-600 bg-slate-50 dark:bg-slate-800/60 transition group cursor-pointer" title="Manage Administrator Profile">
             <div id="adminHeaderAvatar" class="w-6 h-6 rounded-lg flex items-center justify-center text-white font-bold text-[10px] bg-indigo-600 shrink-0 overflow-hidden">
               AD
             </div>
-            <span id="adminHeaderName" class="text-xs font-bold text-slate-800 dark:text-slate-200 max-w-[120px] truncate">Administrator</span>
-            <span class="text-[9px] px-1.5 py-0.5 rounded bg-indigo-100 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 font-semibold uppercase">Superadmin</span>
+            <span id="adminHeaderName" class="hidden sm:inline text-xs font-bold text-slate-800 dark:text-slate-200 max-w-[100px] truncate">Administrator</span>
+            <span class="hidden md:inline text-[9px] px-1.5 py-0.5 rounded bg-indigo-100 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 font-semibold uppercase">Superadmin</span>
           </button>
-          <button id="adminThemeBtn" class="p-2 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <button id="adminThemeBtn" class="p-2 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition" aria-label="Toggle theme">
             <i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i>
             <i data-lucide="moon" class="w-4 h-4 block dark:hidden"></i>
           </button>
@@ -197,7 +209,7 @@
       </header>
 
       <!-- Main Views Container -->
-      <main class="flex-1 p-6 max-w-6xl w-full mx-auto space-y-6">
+      <main class="flex-1 p-3 sm:p-6 max-w-7xl w-full mx-auto space-y-6 overflow-x-hidden">
 
         <!-- ========================================== -->
         <!-- TAB 1: OVERVIEW & ANALYTICS                -->
@@ -273,8 +285,8 @@
                 <span>Refresh</span>
               </button>
             </div>
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs">
+            <div class="overflow-x-auto -mx-2 sm:mx-0">
+              <table class="min-w-[650px] w-full text-left text-xs">
                 <thead>
                   <tr class="border-b border-slate-200 dark:border-slate-800 text-slate-400">
                     <th class="pb-2">Preview</th>
@@ -728,8 +740,8 @@
               </div>
             </div>
 
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs">
+            <div class="overflow-x-auto -mx-2 sm:mx-0">
+              <table class="min-w-[650px] w-full text-left text-xs">
                 <thead>
                   <tr class="border-b border-slate-200 dark:border-slate-800 text-slate-400">
                     <th class="pb-2">Cover</th>
@@ -770,8 +782,8 @@
               </button>
             </div>
 
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs">
+            <div class="overflow-x-auto -mx-2 sm:mx-0">
+              <table class="min-w-[650px] w-full text-left text-xs">
                 <thead>
                   <tr class="border-b border-slate-200 dark:border-slate-800 text-slate-400">
                     <th class="pb-2">ID</th>
@@ -832,8 +844,8 @@
               </div>
             </div>
 
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs">
+            <div class="overflow-x-auto -mx-2 sm:mx-0">
+              <table class="min-w-[650px] w-full text-left text-xs">
                 <thead>
                   <tr class="border-b border-slate-200 dark:border-slate-800 text-slate-400 uppercase text-[10px]">
                     <th class="pb-2">User</th>
