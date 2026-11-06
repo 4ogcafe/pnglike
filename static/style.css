@@ -3,6 +3,27 @@
   --checker-light: #ffffff;
   --checker-dark: #e5e7eb;
   --checker-size: 16px;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Modal and Auth Overlay Positioning Guards */
+#loginOverlay,
+#userAuthOverlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#loginOverlay.hidden,
+#userAuthOverlay.hidden,
+.hidden {
+  display: none !important;
 }
 
 .dark {
