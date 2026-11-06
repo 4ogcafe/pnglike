@@ -1596,6 +1596,15 @@ async def admin_upload_avatar(
         img = Image.open(io.BytesIO(content))
         img = img.convert("RGBA")
         img.thumbnail((512, 512), Image.Resampling.LANCZOS)
+        old_avatar = admin.get("avatar_url", "")
+        if old_avatar and old_avatar.startswith("/static/avatars/"):
+            old_file = BASE_DIR / old_avatar.lstrip("/")
+            if old_file.exists() and old_file.is_file():
+                try:
+                    old_file.unlink()
+                except Exception:
+                    pass
+
         filename = f"admin_{admin['id']}_{secrets.token_hex(6)}.png"
         filepath = AVATARS_DIR / filename
         img.save(filepath, format="PNG", optimize=True)
@@ -1615,6 +1624,15 @@ async def admin_delete_avatar(
     x_admin_token: Optional[str] = Header(None),
 ):
     """Remove custom admin avatar and reset to default color badge."""
+    old_avatar = admin.get("avatar_url", "")
+    if old_avatar and old_avatar.startswith("/static/avatars/"):
+        old_file = BASE_DIR / old_avatar.lstrip("/")
+        if old_file.exists() and old_file.is_file():
+            try:
+                old_file.unlink()
+            except Exception:
+                pass
+
     updated = await run_in_threadpool(db_manager.update_admin_avatar, admin["id"], "")
     if x_admin_token and x_admin_token in _admin_tokens:
         _admin_tokens[x_admin_token]["avatar_url"] = ""

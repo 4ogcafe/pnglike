@@ -407,13 +407,6 @@ document.addEventListener("DOMContentLoaded", () => {
     renderUserGallery(userJobsCache);
   });
 
-  // 1-Click Demo Login
-  document.getElementById("quickDemoLoginBtn")?.addEventListener("click", () => {
-    document.getElementById("loginIdentifier").value = "demo";
-    document.getElementById("loginPassword").value = "user123";
-    document.getElementById("userLoginForm").requestSubmit();
-  });
-
   // Sign In Submit
   document.getElementById("userLoginForm")?.addEventListener("submit", async (e) => {
     e.preventDefault();
