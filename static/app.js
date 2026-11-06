@@ -2096,11 +2096,21 @@ document.addEventListener("DOMContentLoaded", () => {
           `;
 
           card.querySelector(".delete-job-btn").addEventListener("click", async () => {
+            if (!confirm(`Delete record #${job.id}?`)) return;
             try {
-              const delRes = await fetch(`/api/history/${job.id}`, { method: "DELETE" });
+              const uToken = localStorage.getItem("pnglike_user_token") || localStorage.getItem("rembg_user_token") || "";
+              const aToken = localStorage.getItem("pnglike_admin_token") || localStorage.getItem("rembg_admin_token") || "";
+              const headers = {};
+              if (uToken) headers["X-User-Token"] = uToken;
+              if (aToken) headers["X-Admin-Token"] = aToken;
+
+              const delRes = await fetch(`/api/history/${job.id}`, { method: "DELETE", headers });
               if (delRes.ok) {
                 showToast(`Deleted job #${job.id} from MySQL`, "info");
                 loadHistoryAndAnalytics();
+              } else {
+                const errData = await delRes.json().catch(() => ({}));
+                showToast(errData.detail || "Failed to delete record", "error");
               }
             } catch (err) {
               showToast("Failed to delete record", "error");
@@ -2117,11 +2127,18 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function handleClearAllHistory() {
+    if (!confirm("Are you sure you want to clear all history records?")) return;
     try {
-      const res = await fetch("/api/history", { method: "DELETE" });
+      const aToken = localStorage.getItem("pnglike_admin_token") || localStorage.getItem("rembg_admin_token") || "";
+      const headers = {};
+      if (aToken) headers["X-Admin-Token"] = aToken;
+      const res = await fetch("/api/history", { method: "DELETE", headers });
       if (res.ok) {
         showToast("Cleared all job history from MySQL.", "success");
         loadHistoryAndAnalytics();
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        showToast(errData.detail || "Admin authentication required to clear all history.", "error");
       }
     } catch (e) {
       showToast("Failed to clear history", "error");

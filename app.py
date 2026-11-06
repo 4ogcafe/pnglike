@@ -793,6 +793,7 @@ async def get_history(
     }
 
 
+@app.delete("/api/admin/jobs/{job_id}")
 @app.delete("/api/history/{job_id}")
 async def delete_history_item(
     job_id: int,
@@ -806,13 +807,19 @@ async def delete_history_item(
         if admin or x_admin_token in _admin_tokens:
             is_admin = True
 
-    if not is_admin and not current_user:
-        raise HTTPException(status_code=401, detail="Authentication required to delete history records.")
-
     if is_admin:
         deleted = await run_in_threadpool(db_manager.delete_job, job_id)
-    else:
+    elif current_user:
         deleted = await run_in_threadpool(db_manager.delete_user_job, current_user["id"], job_id)
+    else:
+        # Check if the job is unassigned/anonymous (user_id is None)
+        with db_manager.get_session() as db:
+            j = db.query(RemovalJob).filter(RemovalJob.id == job_id).first()
+            if j and j.user_id is not None:
+                raise HTTPException(status_code=401, detail="Authentication required to delete registered user records.")
+            elif not j:
+                raise HTTPException(status_code=404, detail="Job record not found.")
+        deleted = await run_in_threadpool(db_manager.delete_job, job_id)
 
     if not deleted:
         raise HTTPException(status_code=404, detail="Job record not found or not owned by you.")
@@ -826,6 +833,7 @@ async def delete_history_item(
     return {"deleted": True, "id": job_id}
 
 
+@app.delete("/api/admin/jobs")
 @app.delete("/api/history")
 async def clear_all_history(admin: Dict[str, Any] = Depends(require_admin)):
     """Clear all job history from MySQL and remove stored output files (Admin Only)."""

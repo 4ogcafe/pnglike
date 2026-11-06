@@ -894,9 +894,18 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
         `;
         card.querySelector(".del-preset-btn").addEventListener("click", async () => {
-          await fetch(`/api/presets/${p.id}`, { method: "DELETE" });
-          showToast(`Deleted preset "${p.name}"`, "info");
-          loadAdminPresets();
+          if (!confirm(`Delete preset "${p.name}"?`)) return;
+          try {
+            const res = await adminFetch(`/api/presets/${p.id}`, { method: "DELETE" });
+            if (!res.ok) {
+              const err = await res.json().catch(() => ({}));
+              throw new Error(err.detail || "Failed to delete preset");
+            }
+            showToast(`Deleted preset "${p.name}"`, "info");
+            loadAdminPresets();
+          } catch (err) {
+            showToast(err.message || "Failed to delete preset.", "error");
+          }
         });
         list.appendChild(card);
       });
@@ -923,7 +932,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     try {
-      const res = await fetch("/api/presets", {
+      const res = await adminFetch("/api/presets", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -974,9 +983,19 @@ document.addEventListener("DOMContentLoaded", () => {
           </td>
         `;
         tr.querySelector(".del-job-btn").addEventListener("click", async () => {
-          await fetch(`/api/history/${job.id}`, { method: "DELETE" });
-          showToast(`Deleted job #${job.id} and output file.`, "info");
-          loadAdminJobs();
+          if (!confirm(`Are you sure you want to delete job #${job.id} (${job.original_filename})?`)) return;
+          try {
+            const res = await adminFetch(`/api/history/${job.id}`, { method: "DELETE" });
+            if (!res.ok) {
+              const err = await res.json().catch(() => ({}));
+              throw new Error(err.detail || `Failed to delete job #${job.id}`);
+            }
+            showToast(`Deleted job #${job.id} and output file.`, "info");
+            loadAdminJobs();
+            if (typeof loadOverviewTab === "function") loadOverviewTab();
+          } catch (err) {
+            showToast(err.message || "Failed to delete job.", "error");
+          }
         });
         tbody.appendChild(tr);
       });
@@ -986,9 +1005,20 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function handlePurgeAllJobs() {
-    await fetch("/api/history", { method: "DELETE" });
-    showToast("Purged all jobs from MySQL and cleaned up output storage.", "success");
-    loadAdminJobs();
+    if (!confirm("Are you sure you want to purge ALL jobs and stored files? This cannot be undone.")) return;
+    try {
+      const res = await adminFetch("/api/history", { method: "DELETE" });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || "Failed to purge jobs");
+      }
+      const data = await res.json();
+      showToast(`Purged ${data.count ?? "all"} jobs from MySQL and cleaned up output storage.`, "success");
+      loadAdminJobs();
+      if (typeof loadOverviewTab === "function") loadOverviewTab();
+    } catch (err) {
+      showToast(err.message || "Failed to purge jobs.", "error");
+    }
   }
 
   // --------------------------------------------------------
@@ -1309,7 +1339,7 @@ document.addEventListener("DOMContentLoaded", () => {
         password: document.getElementById("admDbPass").value,
         database: document.getElementById("admDbName").value.trim(),
       };
-      const res = await fetch("/api/db/config", {
+      const res = await adminFetch("/api/db/config", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
