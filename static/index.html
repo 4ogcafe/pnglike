@@ -1,0 +1,1780 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PngLike — 9-in-1 AI Image Suite & Background Remover | Powered by Div Sri</title>
+  <meta name="description" content="Process photos with 9 neural image tools: U2-Net background removal, 4x upscaling, AI outpainting, portrait skin retouching, and 3D studio relighting. Powered by Div Sri.">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <meta name="author" content="Div Sri">
+  <link rel="canonical" href="https://pnglike.studio/">
+
+  <!-- Hreflang & International SEO Alternates -->
+  <link rel="alternate" hreflang="x-default" href="https://pnglike.studio/">
+  <link rel="alternate" hreflang="en" href="https://pnglike.studio/">
+  <link rel="alternate" hreflang="es" href="https://pnglike.studio/?lang=es">
+  <link rel="alternate" hreflang="ja" href="https://pnglike.studio/?lang=ja">
+  <link rel="alternate" hreflang="de" href="https://pnglike.studio/?lang=de">
+  <link rel="alternate" hreflang="fr" href="https://pnglike.studio/?lang=fr">
+
+  <!-- Open Graph / Social Preview -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="PngLike — Powered by Div Sri">
+  <meta property="og:title" content="PngLike — 9-in-1 AI Image Suite & Background Remover | Powered by Div Sri">
+  <meta property="og:description" content="Process photos locally with 9 neural image tools: U2-Net background removal, 4x upscaling, AI outpainting, portrait skin retouching, and 3D studio relighting.">
+  <meta property="og:url" content="https://pnglike.studio/">
+  <meta property="og:image" content="https://pnglike.studio/static/brand/logo-dark-text.svg">
+  <meta property="og:image:width" content="231">
+  <meta property="og:image:height" content="64">
+  <meta property="og:image:alt" content="PngLike — 9-in-1 AI Image Suite Powered by Div Sri">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@pnglike">
+  <meta name="twitter:creator" content="@div_sri">
+  <meta name="twitter:title" content="PngLike — 9-in-1 AI Image Suite & Background Remover | Powered by Div Sri">
+  <meta name="twitter:description" content="Process photos locally with 9 neural image tools: U2-Net background removal, 4x upscaling, AI outpainting, portrait skin retouching, and 3D studio relighting.">
+  <meta name="twitter:image" content="https://pnglike.studio/static/brand/logo-dark-text.svg">
+
+  <!-- Schema.org JSON-LD Structured Data (@graph) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://pnglike.studio/#organization",
+        "name": "PngLike — Powered by Div Sri",
+        "url": "https://pnglike.studio/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://pnglike.studio/static/brand/logo-icon.svg",
+          "width": 512,
+          "height": 512
+        },
+        "founder": {
+          "@type": "Person",
+          "name": "Div Sri"
+        }
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://pnglike.studio/#website",
+        "url": "https://pnglike.studio/",
+        "name": "PngLike (RemBG Studio) — Powered by Div Sri",
+        "publisher": {
+          "@id": "https://pnglike.studio/#organization"
+        }
+      },
+      {
+        "@type": "WebApplication",
+        "@id": "https://pnglike.studio/#webapp",
+        "name": "PngLike — 9-in-1 AI Image Suite (Powered by Div Sri)",
+        "url": "https://pnglike.studio/",
+        "applicationCategory": "MultimediaApplication",
+        "operatingSystem": "Web, Windows, macOS, Linux",
+        "browserRequirements": "Requires HTML5 Canvas and JavaScript",
+        "softwareVersion": "2.1.0",
+        "datePublished": "2026-11-06",
+        "dateModified": "2026-11-06",
+        "author": {
+          "@type": "Person",
+          "name": "Div Sri"
+        },
+        "creator": {
+          "@id": "https://pnglike.studio/#organization"
+        },
+        "description": "Single-page AI image studio Powered by Div Sri featuring 9 dedicated computer vision and neural ONNX tools: Image Editor, Image Upscaler, Image Extender, Variations, Cinematic Shot, Background Remover, Skin Enhancer, Relight, and Change Camera.",
+        "featureList": [
+          "Image Editor: Color grading, crop ratios, rotation, and artistic filters",
+          "Image Upscaler: 2x and 4x Lanczos super-resolution with bilateral denoise",
+          "Image Extender: Context-aware AI outpainting and aspect-ratio canvas expansion",
+          "Variations: Multi-style artistic restyling (Cyberpunk, Synthwave, Vintage, Anime, Watercolor)",
+          "Cinematic Shot: AI subject depth-of-field bokeh, Hollywood LUT grading, and 2.39:1 letterbox",
+          "Background Remover: U2-Net, IS-Net, and Silueta ONNX neural background segmentation",
+          "Skin Enhancer: Frequency-separated YCbCr skin retouching with pore texture preservation",
+          "Relight: 3D studio directional key/rim lighting with foreground subject isolation",
+          "Change Camera: 3D projective homography perspective warp and optical lens simulation"
+        ],
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      },
+      {
+        "@type": "ItemList",
+        "@id": "https://pnglike.studio/#tools-list",
+        "name": "All 9 Working AI Image Tools",
+        "numberOfItems": 9,
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Background Remover", "url": "https://pnglike.studio/#bg-remover" },
+          { "@type": "ListItem", "position": 2, "name": "Image Editor", "url": "https://pnglike.studio/#image-editor" },
+          { "@type": "ListItem", "position": 3, "name": "Skin Enhancer", "url": "https://pnglike.studio/#skin-enhancer" },
+          { "@type": "ListItem", "position": 4, "name": "Image Upscaler", "url": "https://pnglike.studio/#image-upscaler" },
+          { "@type": "ListItem", "position": 5, "name": "Image Extender", "url": "https://pnglike.studio/#image-extender" },
+          { "@type": "ListItem", "position": 6, "name": "Variations", "url": "https://pnglike.studio/#variations" },
+          { "@type": "ListItem", "position": 7, "name": "Cinematic Shot", "url": "https://pnglike.studio/#cinematic-shot" },
+          { "@type": "ListItem", "position": 8, "name": "Relight", "url": "https://pnglike.studio/#relight" },
+          { "@type": "ListItem", "position": 9, "name": "Change Camera", "url": "https://pnglike.studio/#change-camera" }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <link rel="icon" type="image/svg+xml" href="/static/brand/favicon.svg">
+  <link rel="apple-touch-icon" href="/static/brand/logo-icon.svg">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+            },
+            dark: {
+              800: '#1e293b',
+              850: '#172033',
+              900: '#0f172a',
+              950: '#0a0f1d'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="/static/style.css?v=2.3">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-50 dark:bg-dark-950 text-slate-900 dark:text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-blue-500 selection:text-white">
+
+  <!-- Dynamic Announcement Banner (Managed by Admin CMS) -->
+  <div id="siteAnnouncementBar" class="hidden bg-gradient-to-r from-indigo-600 via-blue-600 to-indigo-600 text-white text-xs font-semibold py-2 px-4 text-center shadow-sm">
+    <span id="siteAnnouncementText">PngLike 9-in-1 AI Image Suite — Powered by Div Sri</span>
+  </div>
+
+  <!-- Header -->
+  <header class="border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-dark-900/80 backdrop-blur-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <!-- Brand Logo + All Tools Dropdown -->
+      <div class="flex items-center gap-3">
+        <a href="/" class="flex items-center gap-3 group" title="PngLike" aria-label="PngLike Home">
+          <!-- Vector SVG Logo (Light Mode: Dark Text / Dark Mode: White Text) -->
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 231 64" width="138" height="38" class="h-9 w-auto block" role="img" aria-label="PngLike Logo">
+            <rect width="64" height="64" rx="14" fill="#161B33"/>
+            <g transform="translate(10, 12)">
+              <rect x="8" y="0" width="12" height="4" fill="#FF4365"/>
+              <rect x="24" y="0" width="4" height="4" fill="#FF4365"/>
+              <rect x="28" y="0" width="4" height="4" fill="#E6EBF2"/>
+              <rect x="32" y="0" width="4" height="4" fill="#FF4365"/>
+              <rect x="4" y="4" width="20" height="4" fill="#FF4365"/>
+              <rect x="24" y="4" width="4" height="4" fill="#E6EBF2"/>
+              <rect x="28" y="4" width="4" height="4" fill="#FF4365"/>
+              <rect x="32" y="4" width="4" height="4" fill="#E6EBF2"/>
+              <rect x="36" y="4" width="4" height="4" fill="#FF4365"/>
+              <rect x="0" y="8" width="24" height="4" fill="#FF4365"/>
+              <rect x="24" y="8" width="4" height="4" fill="#FF4365"/>
+              <rect x="28" y="8" width="4" height="4" fill="#E6EBF2"/>
+              <rect x="32" y="8" width="4" height="4" fill="#FF4365"/>
+              <rect x="36" y="8" width="4" height="4" fill="#E6EBF2"/>
+              <rect x="40" y="8" width="4" height="4" fill="#FF4365"/>
+              <rect x="0" y="12" width="24" height="4" fill="#FF4365"/>
+              <rect x="24" y="12" width="4" height="4" fill="#E6EBF2"/>
+              <rect x="28" y="12" width="4" height="4" fill="#FF4365"/>
+              <rect x="32" y="12" width="4" height="4" fill="#E6EBF2"/>
+              <rect x="36" y="12" width="4" height="4" fill="#FF4365"/>
+              <rect x="40" y="12" width="4" height="4" fill="#E6EBF2"/>
+              <rect x="0" y="16" width="24" height="4" fill="#FF4365"/>
+              <rect x="24" y="16" width="4" height="4" fill="#FF4365"/>
+              <rect x="28" y="16" width="4" height="4" fill="#E6EBF2"/>
+              <rect x="32" y="16" width="4" height="4" fill="#FF4365"/>
+              <rect x="36" y="16" width="4" height="4" fill="#E6EBF2"/>
+              <rect x="40" y="16" width="4" height="4" fill="#FF4365"/>
+              <rect x="4" y="20" width="20" height="4" fill="#FF4365"/>
+              <rect x="24" y="20" width="4" height="4" fill="#E6EBF2"/>
+              <rect x="28" y="20" width="4" height="4" fill="#FF4365"/>
+              <rect x="32" y="20" width="4" height="4" fill="#E6EBF2"/>
+              <rect x="36" y="20" width="4" height="4" fill="#FF4365"/>
+              <rect x="8" y="24" width="16" height="4" fill="#FF4365"/>
+              <rect x="24" y="24" width="4" height="4" fill="#FF4365"/>
+              <rect x="28" y="24" width="4" height="4" fill="#E6EBF2"/>
+              <rect x="32" y="24" width="4" height="4" fill="#FF4365"/>
+              <rect x="12" y="28" width="12" height="4" fill="#FF4365"/>
+              <rect x="24" y="28" width="4" height="4" fill="#E6EBF2"/>
+              <rect x="28" y="28" width="4" height="4" fill="#FF4365"/>
+              <rect x="16" y="32" width="8" height="4" fill="#FF4365"/>
+              <rect x="24" y="32" width="4" height="4" fill="#FF4365"/>
+              <rect x="20" y="36" width="4" height="4" fill="#FF4365"/>
+            </g>
+            <text x="78" y="45" class="fill-[#161B33] dark:fill-white" font-family="Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-weight="800" font-size="38" letter-spacing="-1">PngLike</text>
+          </svg>
+          <span id="brandSiteTitle" class="sr-only">PngLike Studio</span>
+          <span id="brandSiteBadge" class="hidden"></span>
+          <p id="brandSiteTagline" class="hidden"></p>
+        </a>
+
+        <!-- All Tools Dropdown Menu Trigger (Matches Screenshot) -->
+        <div class="relative ml-2">
+          <button id="allToolsMenuBtn" type="button" class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 text-xs font-bold border border-slate-200 dark:border-slate-700 transition">
+            <i data-lucide="grid" class="w-4 h-4 text-blue-600 dark:text-blue-400"></i>
+            <span>All tools</span>
+            <span id="activeToolHeaderPill" class="hidden sm:inline-block px-2 py-0.5 rounded-md bg-blue-600 text-white text-[10px] font-semibold">Background Remover</span>
+            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400"></i>
+          </button>
+
+          <!-- Popover Menu Matching Uploaded Screenshot -->
+          <div id="allToolsPopover" class="hidden absolute left-0 mt-2 w-64 bg-white dark:bg-dark-900 text-slate-900 dark:text-slate-100 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-5 z-50">
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">All tools</h3>
+            <div class="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-slate-800 dark:text-slate-300 pb-2.5 mb-2.5 border-b border-slate-200 dark:border-slate-800">
+              <i data-lucide="image" class="w-4 h-4"></i>
+              <span>IMAGE</span>
+            </div>
+            <div id="headerAllToolsList" class="flex flex-col space-y-1">
+              <!-- Populated dynamically with all 9 tools -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Center Navigation Tabs -->
+      <nav class="hidden md:flex items-center gap-1 bg-slate-100 dark:bg-slate-800/80 p-1 rounded-xl text-sm font-medium">
+        <button id="tabStudioBtn" class="flex items-center gap-2 px-4 py-1.5 rounded-lg bg-white dark:bg-slate-700 text-blue-600 dark:text-white shadow-sm transition-all">
+          <i data-lucide="sparkles" class="w-4 h-4"></i>
+          <span>AI Image Studio</span>
+        </button>
+        <button id="tabBatchBtn" class="flex items-center gap-2 px-4 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all">
+          <i data-lucide="layers" class="w-4 h-4"></i>
+          <span>Batch Studio</span>
+        </button>
+        <button id="tabHistoryBtn" class="hidden items-center gap-2 px-4 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all">
+          <i data-lucide="clock" class="w-4 h-4"></i>
+          <span>History</span>
+        </button>
+        <a href="/blog" class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all">
+          <i data-lucide="book-open" class="w-4 h-4"></i>
+          <span>Blog</span>
+        </a>
+        <a href="/about" class="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all">
+          <span>About</span>
+        </a>
+        <a href="/faq" class="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all">
+          <span>FAQ</span>
+        </a>
+        <a href="/contact" class="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all">
+          <span>Contact</span>
+        </a>
+      </nav>
+
+      <!-- Right Header Actions -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <!-- Hidden telemetry hooks for internal state -->
+        <button id="dbStatusBtn" class="hidden"><span id="dbStatusText"></span></button>
+        <div id="modelStatusBadge" class="hidden"><span id="modelStatusText"></span></div>
+
+        <!-- User Tier / Quota Pill -->
+        <div id="accessQuotaPill" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border bg-slate-100 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5 text-indigo-500"></i>
+          <span id="accessQuotaText">Checking quota...</span>
+        </div>
+
+        <!-- User Login / Dashboard Button -->
+        <a href="/dashboard" id="headerUserAuthBtn" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white text-xs font-bold shadow-sm shadow-indigo-500/20 transition">
+          <i data-lucide="user-circle" class="w-4 h-4"></i>
+          <span id="headerUserAuthLabel">Sign In / Sign Up</span>
+        </a>
+
+        <!-- Theme Toggle -->
+        <button id="themeToggleBtn" title="Toggle Dark/Light Mode" class="p-2 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
+          <i data-lucide="moon" class="w-5 h-5 block dark:hidden"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Tab Switcher -->
+  <div class="md:hidden flex border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-dark-900 px-4 py-2 gap-2">
+    <button id="mobileTabStudioBtn" class="flex-1 py-1.5 rounded-lg text-xs font-medium text-center bg-blue-50 text-blue-600 dark:bg-slate-800 dark:text-blue-400">
+      AI Studio
+    </button>
+    <button id="mobileTabBatchBtn" class="flex-1 py-1.5 rounded-lg text-xs font-medium text-center text-slate-600 dark:text-slate-400">
+      Batch Studio
+    </button>
+    <button id="mobileTabHistoryBtn" class="hidden flex-1 py-1.5 rounded-lg text-xs font-medium text-center text-slate-600 dark:text-slate-400">
+      History
+    </button>
+    <a href="/blog" class="flex-1 py-1.5 rounded-lg text-xs font-medium text-center text-slate-600 dark:text-slate-400">
+      Blog
+    </a>
+    <a href="/dashboard" class="flex-1 py-1.5 rounded-lg text-xs font-medium text-center text-indigo-600 dark:text-indigo-400">
+      Dashboard
+    </a>
+  </div>
+
+  <!-- Main Content Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 flex flex-col">
+
+    <!-- Maintenance Mode Alert Banner (Managed by Admin CMS) -->
+    <div id="maintenanceBanner" class="hidden mb-6 p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <i data-lucide="alert-triangle" class="w-5 h-5 shrink-0"></i>
+        <div>
+          <h4 class="font-bold text-xs uppercase tracking-wider">Maintenance Mode Active</h4>
+          <p id="maintenanceMessageText" class="text-xs">RemBG Studio is currently undergoing scheduled maintenance.</p>
+        </div>
+      </div>
+      <a href="/admin" class="px-3 py-1.5 rounded-xl bg-rose-600 text-white text-xs font-semibold shrink-0">Admin Settings</a>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- SPA 9-TOOL INSTANT SWITCHER DOCK               -->
+    <!-- ============================================== -->
+    <section aria-label="9-in-1 AI Image Tools Quick Dock" class="mb-6 bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-3 sm:p-4 shadow-sm">
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5 px-1">
+        <div class="flex items-center gap-2">
+          <span class="inline-flex items-center justify-center w-6 h-6 rounded-lg bg-blue-600/10 text-blue-600 dark:text-blue-400">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+          </span>
+          <h2 class="text-xs font-extrabold uppercase tracking-wider text-slate-800 dark:text-slate-200">
+            9-in-1 Single-Page IMAGE Studio Dock
+          </h2>
+          <span class="hidden sm:inline-block text-[11px] text-slate-400">Click any tool to switch modes instantly without reloading</span>
+        </div>
+        <a href="#spaToolsShowcaseSection" class="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1">
+          <span>Explore All 9 Tools Specs</span>
+          <i data-lucide="arrow-down-right" class="w-3.5 h-3.5"></i>
+        </a>
+      </div>
+      <div id="spaToolsRibbon" class="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-9 gap-2">
+        <!-- Populated dynamically by app.js with all 9 tools -->
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- SECTION 1: SINGLE IMAGE STUDIO & ALL 9 TOOLS   -->
+    <!-- ============================================== -->
+    <div id="studioSection" class="flex-1 flex flex-col lg:flex-row gap-6">
+
+      <!-- LEFT DOCK: "All tools -> IMAGE" Sidebar (Matches User Screenshot) -->
+      <aside id="allToolsSidebar" class="w-full lg:w-60 shrink-0 bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm h-fit">
+        <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-5">All tools</h2>
+        <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 pb-3 mb-3 border-b border-slate-200 dark:border-slate-800">
+          <i data-lucide="image" class="w-4 h-4"></i>
+          <span>IMAGE</span>
+        </div>
+        <nav id="sidebarAllToolsList" aria-label="All Image Tools Sidebar" class="flex flex-row lg:flex-col gap-1 overflow-x-auto lg:overflow-visible pb-1 lg:pb-0">
+          <!-- Populated dynamically with all 9 tools -->
+        </nav>
+      </aside>
+
+      <!-- CENTER + RIGHT WORKSPACE -->
+      <div class="flex-1 flex flex-col xl:flex-row gap-6 min-w-0">
+
+        <!-- CENTER STAGE (Upload View OR Live Canvas Editor View) -->
+        <div class="flex-1 flex flex-col min-w-0">
+
+        <!-- UPLOAD STATE: Shown when no image is loaded -->
+        <div id="uploadView" class="flex-1 flex flex-col justify-center items-center py-4">
+          
+          <!-- Active Tool Indicator Pill -->
+          <div class="mb-3 inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 text-xs font-bold">
+            <i data-lucide="wand-2" class="w-3.5 h-3.5"></i>
+            <span id="activeToolBannerName">Background Remover</span>
+            <span id="activeToolBannerBadge" class="text-[10px] px-1.5 py-0.5 rounded bg-blue-600 text-white">AI Cutout</span>
+          </div>
+
+          <!-- Primary Page H1 (Strictly One H1 per SEO best practices) -->
+          <div class="text-center max-w-2xl mx-auto mb-6">
+            <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-2">
+              <span id="heroMainTitle">Remove Image Backgrounds</span> <span id="heroHighlightTitle" class="bg-gradient-to-r from-blue-500 to-indigo-500 bg-clip-text text-transparent">Instantly with AI</span>
+            </h1>
+            <p id="heroSubtitleText" class="text-slate-600 dark:text-slate-400 text-sm sm:text-base">
+              Professional 9-in-1 AI image studio for instant cutouts, 4x upscaling, outpainting, portrait retouching, and 3D relighting.
+            </p>
+          </div>
+
+          <!-- Hidden File Input (placed outside dropZone to prevent click event bubbling loops) -->
+          <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp,image/bmp,image/*" class="sr-only">
+
+          <!-- Drag & Drop Card -->
+          <div id="dropZone" role="button" tabindex="0" aria-label="Upload or drag and drop an image file" class="w-full max-w-2xl bg-white dark:bg-dark-900 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-blue-500 dark:hover:border-blue-500 rounded-3xl p-8 sm:p-10 text-center transition-all cursor-pointer shadow-sm hover:shadow-xl group">
+            
+            <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center group-hover:scale-110 transition-transform shadow-inner">
+              <i data-lucide="cloud-upload" class="w-8 h-8"></i>
+            </div>
+
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1">
+              Drag & drop your image here
+            </h3>
+            <p class="text-slate-500 dark:text-slate-400 text-xs mb-5">
+              Supports PNG, JPG, JPEG, WEBP, BMP. Or paste directly with <kbd class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-xs font-mono">Ctrl + V</kbd>
+            </p>
+
+            <div class="flex flex-wrap items-center justify-center gap-3">
+              <button type="button" id="browseBtn" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs shadow-lg shadow-blue-500/25 transition-all cursor-pointer">
+                <i data-lucide="folder-open" class="w-4 h-4"></i>
+                <span>Browse Files</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Test Sample Images -->
+          <div class="w-full max-w-2xl mt-8">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                Or Try One-Click Sample Images with <span id="sampleActiveToolLabel" class="text-blue-500">Background Remover</span>:
+              </span>
+              <span class="text-xs text-slate-400">Click to test instantly</span>
+            </div>
+
+            <div id="samplesContainer" class="grid grid-cols-3 gap-4">
+              <!-- Sample cards loaded dynamically -->
+            </div>
+          </div>
+
+        </div>
+
+        <!-- EDITOR STATE: Shown after image is uploaded or generated -->
+        <div id="editorView" class="hidden flex-1 flex flex-col min-h-[600px]">
+          
+          <!-- CENTER: Canvas Viewport & Viewer Tools -->
+          <div class="flex-1 flex flex-col bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-3xl overflow-hidden shadow-sm">
+            
+            <!-- Viewport Header Toolbar -->
+            <div class="p-3 sm:px-4 border-b border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2 bg-slate-50/50 dark:bg-dark-850/50">
+              <!-- View Modes -->
+              <div class="flex items-center bg-slate-200/80 dark:bg-slate-800 p-0.5 rounded-xl text-xs font-medium">
+                <button id="viewSplitBtn" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white dark:bg-slate-700 text-blue-600 dark:text-white shadow-sm transition">
+                  <i data-lucide="split-square-vertical" class="w-3.5 h-3.5"></i>
+                  <span class="hidden sm:inline">Split Slider</span>
+                </button>
+                <button id="viewSideBtn" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">
+                  <i data-lucide="columns-2" class="w-3.5 h-3.5"></i>
+                  <span class="hidden sm:inline">Side-by-Side</span>
+                </button>
+                <button id="viewCutoutBtn" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">
+                  <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                  <span class="hidden sm:inline">Result Only</span>
+                </button>
+              </div>
+
+              <!-- Viewport Actions -->
+              <div class="flex items-center gap-2">
+                <button id="chainOutputBtn" title="Set current processed result as the new base image so you can stack another tool on top" class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 hover:bg-indigo-100 transition">
+                  <i data-lucide="layers" class="w-3.5 h-3.5"></i>
+                  <span>Use Output as Base</span>
+                </button>
+                <button id="reuploadBtn" class="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                  <i data-lucide="upload" class="w-3.5 h-3.5"></i>
+                  <span>Change Image</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Main Interactive Viewport Area -->
+            <div id="viewportContainer" class="relative flex-1 min-h-[420px] flex items-center justify-center overflow-hidden bg-slate-100 dark:bg-dark-950 p-4 select-none">
+              
+              <!-- Loading Overlay during AI inference -->
+              <div id="processingOverlay" class="hidden absolute inset-0 bg-slate-900/60 backdrop-blur-sm z-30 flex flex-col items-center justify-center text-white transition-opacity">
+                <div class="relative w-16 h-16 mb-4 flex items-center justify-center">
+                  <div class="absolute inset-0 rounded-full border-4 border-blue-500/20 animate-ping"></div>
+                  <div class="w-14 h-14 rounded-full border-4 border-blue-500 border-t-transparent animate-spin"></div>
+                  <i data-lucide="sparkles" class="w-6 h-6 text-blue-400 absolute"></i>
+                </div>
+                <p id="processingTitleText" class="font-semibold text-lg">Processing Image...</p>
+                <p id="processingSubText" class="text-xs text-slate-300 mt-1">Running AI image engine</p>
+              </div>
+
+              <!-- VIEW MODE 1: SPLIT SLIDER VIEW -->
+              <div id="sliderWrapper" class="relative max-w-full max-h-full rounded-2xl overflow-hidden shadow-2xl border border-slate-300 dark:border-slate-800 flex items-center justify-center">
+                
+                <!-- Container with dynamic dimensions -->
+                <div id="imageStage" class="relative overflow-hidden">
+                  <!-- Under layer: Processed Image with background -->
+                  <div id="processedBackdropLayer" class="absolute inset-0 bg-checkerboard flex items-center justify-center">
+                    <canvas id="outputCanvas" class="w-full h-full block object-contain"></canvas>
+                  </div>
+
+                  <!-- Over layer: Original Image (Clipped by slider position) -->
+                  <div id="originalClipLayer" class="absolute inset-0 overflow-hidden" style="width: 50%;">
+                    <img id="originalImg" width="800" height="600" class="max-w-none block select-none pointer-events-none" alt="Original uploaded image before AI tool processing">
+                    <div class="absolute top-3 left-3 bg-slate-900/70 backdrop-blur-md text-white text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-md pointer-events-none">
+                      Original
+                    </div>
+                  </div>
+
+                  <div id="ViewportRightBadge" class="absolute top-3 right-3 bg-blue-600/80 backdrop-blur-md text-white text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-md pointer-events-none">
+                    AI Result
+                  </div>
+
+                  <!-- Draggable Divider Line & Handle -->
+                  <div id="sliderDivider" class="absolute top-0 bottom-0 w-0.5 bg-white cursor-ew-resize z-20 slider-handle-glow" style="left: 50%;">
+                    <div class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-white text-slate-800 shadow-xl flex items-center justify-center border-2 border-blue-500">
+                      <i data-lucide="chevrons-left-right" class="w-4 h-4"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- VIEW MODE 2: SIDE-BY-SIDE VIEW (Hidden by default) -->
+              <div id="sideBySideWrapper" class="hidden w-full h-full grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                <div class="relative bg-slate-200 dark:bg-slate-800 rounded-2xl overflow-hidden flex flex-col items-center justify-center h-full p-2 border border-slate-300 dark:border-slate-700">
+                  <span class="absolute top-3 left-3 bg-slate-900/70 text-white text-[10px] font-semibold px-2 py-0.5 rounded-md">Original</span>
+                  <img id="sideOriginalImg" width="800" height="600" class="max-w-full max-h-[400px] object-contain rounded-lg" alt="Original reference image in side-by-side comparison">
+                </div>
+                <div class="relative bg-checkerboard rounded-2xl overflow-hidden flex flex-col items-center justify-center h-full p-2 border border-slate-300 dark:border-slate-700">
+                  <span id="sideResultBadge" class="absolute top-3 left-3 bg-blue-600/80 text-white text-[10px] font-semibold px-2 py-0.5 rounded-md">AI Result</span>
+                  <canvas id="sideOutputCanvas" class="max-w-full max-h-[400px] object-contain rounded-lg"></canvas>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Viewport Footer Telemetry Bar -->
+            <div class="px-4 py-2.5 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-dark-900 flex flex-wrap items-center justify-between text-xs text-slate-500 dark:text-slate-400 gap-2">
+              <div class="flex items-center gap-4">
+                <span id="statDimensions" class="flex items-center gap-1">
+                  <i data-lucide="maximize" class="w-3.5 h-3.5"></i>
+                  <span>-- x -- px</span>
+                </span>
+                <span id="statTime" class="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium">
+                  <i data-lucide="zap" class="w-3.5 h-3.5"></i>
+                  <span>-- ms</span>
+                </span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-slate-400">Interactive Preview: Drag slider to compare</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        </div>
+
+        <!-- RIGHT: Dynamic Tool Controls Sidebar (Always visible for active tool) -->
+        <div id="toolControlsColumn" class="w-full xl:w-96 shrink-0 flex flex-col gap-5">
+
+            <!-- ================================================== -->
+            <!-- TOOL 1 PANEL: IMAGE EDITOR (image-editor)          -->
+            <!-- ================================================== -->
+            <div id="toolPanel-image-editor" class="tool-control-panel hidden bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm space-y-3.5">
+              <div class="flex items-center justify-between">
+                <h3 class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                  <i data-lucide="sliders" class="w-4 h-4 text-blue-500"></i>
+                  <span>Image Editor Studio</span>
+                </h3>
+                <button type="button" id="resetEditorBtn" class="text-[11px] text-blue-500 hover:underline">Reset</button>
+              </div>
+              <div class="grid grid-cols-2 gap-2.5">
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-500 mb-1">Color Filter</label>
+                  <select id="edFilterPreset" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-2.5 py-1.5 text-xs">
+                    <option value="none">None (Natural)</option>
+                    <option value="vivid">Vivid Pop</option>
+                    <option value="vintage">Vintage Film</option>
+                    <option value="bw">Monochrome B&W</option>
+                    <option value="sepia">Classic Sepia</option>
+                    <option value="cool">Arctic Cool</option>
+                    <option value="dramatic">High Contrast Drama</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-500 mb-1">Aspect Crop</label>
+                  <select id="edCropRatio" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-2.5 py-1.5 text-xs">
+                    <option value="original">Original Ratio</option>
+                    <option value="1:1">1:1 Square</option>
+                    <option value="16:9">16:9 Landscape</option>
+                    <option value="9:16">9:16 Portrait</option>
+                    <option value="4:3">4:3 Standard</option>
+                  </select>
+                </div>
+              </div>
+              <div class="space-y-2">
+                <div>
+                  <div class="flex justify-between text-[11px] text-slate-500"><span>Brightness</span><span id="edBrightVal">1.00</span></div>
+                  <input type="range" id="edBrightness" min="0.4" max="1.8" step="0.05" value="1.0" class="w-full accent-blue-600 h-1.5">
+                </div>
+                <div>
+                  <div class="flex justify-between text-[11px] text-slate-500"><span>Contrast</span><span id="edContrastVal">1.00</span></div>
+                  <input type="range" id="edContrast" min="0.4" max="2.0" step="0.05" value="1.0" class="w-full accent-blue-600 h-1.5">
+                </div>
+                <div>
+                  <div class="flex justify-between text-[11px] text-slate-500"><span>Saturation</span><span id="edSatVal">1.00</span></div>
+                  <input type="range" id="edSaturation" min="0.0" max="2.2" step="0.05" value="1.0" class="w-full accent-blue-600 h-1.5">
+                </div>
+                <div>
+                  <div class="flex justify-between text-[11px] text-slate-500"><span>Sharpness</span><span id="edSharpVal">1.00</span></div>
+                  <input type="range" id="edSharpness" min="0.0" max="3.0" step="0.1" value="1.0" class="w-full accent-blue-600 h-1.5">
+                </div>
+                <div>
+                  <div class="flex justify-between text-[11px] text-slate-500"><span>Color Warmth</span><span id="edWarmthVal">0.00</span></div>
+                  <input type="range" id="edWarmth" min="-1.0" max="1.0" step="0.05" value="0.0" class="w-full accent-blue-600 h-1.5">
+                </div>
+              </div>
+              <div class="grid grid-cols-3 gap-2 pt-1">
+                <select id="edRotate" class="bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-2 py-1.5 text-xs">
+                  <option value="0">Rotate 0°</option>
+                  <option value="90">Rotate 90°</option>
+                  <option value="180">Rotate 180°</option>
+                  <option value="270">Rotate 270°</option>
+                </select>
+                <label class="flex items-center justify-center gap-1.5 bg-slate-100 dark:bg-slate-800 rounded-xl px-2 py-1.5 text-xs cursor-pointer">
+                  <input type="checkbox" id="edFlipH" class="accent-blue-600">
+                  <span>Flip H</span>
+                </label>
+                <label class="flex items-center justify-center gap-1.5 bg-slate-100 dark:bg-slate-800 rounded-xl px-2 py-1.5 text-xs cursor-pointer">
+                  <input type="checkbox" id="edFlipV" class="accent-blue-600">
+                  <span>Flip V</span>
+                </label>
+              </div>
+              <button type="button" class="run-active-tool-btn w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-md transition">
+                <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                <span>Apply Image Editor Adjustments</span>
+              </button>
+            </div>
+
+            <!-- ================================================== -->
+            <!-- TOOL 3 PANEL: IMAGE UPSCALER (image-upscaler)      -->
+            <!-- ================================================== -->
+            <div id="toolPanel-image-upscaler" class="tool-control-panel hidden bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm space-y-4">
+              <div class="flex items-center justify-between">
+                <h3 class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                  <i data-lucide="maximize-2" class="w-4 h-4 text-emerald-500"></i>
+                  <span>AI Image Upscaler</span>
+                </h3>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400">Super-Res</span>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Upscale Factor</label>
+                <select id="upScaleFactor" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                  <option value="2" selected>2x Super-Resolution (Double Width & Height)</option>
+                  <option value="4">4x Ultra-Resolution (Quadruple Width & Height)</option>
+                </select>
+              </div>
+              <div>
+                <div class="flex justify-between text-xs text-slate-500 mb-1"><span>Bilateral Denoise Strength</span><span id="upDenoiseVal">0.35</span></div>
+                <input type="range" id="upDenoise" min="0" max="1" step="0.05" value="0.35" class="w-full accent-emerald-600 h-1.5">
+              </div>
+              <div>
+                <div class="flex justify-between text-xs text-slate-500 mb-1"><span>Unsharp Edge Crispness</span><span id="upSharpenVal">0.65</span></div>
+                <input type="range" id="upSharpen" min="0" max="1.5" step="0.05" value="0.65" class="w-full accent-emerald-600 h-1.5">
+              </div>
+              <button type="button" class="run-active-tool-btn w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-md transition">
+                <i data-lucide="zap" class="w-3.5 h-3.5"></i>
+                <span>Upscale & Enhance Resolution</span>
+              </button>
+            </div>
+
+            <!-- ================================================== -->
+            <!-- TOOL 4 PANEL: IMAGE EXTENDER (image-extender)      -->
+            <!-- ================================================== -->
+            <div id="toolPanel-image-extender" class="tool-control-panel hidden bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm space-y-4">
+              <div class="flex items-center justify-between">
+                <h3 class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                  <i data-lucide="expand" class="w-4 h-4 text-purple-500"></i>
+                  <span>Image Extender (Outpaint)</span>
+                </h3>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-purple-100 dark:bg-purple-950 text-purple-600 dark:text-purple-400">Outpaint</span>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Target Canvas Ratio</label>
+                <select id="extTargetRatio" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                  <option value="16:9" selected>16:9 Widescreen Expansion</option>
+                  <option value="9:16">9:16 Vertical Story Expansion</option>
+                  <option value="1:1">1:1 Square Expansion</option>
+                  <option value="4:3">4:3 Standard Frame Expansion</option>
+                  <option value="21:9">21:9 Ultra-Wide Cinema</option>
+                  <option value="expand_all">Uniform All-Sides Outpaint (%)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Synthesis Mode</label>
+                <select id="extMode" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                  <option value="ai_outpaint" selected>Telea Navier-Stokes Seamless Outpaint</option>
+                  <option value="ambient_blur">Studio Ambient Feather Extend</option>
+                  <option value="mirror">Seamless Mirror Reflection</option>
+                </select>
+              </div>
+              <div>
+                <div class="flex justify-between text-xs text-slate-500 mb-1"><span>All-Sides Expansion (%)</span><span id="extPercentVal">25%</span></div>
+                <input type="range" id="extPercent" min="10" max="60" step="5" value="25" class="w-full accent-purple-600 h-1.5">
+              </div>
+              <button type="button" class="run-active-tool-btn w-full py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-md transition">
+                <i data-lucide="expand" class="w-3.5 h-3.5"></i>
+                <span>Extend Image Canvas</span>
+              </button>
+            </div>
+
+            <!-- ================================================== -->
+            <!-- TOOL 5 PANEL: VARIATIONS (variations)              -->
+            <!-- ================================================== -->
+            <div id="toolPanel-variations" class="tool-control-panel hidden bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm space-y-4">
+              <div class="flex items-center justify-between">
+                <h3 class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                  <i data-lucide="copy-plus" class="w-4 h-4 text-pink-500"></i>
+                  <span>Style Variations</span>
+                </h3>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-pink-100 dark:bg-pink-950 text-pink-600 dark:text-pink-400">Restyle</span>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Artistic Variation Style</label>
+                <select id="varStyle" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                  <option value="cyberpunk" selected>Cyberpunk Neon Synth</option>
+                  <option value="watercolor">Watercolor Illustration</option>
+                  <option value="oil_painting">Impasto Oil Painting</option>
+                  <option value="sketch">Graphite Pencil Sketch</option>
+                  <option value="pop_art">Warhol Pop Art Poster</option>
+                  <option value="anime">Anime Cel-Shaded Look</option>
+                  <option value="noir">Sin City High-Contrast Noir</option>
+                  <option value="vintage_warm">Golden Hour Analog Film</option>
+                </select>
+              </div>
+              <div>
+                <div class="flex justify-between text-xs text-slate-500 mb-1"><span>Style Blend Strength</span><span id="varStrengthVal">0.80</span></div>
+                <input type="range" id="varStrength" min="0.2" max="1.0" step="0.05" value="0.80" class="w-full accent-pink-600 h-1.5">
+              </div>
+              <button type="button" class="run-active-tool-btn w-full py-2.5 rounded-xl bg-pink-600 hover:bg-pink-700 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-md transition">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                <span>Generate Style Variation</span>
+              </button>
+            </div>
+
+            <!-- ================================================== -->
+            <!-- TOOL 6 PANEL: CINEMATIC SHOT (cinematic-shot)      -->
+            <!-- ================================================== -->
+            <div id="toolPanel-cinematic-shot" class="tool-control-panel hidden bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm space-y-4">
+              <div class="flex items-center justify-between">
+                <h3 class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                  <i data-lucide="film" class="w-4 h-4 text-amber-500"></i>
+                  <span>Cinematic Shot Studio</span>
+                </h3>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-950 text-amber-600 dark:text-amber-400">Anamorphic</span>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Cinema Color Grade LUT</label>
+                <select id="cineGrade" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                  <option value="teal_orange" selected>Blockbuster Teal & Orange</option>
+                  <option value="bleach_bypass">Gritty Bleach Bypass</option>
+                  <option value="matrix_green">Sci-Fi Matrix Tint</option>
+                  <option value="golden_hour">Warm Anamorphic Gold</option>
+                  <option value="noir_cinema">Silver Screen Noir</option>
+                </select>
+              </div>
+              <div>
+                <div class="flex justify-between text-xs text-slate-500 mb-1"><span>AI Depth-of-Field Bokeh</span><span id="cineBokehVal">0.65</span></div>
+                <input type="range" id="cineBokeh" min="0" max="1" step="0.05" value="0.65" class="w-full accent-amber-500 h-1.5">
+              </div>
+              <div>
+                <div class="flex justify-between text-xs text-slate-500 mb-1"><span>35mm Film Grain</span><span id="cineGrainVal">0.18</span></div>
+                <input type="range" id="cineGrain" min="0" max="0.6" step="0.02" value="0.18" class="w-full accent-amber-500 h-1.5">
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <label class="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 rounded-xl p-2.5 text-xs cursor-pointer">
+                  <input type="checkbox" id="cineLetterbox" checked class="accent-amber-500">
+                  <span>2.39:1 Letterbox</span>
+                </label>
+                <label class="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 rounded-xl p-2.5 text-xs cursor-pointer">
+                  <input type="checkbox" id="cineFlare" checked class="accent-amber-500">
+                  <span>Anamorphic Flare</span>
+                </label>
+              </div>
+              <button type="button" class="run-active-tool-btn w-full py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-md transition">
+                <i data-lucide="clapperboard" class="w-3.5 h-3.5"></i>
+                <span>Render Cinematic Shot</span>
+              </button>
+            </div>
+
+            <!-- ================================================== -->
+            <!-- TOOL 8 PANEL: SKIN ENHANCER (skin-enhancer)        -->
+            <!-- ================================================== -->
+            <div id="toolPanel-skin-enhancer" class="tool-control-panel hidden bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm space-y-4">
+              <div class="flex items-center justify-between">
+                <h3 class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                  <i data-lucide="user-check" class="w-4 h-4 text-rose-500"></i>
+                  <span>Portrait Skin Enhancer</span>
+                </h3>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-rose-100 dark:bg-rose-950 text-rose-600 dark:text-rose-400">Retouch</span>
+              </div>
+              <div>
+                <div class="flex justify-between text-xs text-slate-500 mb-1"><span>Blemish & Texture Smoothing</span><span id="skinSmoothVal">0.65</span></div>
+                <input type="range" id="skinSmoothing" min="0" max="1" step="0.05" value="0.65" class="w-full accent-rose-500 h-1.5">
+              </div>
+              <div>
+                <div class="flex justify-between text-xs text-slate-500 mb-1"><span>Soft Skin Radiance Glow</span><span id="skinRadVal">0.35</span></div>
+                <input type="range" id="skinRadiance" min="0" max="1" step="0.05" value="0.35" class="w-full accent-rose-500 h-1.5">
+              </div>
+              <div>
+                <div class="flex justify-between text-xs text-slate-500 mb-1"><span>Eyes & Hair Detail Crispness</span><span id="skinCrispVal">0.50</span></div>
+                <input type="range" id="skinCrispness" min="0" max="1" step="0.05" value="0.50" class="w-full accent-rose-500 h-1.5">
+              </div>
+              <button type="button" class="run-active-tool-btn w-full py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-md transition">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                <span>Enhance Portrait Skin</span>
+              </button>
+            </div>
+
+            <!-- ================================================== -->
+            <!-- TOOL 9 PANEL: RELIGHT (relight)                    -->
+            <!-- ================================================== -->
+            <div id="toolPanel-relight" class="tool-control-panel hidden bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm space-y-4">
+              <div class="flex items-center justify-between">
+                <h3 class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                  <i data-lucide="sun" class="w-4 h-4 text-orange-500"></i>
+                  <span>3D AI Relight Studio</span>
+                </h3>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-orange-100 dark:bg-orange-950 text-orange-600 dark:text-orange-400">3D Normals</span>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Light Source Direction</label>
+                <select id="relPosition" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                  <option value="neon_split" selected>Dual Neon Split (Left + Right Rim)</option>
+                  <option value="top_left">Key Light — Top Left</option>
+                  <option value="top_right">Key Light — Top Right</option>
+                  <option value="left">Side Rim — Left</option>
+                  <option value="right">Side Rim — Right</option>
+                  <option value="bottom_up">Dramatic Uplight — Bottom</option>
+                  <option value="center_spotlight">Center Studio Spotlight</option>
+                </select>
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-500 mb-1">Key Light Color</label>
+                  <div class="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 rounded-xl p-1.5 border border-slate-300 dark:border-slate-700">
+                    <input type="color" id="relColor1" value="#ff5500" class="w-7 h-7 rounded cursor-pointer border-0">
+                    <span id="relColor1Text" class="text-xs font-mono">#ff5500</span>
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-500 mb-1">Fill / Rim Color</label>
+                  <div class="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 rounded-xl p-1.5 border border-slate-300 dark:border-slate-700">
+                    <input type="color" id="relColor2" value="#00ccff" class="w-7 h-7 rounded cursor-pointer border-0">
+                    <span id="relColor2Text" class="text-xs font-mono">#00ccff</span>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between text-xs text-slate-500 mb-1"><span>Light Intensity</span><span id="relIntensityVal">0.80</span></div>
+                <input type="range" id="relIntensity" min="0.1" max="1.0" step="0.05" value="0.80" class="w-full accent-orange-500 h-1.5">
+              </div>
+              <div>
+                <div class="flex justify-between text-xs text-slate-500 mb-1"><span>Background Ambient Dimming</span><span id="relDimVal">0.50</span></div>
+                <input type="range" id="relAmbientDim" min="0.0" max="0.95" step="0.05" value="0.50" class="w-full accent-orange-500 h-1.5">
+              </div>
+              <button type="button" class="run-active-tool-btn w-full py-2.5 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-md transition">
+                <i data-lucide="sun" class="w-3.5 h-3.5"></i>
+                <span>Apply 3D Relighting</span>
+              </button>
+            </div>
+
+            <!-- ================================================== -->
+            <!-- TOOL 10 PANEL: CHANGE CAMERA (change-camera)       -->
+            <!-- ================================================== -->
+            <div id="toolPanel-change-camera" class="tool-control-panel hidden bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm space-y-4">
+              <div class="flex items-center justify-between">
+                <h3 class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                  <i data-lucide="camera" class="w-4 h-4 text-cyan-500"></i>
+                  <span>Change Camera & Lens</span>
+                </h3>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-cyan-100 dark:bg-cyan-950 text-cyan-600 dark:text-cyan-400">3D Optics</span>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">3D Camera Perspective Angle</label>
+                <select id="camAngle" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                  <option value="tilt_up" selected>Low-Angle Hero Tilt Up</option>
+                  <option value="tilt_down">High-Angle Overhead Tilt Down</option>
+                  <option value="pan_left">3D Perspective Pan Left</option>
+                  <option value="pan_right">3D Perspective Pan Right</option>
+                  <option value="dutch_left">Dutch Roll Left (-11°)</option>
+                  <option value="dutch_right">Dutch Roll Right (+11°)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Optical Lens Profile</label>
+                <select id="camLens" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                  <option value="wide_24mm" selected>24mm Wide-Angle Barrel</option>
+                  <option value="telephoto_85mm">85mm Portrait Telephoto</option>
+                  <option value="fisheye">12mm Ultra-Fisheye Optics</option>
+                  <option value="dolly_zoom">Vertigo Dolly Zoom</option>
+                </select>
+              </div>
+              <div>
+                <div class="flex justify-between text-xs text-slate-500 mb-1"><span>Perspective & Lens Intensity</span><span id="camIntVal">0.65</span></div>
+                <input type="range" id="camIntensity" min="0.1" max="1.0" step="0.05" value="0.65" class="w-full accent-cyan-500 h-1.5">
+              </div>
+              <button type="button" class="run-active-tool-btn w-full py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-md transition">
+                <i data-lucide="camera" class="w-3.5 h-3.5"></i>
+                <span>Render Camera Perspective</span>
+              </button>
+            </div>
+
+            <!-- ================================================== -->
+            <!-- TOOL 7 PANEL: BACKGROUND REMOVER (bg-remover)      -->
+            <!-- ================================================== -->
+            <div id="toolPanel-bg-remover" class="tool-control-panel flex flex-col gap-5">
+              <!-- TAB 1: Background Replacement -->
+              <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm">
+                <div class="flex items-center justify-between mb-4">
+                  <h3 class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                    <i data-lucide="palette" class="w-4 h-4 text-blue-500"></i>
+                    <span>Background Studio</span>
+                  </h3>
+                  <span class="text-[11px] text-slate-400">Realtime</span>
+                </div>
+
+                <!-- Background Mode Buttons -->
+                <div class="grid grid-cols-4 gap-1 bg-slate-100 dark:bg-slate-800/80 p-1 rounded-xl mb-4 text-xs font-medium">
+                  <button id="bgModeTransparent" class="py-1.5 rounded-lg bg-white dark:bg-slate-700 text-blue-600 dark:text-white shadow-sm transition">
+                    Clear
+                  </button>
+                  <button id="bgModeSolid" class="py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">
+                    Color
+                  </button>
+                  <button id="bgModeGradient" class="py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">
+                    Gradient
+                  </button>
+                  <button id="bgModeBackdrop" class="py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">
+                    Custom
+                  </button>
+                </div>
+
+                <!-- Solid Color Picker View -->
+                <div id="solidColorPanel" class="hidden space-y-3">
+                  <div class="grid grid-cols-6 gap-2">
+                    <button class="color-swatch w-full h-8 rounded-lg border border-slate-300 dark:border-slate-700 shadow-sm" data-color="#ffffff" style="background-color: #ffffff;" title="Pure White"></button>
+                    <button class="color-swatch w-full h-8 rounded-lg shadow-sm" data-color="#0f172a" style="background-color: #0f172a;" title="Slate Dark"></button>
+                    <button class="color-swatch w-full h-8 rounded-lg shadow-sm" data-color="#ef4444" style="background-color: #ef4444;" title="Red"></button>
+                    <button class="color-swatch w-full h-8 rounded-lg shadow-sm" data-color="#f97316" style="background-color: #f97316;" title="Orange"></button>
+                    <button class="color-swatch w-full h-8 rounded-lg shadow-sm" data-color="#eab308" style="background-color: #eab308;" title="Yellow"></button>
+                    <button class="color-swatch w-full h-8 rounded-lg shadow-sm" data-color="#22c55e" style="background-color: #22c55e;" title="Green"></button>
+                    <button class="color-swatch w-full h-8 rounded-lg shadow-sm" data-color="#06b6d4" style="background-color: #06b6d4;" title="Cyan"></button>
+                    <button class="color-swatch w-full h-8 rounded-lg shadow-sm" data-color="#3b82f6" style="background-color: #3b82f6;" title="Blue"></button>
+                    <button class="color-swatch w-full h-8 rounded-lg shadow-sm" data-color="#8b5cf6" style="background-color: #8b5cf6;" title="Purple"></button>
+                    <button class="color-swatch w-full h-8 rounded-lg shadow-sm" data-color="#ec4899" style="background-color: #ec4899;" title="Pink"></button>
+                    <button class="color-swatch w-full h-8 rounded-lg shadow-sm" data-color="#f1f5f9" style="background-color: #f1f5f9;" title="Studio Gray"></button>
+                    <label class="w-full h-8 rounded-lg border border-dashed border-slate-400 dark:border-slate-600 flex items-center justify-center cursor-pointer hover:border-blue-500 transition" title="Custom Color Picker">
+                      <input type="color" id="customColorInput" value="#3b82f6" class="opacity-0 absolute w-0 h-0">
+                      <i data-lucide="pipette" class="w-3.5 h-3.5 text-slate-500"></i>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Gradient Presets View -->
+                <div id="gradientPanel" class="hidden space-y-3">
+                  <div class="grid grid-cols-4 gap-2">
+                    <button class="gradient-swatch h-10 rounded-lg shadow-sm" data-gradient="linear-gradient(135deg, #667eea 0%, #764ba2 100%)" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);" title="Deep Purple"></button>
+                    <button class="gradient-swatch h-10 rounded-lg shadow-sm" data-gradient="linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)" style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);" title="Soft Pink"></button>
+                    <button class="gradient-swatch h-10 rounded-lg shadow-sm" data-gradient="linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%)" style="background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);" title="Sunset"></button>
+                    <button class="gradient-swatch h-10 rounded-lg shadow-sm" data-gradient="linear-gradient(135deg, #0ba360 0%, #3cba92 100%)" style="background: linear-gradient(135deg, #0ba360 0%, #3cba92 100%);" title="Emerald"></button>
+                    <button class="gradient-swatch h-10 rounded-lg shadow-sm" data-gradient="linear-gradient(135deg, #2af598 0%, #009efd 100%)" style="background: linear-gradient(135deg, #2af598 0%, #009efd 100%);" title="Cyan Aurora"></button>
+                    <button class="gradient-swatch h-10 rounded-lg shadow-sm" data-gradient="linear-gradient(135deg, #f83600 0%, #f9d423 100%)" style="background: linear-gradient(135deg, #f83600 0%, #f9d423 100%);" title="Warm Glow"></button>
+                    <button class="gradient-swatch h-10 rounded-lg shadow-sm" data-gradient="linear-gradient(135deg, #b224ef 0%, #7579ff 100%)" style="background: linear-gradient(135deg, #b224ef 0%, #7579ff 100%);" title="Electric"></button>
+                    <button class="gradient-swatch h-10 rounded-lg shadow-sm" data-gradient="linear-gradient(135deg, #232526 0%, #414345 100%)" style="background: linear-gradient(135deg, #232526 0%, #414345 100%);" title="Midnight Studio"></button>
+                  </div>
+                </div>
+
+                <!-- Custom Backdrop Upload View -->
+                <div id="backdropPanel" class="hidden space-y-3">
+                  <label class="block border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-blue-500 rounded-xl p-3 text-center cursor-pointer transition">
+                    <input type="file" id="backdropFileInput" accept="image/*" class="hidden">
+                    <i data-lucide="image-plus" class="w-6 h-6 mx-auto text-slate-400 mb-1"></i>
+                    <span class="text-xs text-slate-600 dark:text-slate-300 font-medium">Upload Custom Backdrop</span>
+                  </label>
+
+                  <!-- Blur Slider -->
+                  <div>
+                    <div class="flex justify-between text-xs text-slate-500 mb-1">
+                      <span>Backdrop Blur</span>
+                      <span id="blurValText">0px</span>
+                    </div>
+                    <input type="range" id="backdropBlurSlider" min="0" max="30" value="0" class="w-full accent-blue-600">
+                  </div>
+                </div>
+              </div>
+
+              <!-- TAB 2: Cutout Quality & Settings -->
+              <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm space-y-4">
+                <div class="flex items-center justify-between">
+                  <h3 class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                    <i data-lucide="sliders" class="w-4 h-4 text-indigo-500"></i>
+                    <span>Cutout Precision & Settings</span>
+                  </h3>
+                </div>
+
+                <!-- Cutout Engine Selection -->
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
+                    Cutout Precision Mode
+                  </label>
+                  <select id="modelSelect" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="u2net" selected>High Precision Studio (Default)</option>
+                    <option value="u2netp">Fast Express Cutout</option>
+                  </select>
+                </div>
+
+                <!-- Alpha Matting Toggle -->
+                <div id="alphaMattingSection" class="flex items-center justify-between pt-1 border-t border-slate-100 dark:border-slate-800">
+                  <div>
+                    <span class="text-xs font-semibold text-slate-800 dark:text-slate-200 block">Alpha Matting</span>
+                    <span class="text-[11px] text-slate-500 dark:text-slate-400">Refine hair, fur & transparent edges</span>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="alphaMattingToggle" class="sr-only peer">
+                    <div class="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-slate-600 peer-checked:bg-blue-600"></div>
+                  </label>
+                </div>
+
+                <!-- Alpha Matting Fine-Tuning Sliders -->
+                <div id="alphaMattingControls" class="hidden space-y-2.5 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-2xl border border-slate-200/80 dark:border-slate-700/60">
+                  <div>
+                    <div class="flex justify-between text-[11px] text-slate-600 dark:text-slate-400 mb-0.5">
+                      <span>Foreground Threshold</span>
+                      <span id="afValText" class="font-mono font-semibold">240</span>
+                    </div>
+                    <input type="range" id="afSlider" min="100" max="255" value="240" class="w-full accent-blue-600 h-1.5">
+                  </div>
+                  <div>
+                    <div class="flex justify-between text-[11px] text-slate-600 dark:text-slate-400 mb-0.5">
+                      <span>Background Threshold</span>
+                      <span id="abValText" class="font-mono font-semibold">10</span>
+                    </div>
+                    <input type="range" id="abSlider" min="0" max="100" value="10" class="w-full accent-blue-600 h-1.5">
+                  </div>
+                  <div>
+                    <div class="flex justify-between text-[11px] text-slate-600 dark:text-slate-400 mb-0.5">
+                      <span>Erode Structure Size</span>
+                      <span id="aeValText" class="font-mono font-semibold">10</span>
+                    </div>
+                    <input type="range" id="aeSlider" min="0" max="40" value="10" class="w-full accent-blue-600 h-1.5">
+                  </div>
+                </div>
+
+                <!-- Post-Process Mask Toggle -->
+                <div class="flex items-center justify-between pt-1 border-t border-slate-100 dark:border-slate-800">
+                  <div>
+                    <span class="text-xs font-semibold text-slate-800 dark:text-slate-200 block">Post-Process Mask</span>
+                    <span class="text-[11px] text-slate-500 dark:text-slate-400">Smooth contour boundaries</span>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="postProcessToggle" class="sr-only peer">
+                    <div class="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-slate-600 peer-checked:bg-blue-600"></div>
+                  </label>
+                </div>
+
+                <!-- Mask Only Toggle -->
+                <div class="flex items-center justify-between pt-1 border-t border-slate-100 dark:border-slate-800">
+                  <div>
+                    <span class="text-xs font-semibold text-slate-800 dark:text-slate-200 block">Mask Silhouette Only</span>
+                    <span class="text-[11px] text-slate-500 dark:text-slate-400">Return black & white alpha mask</span>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="maskOnlyToggle" class="sr-only peer">
+                    <div class="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-slate-600 peer-checked:bg-blue-600"></div>
+                  </label>
+                </div>
+
+                <!-- Reprocess Button -->
+                <button id="reprocessBtn" class="w-full py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold flex items-center justify-center gap-2 transition">
+                  <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                  <span>Re-run Background Removal</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- ================================================== -->
+            <!-- EXPORT & DOWNLOAD ACTIONS (Always Visible)         -->
+            <!-- ================================================== -->
+            <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm space-y-4">
+              <h3 class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                <i data-lucide="download" class="w-4 h-4 text-emerald-500"></i>
+                <span>Export & Share</span>
+              </h3>
+
+              <!-- Format Chooser -->
+              <div class="grid grid-cols-3 gap-2">
+                <label class="format-choice border border-blue-500 bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 p-2 rounded-xl text-center cursor-pointer">
+                  <input type="radio" name="exportFormat" value="png" checked class="hidden">
+                  <span class="block text-xs font-bold">PNG</span>
+                  <span class="block text-[10px] text-slate-500 dark:text-slate-400">Lossless</span>
+                </label>
+                <label class="format-choice border border-slate-200 dark:border-slate-700 p-2 rounded-xl text-center cursor-pointer hover:border-slate-400">
+                  <input type="radio" name="exportFormat" value="jpg" class="hidden">
+                  <span class="block text-xs font-bold text-slate-800 dark:text-slate-200">JPG</span>
+                  <span class="block text-[10px] text-slate-500 dark:text-slate-400">Standard</span>
+                </label>
+                <label class="format-choice border border-slate-200 dark:border-slate-700 p-2 rounded-xl text-center cursor-pointer hover:border-slate-400">
+                  <input type="radio" name="exportFormat" value="webp" class="hidden">
+                  <span class="block text-xs font-bold text-slate-800 dark:text-slate-200">WebP</span>
+                  <span class="block text-[10px] text-slate-500 dark:text-slate-400">Compressed</span>
+                </label>
+              </div>
+
+              <!-- Big Download Button -->
+              <button id="downloadBtn" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-blue-500/25 transition-all active:scale-[0.98]">
+                <i data-lucide="download" class="w-4 h-4"></i>
+                <span>Download Image</span>
+              </button>
+
+              <!-- Copy to Clipboard Button -->
+              <button id="copyClipboardBtn" class="w-full py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold text-xs flex items-center justify-center gap-2 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>Copy PNG to Clipboard</span>
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+
+    </div>
+
+    <!-- ============================================== -->
+    <!-- SECTION 2: BATCH REMOVER                       -->
+    <!-- ============================================== -->
+    <div id="batchSection" class="hidden flex-1 flex flex-col">
+      <div class="text-center max-w-2xl mx-auto my-6">
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mb-2">
+          Batch Background Remover
+        </h2>
+        <p class="text-slate-600 dark:text-slate-400 text-sm">
+          Upload dozens of images at once and download all cutouts packaged in a single ZIP file.
+        </p>
+      </div>
+
+      <!-- Hidden Batch File Input (placed outside batchDropZone to prevent click bubbling loops) -->
+      <input type="file" id="batchFileInput" accept="image/*" multiple class="sr-only">
+
+      <!-- Batch Drop Area -->
+      <div id="batchDropZone" role="button" tabindex="0" class="w-full max-w-3xl mx-auto bg-white dark:bg-dark-900 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-blue-500 rounded-3xl p-8 text-center cursor-pointer shadow-sm transition">
+        <i data-lucide="layers" class="w-12 h-12 mx-auto text-blue-500 mb-3"></i>
+        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1">
+          Select or drop multiple images
+        </h3>
+        <p class="text-xs text-slate-500 mb-4">Upload up to 50 images at once</p>
+        <button type="button" id="batchBrowseBtn" class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium shadow-md cursor-pointer transition">
+          Select Multiple Files
+        </button>
+      </div>
+
+      <!-- Batch List & Download Bar -->
+      <div id="batchProcessContainer" class="hidden max-w-4xl w-full mx-auto mt-8 space-y-4">
+        <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 flex items-center justify-between">
+          <div>
+            <span id="batchCountText" class="font-bold text-sm text-slate-900 dark:text-white">0 Images Selected</span>
+            <div id="batchProgressBarContainer" class="w-48 bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full mt-1.5 overflow-hidden hidden">
+              <div id="batchProgressBar" class="bg-blue-600 h-full w-0 transition-all duration-300"></div>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <button id="batchStartBtn" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold flex items-center gap-2 shadow-sm">
+              <i data-lucide="play" class="w-3.5 h-3.5"></i>
+              <span>Process All</span>
+            </button>
+            <button id="batchDownloadZipBtn" class="hidden px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold flex items-center gap-2 shadow-sm">
+              <i data-lucide="archive" class="w-3.5 h-3.5"></i>
+              <span>Download ZIP Archive</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Grid of batch items -->
+        <div id="batchItemsGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+          <!-- Batch cards injected here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- SECTION 3: MYSQL JOB HISTORY & ANALYTICS       -->
+    <!-- ============================================== -->
+    <div id="historySection" class="hidden flex-1 flex flex-col space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+            <i data-lucide="database" class="w-6 h-6 text-indigo-500"></i>
+            <span>MySQL Job History & Analytics</span>
+          </h2>
+          <p class="text-slate-600 dark:text-slate-400 text-sm">
+            Persistent background removal records and performance telemetry stored in your MySQL database.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button id="openDbModalBtn" class="px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-semibold flex items-center gap-2 transition">
+            <i data-lucide="settings" class="w-3.5 h-3.5"></i>
+            <span>MySQL Settings</span>
+          </button>
+          <button id="refreshHistoryBtn" class="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-semibold flex items-center gap-1.5 transition">
+            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+            <span>Refresh</span>
+          </button>
+          <button id="clearHistoryBtn" class="px-3.5 py-2 rounded-xl bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-900/50 border border-rose-200 dark:border-rose-800 text-xs font-semibold flex items-center gap-1.5 transition">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            <span>Clear All</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- MySQL Analytics Summary Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm">
+          <span class="text-xs font-medium text-slate-500 dark:text-slate-400 block mb-1">Total Jobs in MySQL</span>
+          <div class="flex items-baseline justify-between">
+            <span id="metricTotalJobs" class="text-2xl font-extrabold text-slate-900 dark:text-white">0</span>
+            <span class="text-xs text-blue-500 font-semibold">removal_jobs</span>
+          </div>
+        </div>
+        <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm">
+          <span class="text-xs font-medium text-slate-500 dark:text-slate-400 block mb-1">Average Inference Speed</span>
+          <div class="flex items-baseline justify-between">
+            <span id="metricAvgTime" class="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400">0 ms</span>
+            <span class="text-xs text-slate-400">ONNX Runtime</span>
+          </div>
+        </div>
+        <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm">
+          <span class="text-xs font-medium text-slate-500 dark:text-slate-400 block mb-1">Most Used AI Model</span>
+          <div class="flex items-baseline justify-between">
+            <span id="metricTopModel" class="text-2xl font-extrabold text-indigo-600 dark:text-indigo-400">u2net</span>
+            <span id="metricTotalStorage" class="text-xs text-slate-400">0 KB saved</span>
+          </div>
+        </div>
+        <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm">
+          <span class="text-xs font-medium text-slate-500 dark:text-slate-400 block mb-1">Database Engine</span>
+          <div class="flex items-baseline justify-between">
+            <span id="metricDbEngine" class="text-lg font-extrabold text-slate-900 dark:text-white truncate">MySQL</span>
+            <span id="metricDbHost" class="text-xs text-slate-400 font-mono">127.0.0.1:3306</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- History Grid -->
+      <div id="historyEmptyState" class="hidden flex-1 flex flex-col items-center justify-center py-16 bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-3xl text-center">
+        <div class="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 mb-3">
+          <i data-lucide="inbox" class="w-7 h-7"></i>
+        </div>
+        <h3 class="font-bold text-base text-slate-800 dark:text-slate-200">No Processed Jobs Found</h3>
+        <p class="text-xs text-slate-500 mt-1 max-w-sm">
+          Every image you process in Single Studio or Batch Remover is automatically logged in the MySQL <code class="font-mono">removal_jobs</code> table.
+        </p>
+      </div>
+
+      <div id="historyGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <!-- History job cards injected dynamically -->
+      </div>
+    </div>
+
+    <!-- ==================================================================== -->
+    <!-- SECTION 4: INTERACTIVE 9-TOOL SUITE SHOWCASE                         -->
+    <!-- ==================================================================== -->
+    <section id="spaToolsShowcaseSection" aria-labelledby="spaSuiteHeading" class="mt-12 pt-10 border-t border-slate-200 dark:border-slate-800 space-y-8">
+      <div class="text-center max-w-3xl mx-auto">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400 text-xs font-bold mb-3">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+          <span>PngLike Creative Suite • Powered by Div Sri</span>
+        </span>
+        <h2 id="spaSuiteHeading" class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          All 9 Professional AI Image Tools in One Unified Workspace
+        </h2>
+        <p class="mt-2 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+          Switch seamlessly between any of our 9 studio image tools below or stack multiple effects on a single photo without leaving the page.
+        </p>
+      </div>
+
+      <!-- Interactive 9-Tool Launch Cards Grid -->
+      <div id="all9ToolsShowcaseGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- 1. Background Remover (Default Free Tool) -->
+        <article id="card-bg-remover" class="bg-white dark:bg-dark-900 border-2 border-emerald-500/50 hover:border-emerald-500 rounded-3xl p-5 shadow-sm transition flex flex-col justify-between relative overflow-hidden">
+          <div class="absolute top-0 right-0">
+            <span class="inline-flex items-center gap-1 bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl shadow-sm tracking-wide uppercase">
+              <i data-lucide="sparkles" class="w-3 h-3"></i> Free • Default Tool
+            </span>
+          </div>
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <div class="w-10 h-10 rounded-2xl bg-blue-600 text-white flex items-center justify-center shadow-md shadow-blue-500/20">
+                <i data-lucide="scissors" class="w-5 h-5"></i>
+              </div>
+              <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300">Instant Cutout</span>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white mb-1.5 flex items-center gap-2">
+              <span>Background Remover</span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-400">FREE</span>
+            </h3>
+            <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+              Remove backgrounds with hair-level edge precision and export transparent PNGs or add solid colors, studio gradients, and custom scene backdrops.
+            </p>
+          </div>
+          <div class="flex items-center gap-2 pt-3 border-t border-slate-100 dark:border-slate-800/80">
+            <button type="button" data-launch-tool="bg-remover" class="spa-launch-btn flex-1 py-2 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+              <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+              <span>Open Background Remover</span>
+            </button>
+            <button type="button" data-demo-tool="bg-remover" class="spa-demo-btn py-2 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold transition">
+              Try Sample
+            </button>
+          </div>
+        </article>
+
+        <!-- 2. Image Editor (Free Tool) -->
+        <article id="card-image-editor" class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 hover:border-blue-500 rounded-3xl p-5 shadow-sm transition flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <div class="w-10 h-10 rounded-2xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+                <i data-lucide="sliders" class="w-5 h-5"></i>
+              </div>
+              <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Color & Crop</span>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white mb-1.5 flex items-center gap-2">
+              <span>Image Editor</span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-400">FREE</span>
+            </h3>
+            <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+              Fine-tune brightness, contrast, saturation, sharpness, warmth, and blur, crop to social aspect ratios, and apply one-click studio filter looks.
+            </p>
+          </div>
+          <div class="flex items-center gap-2 pt-3 border-t border-slate-100 dark:border-slate-800/80">
+            <button type="button" data-launch-tool="image-editor" class="spa-launch-btn flex-1 py-2 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+              <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+              <span>Open Image Editor</span>
+            </button>
+            <button type="button" data-demo-tool="image-editor" class="spa-demo-btn py-2 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold transition">
+              Try Sample
+            </button>
+          </div>
+        </article>
+
+        <!-- 3. Skin Enhancer (Free Tool) -->
+        <article id="card-skin-enhancer" class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 hover:border-blue-500 rounded-3xl p-5 shadow-sm transition flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <div class="w-10 h-10 rounded-2xl bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 flex items-center justify-center">
+                <i data-lucide="user-check" class="w-5 h-5"></i>
+              </div>
+              <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Portrait Retouch</span>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white mb-1.5 flex items-center gap-2">
+              <span>Skin Enhancer</span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-400">FREE</span>
+            </h3>
+            <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+              Studio portrait retouching that smooths blemishes and adds warm skin radiance while keeping eyes, eyelashes, and natural texture sharp.
+            </p>
+          </div>
+          <div class="flex items-center gap-2 pt-3 border-t border-slate-100 dark:border-slate-800/80">
+            <button type="button" data-launch-tool="skin-enhancer" class="spa-launch-btn flex-1 py-2 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+              <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+              <span>Open Skin Enhancer</span>
+            </button>
+            <button type="button" data-demo-tool="skin-enhancer" class="spa-demo-btn py-2 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold transition">
+              Try Sample
+            </button>
+          </div>
+        </article>
+
+        <!-- 4. Image Upscaler (Pro) -->
+        <article id="card-image-upscaler" class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 hover:border-blue-500 rounded-3xl p-5 shadow-sm transition flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <div class="w-10 h-10 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                <i data-lucide="maximize-2" class="w-5 h-5"></i>
+              </div>
+              <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-purple-100 dark:bg-purple-950/70 text-purple-700 dark:text-purple-400 font-semibold">PRO</span>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white mb-1.5 flex items-center gap-2">
+              <span>Image Upscaler</span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-950/70 text-purple-700 dark:text-purple-400">PRO</span>
+            </h3>
+            <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+              Enhance photo resolution by 2x or 4x with intelligent noise reduction and crisp edge recovery for print and ultra-HD displays.
+            </p>
+          </div>
+          <div class="flex items-center gap-2 pt-3 border-t border-slate-100 dark:border-slate-800/80">
+            <button type="button" data-launch-tool="image-upscaler" class="spa-launch-btn flex-1 py-2 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+              <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+              <span>Open Image Upscaler</span>
+            </button>
+            <button type="button" data-demo-tool="image-upscaler" class="spa-demo-btn py-2 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold transition">
+              Try Sample
+            </button>
+          </div>
+        </article>
+
+        <!-- 5. Image Extender (Pro) -->
+        <article id="card-image-extender" class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 hover:border-blue-500 rounded-3xl p-5 shadow-sm transition flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <div class="w-10 h-10 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                <i data-lucide="expand" class="w-5 h-5"></i>
+              </div>
+              <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-purple-100 dark:bg-purple-950/70 text-purple-700 dark:text-purple-400 font-semibold">PRO</span>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white mb-1.5 flex items-center gap-2">
+              <span>Image Extender</span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-950/70 text-purple-700 dark:text-purple-400">PRO</span>
+            </h3>
+            <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+              Seamlessly expand vertical or square photos into 16:9 widescreen banners, 9:16 stories, or 21:9 cinema frames with natural border synthesis.
+            </p>
+          </div>
+          <div class="flex items-center gap-2 pt-3 border-t border-slate-100 dark:border-slate-800/80">
+            <button type="button" data-launch-tool="image-extender" class="spa-launch-btn flex-1 py-2 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+              <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+              <span>Open Image Extender</span>
+            </button>
+            <button type="button" data-demo-tool="image-extender" class="spa-demo-btn py-2 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold transition">
+              Try Sample
+            </button>
+          </div>
+        </article>
+
+        <!-- 6. Variations (Pro) -->
+        <article id="card-variations" class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 hover:border-blue-500 rounded-3xl p-5 shadow-sm transition flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <div class="w-10 h-10 rounded-2xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 flex items-center justify-center">
+                <i data-lucide="copy" class="w-5 h-5"></i>
+              </div>
+              <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-purple-100 dark:bg-purple-950/70 text-purple-700 dark:text-purple-400 font-semibold">PRO</span>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white mb-1.5 flex items-center gap-2">
+              <span>Variations</span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-950/70 text-purple-700 dark:text-purple-400">PRO</span>
+            </h3>
+            <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+              Reimagine your photo across 8 artistic styles including Cyberpunk Neon, Synthwave, Vintage Film, Anime, Watercolor, Sketch, and Pop Art.
+            </p>
+          </div>
+          <div class="flex items-center gap-2 pt-3 border-t border-slate-100 dark:border-slate-800/80">
+            <button type="button" data-launch-tool="variations" class="spa-launch-btn flex-1 py-2 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+              <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+              <span>Open Variations</span>
+            </button>
+            <button type="button" data-demo-tool="variations" class="spa-demo-btn py-2 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold transition">
+              Try Sample
+            </button>
+          </div>
+        </article>
+
+        <!-- 7. Cinematic Shot (Pro) -->
+        <article id="card-cinematic-shot" class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 hover:border-blue-500 rounded-3xl p-5 shadow-sm transition flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <div class="w-10 h-10 rounded-2xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+                <i data-lucide="film" class="w-5 h-5"></i>
+              </div>
+              <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-purple-100 dark:bg-purple-950/70 text-purple-700 dark:text-purple-400 font-semibold">PRO</span>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white mb-1.5 flex items-center gap-2">
+              <span>Cinematic Shot</span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-950/70 text-purple-700 dark:text-purple-400">PRO</span>
+            </h3>
+            <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+              Transform everyday photos into movie stills with automatic depth-of-field background bokeh, Hollywood color grading, anamorphic flare, and widescreen bars.
+            </p>
+          </div>
+          <div class="flex items-center gap-2 pt-3 border-t border-slate-100 dark:border-slate-800/80">
+            <button type="button" data-launch-tool="cinematic-shot" class="spa-launch-btn flex-1 py-2 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+              <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+              <span>Open Cinematic Shot</span>
+            </button>
+            <button type="button" data-demo-tool="cinematic-shot" class="spa-demo-btn py-2 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold transition">
+              Try Sample
+            </button>
+          </div>
+        </article>
+
+        <!-- 8. Relight (Pro) -->
+        <article id="card-relight" class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 hover:border-blue-500 rounded-3xl p-5 shadow-sm transition flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <div class="w-10 h-10 rounded-2xl bg-cyan-50 dark:bg-cyan-950/60 text-cyan-600 dark:text-cyan-400 flex items-center justify-center">
+                <i data-lucide="sun" class="w-5 h-5"></i>
+              </div>
+              <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-purple-100 dark:bg-purple-950/70 text-purple-700 dark:text-purple-400 font-semibold">PRO</span>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white mb-1.5 flex items-center gap-2">
+              <span>Relight</span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-950/70 text-purple-700 dark:text-purple-400">PRO</span>
+            </h3>
+            <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+              Add directional 3D studio key lights, rim highlights, and dual-neon split lighting to your subject while independently dimming the background.
+            </p>
+          </div>
+          <div class="flex items-center gap-2 pt-3 border-t border-slate-100 dark:border-slate-800/80">
+            <button type="button" data-launch-tool="relight" class="spa-launch-btn flex-1 py-2 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+              <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+              <span>Open Relight</span>
+            </button>
+            <button type="button" data-demo-tool="relight" class="spa-demo-btn py-2 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold transition">
+              Try Sample
+            </button>
+          </div>
+        </article>
+
+        <!-- 9. Change Camera (Pro) -->
+        <article id="card-change-camera" class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 hover:border-blue-500 rounded-3xl p-5 shadow-sm transition flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <div class="w-10 h-10 rounded-2xl bg-violet-50 dark:bg-violet-950/60 text-violet-600 dark:text-violet-400 flex items-center justify-center">
+                <i data-lucide="camera" class="w-5 h-5"></i>
+              </div>
+              <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-purple-100 dark:bg-purple-950/70 text-purple-700 dark:text-purple-400 font-semibold">PRO</span>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white mb-1.5 flex items-center gap-2">
+              <span>Change Camera</span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-950/70 text-purple-700 dark:text-purple-400">PRO</span>
+            </h3>
+            <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+              Adjust 3D camera angles (Low-Angle Hero Tilt, Overhead, Pan, Dutch Roll) and optical lens focal lengths (Wide 24mm, Fisheye, 85mm Portrait).
+            </p>
+          </div>
+          <div class="flex items-center gap-2 pt-3 border-t border-slate-100 dark:border-slate-800/80">
+            <button type="button" data-launch-tool="change-camera" class="spa-launch-btn flex-1 py-2 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+              <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+              <span>Open Change Camera</span>
+            </button>
+            <button type="button" data-demo-tool="change-camera" class="spa-demo-btn py-2 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold transition">
+              Try Sample
+            </button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MySQL Connection Settings Modal -->
+  <div id="dbConfigModal" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+            <i data-lucide="database" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-base text-slate-900 dark:text-white">MySQL Database Settings</h3>
+            <p class="text-xs text-slate-500">Auto-creates database & tables on connect</p>
+          </div>
+        </div>
+        <button id="closeDbModalBtn" class="p-1.5 rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div id="dbModalStatusBanner" class="text-xs p-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-mono break-all">
+        Checking MySQL status...
+      </div>
+
+      <div class="space-y-3">
+        <div class="grid grid-cols-3 gap-3">
+          <div class="col-span-2">
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">MySQL Host</label>
+            <input type="text" id="dbHostInput" value="127.0.0.1" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-mono">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Port</label>
+            <input type="number" id="dbPortInput" value="3306" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-mono">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Username</label>
+            <input type="text" id="dbUserInput" value="root" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-mono">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Password</label>
+            <input type="password" id="dbPassInput" placeholder="(optional)" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-mono">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Database Schema Name</label>
+          <input type="text" id="dbNameInput" value="rembg_studio" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-mono">
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 pt-2">
+        <button id="cancelDbModalBtn" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
+          Cancel
+        </button>
+        <button id="saveDbConfigBtn" class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold flex items-center gap-1.5 shadow-md">
+          <i data-lucide="plug-zap" class="w-3.5 h-3.5"></i>
+          <span>Test & Connect MySQL</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Multi-Column SaaS Footer -->
+  <footer class="border-t border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-dark-900/70 backdrop-blur-sm text-xs text-slate-500 pt-10 pb-6 mt-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-1 md:grid-cols-4 gap-8 pb-8 border-b border-slate-200 dark:border-slate-800">
+      <div class="space-y-3">
+        <div class="flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 231 64" class="h-6 w-auto select-none" role="img" aria-label="PngLike">
+            <rect width="64" height="64" rx="14" fill="#161B33"/>
+            <g shape-rendering="crispEdges">
+              <rect x="18" y="12" width="12" height="4" fill="#FF4365"/>
+              <rect x="34" y="12" width="4" height="4" fill="#FF4365"/>
+              <rect x="38" y="12" width="4" height="4" fill="#E6EBF2"/>
+              <rect x="42" y="12" width="4" height="4" fill="#FF4365"/>
+              <rect x="14" y="16" width="20" height="4" fill="#FF4365"/>
+              <rect x="34" y="16" width="4" height="4" fill="#E6EBF2"/>
+              <rect x="38" y="16" width="4" height="4" fill="#FF4365"/>
+              <rect x="42" y="16" width="4" height="4" fill="#E6EBF2"/>
+              <rect x="46" y="16" width="4" height="4" fill="#FF4365"/>
+              <rect x="10" y="20" width="24" height="4" fill="#FF4365"/>
+              <rect x="34" y="20" width="4" height="4" fill="#FF4365"/>
+              <rect x="38" y="20" width="4" height="4" fill="#E6EBF2"/>
+              <rect x="42" y="20" width="4" height="4" fill="#FF4365"/>
+              <rect x="46" y="20" width="4" height="4" fill="#E6EBF2"/>
+              <rect x="50" y="20" width="4" height="4" fill="#FF4365"/>
+              <rect x="10" y="24" width="24" height="4" fill="#FF4365"/>
+              <rect x="34" y="24" width="4" height="4" fill="#E6EBF2"/>
+              <rect x="38" y="24" width="4" height="4" fill="#FF4365"/>
+              <rect x="42" y="24" width="4" height="4" fill="#E6EBF2"/>
+              <rect x="46" y="24" width="4" height="4" fill="#FF4365"/>
+              <rect x="50" y="24" width="4" height="4" fill="#E6EBF2"/>
+              <rect x="10" y="28" width="24" height="4" fill="#FF4365"/>
+              <rect x="34" y="28" width="4" height="4" fill="#FF4365"/>
+              <rect x="38" y="28" width="4" height="4" fill="#E6EBF2"/>
+              <rect x="42" y="28" width="4" height="4" fill="#FF4365"/>
+              <rect x="46" y="28" width="4" height="4" fill="#E6EBF2"/>
+              <rect x="50" y="28" width="4" height="4" fill="#FF4365"/>
+              <rect x="14" y="32" width="20" height="4" fill="#FF4365"/>
+              <rect x="34" y="32" width="4" height="4" fill="#E6EBF2"/>
+              <rect x="38" y="32" width="4" height="4" fill="#FF4365"/>
+              <rect x="42" y="32" width="4" height="4" fill="#E6EBF2"/>
+              <rect x="46" y="32" width="4" height="4" fill="#FF4365"/>
+              <rect x="18" y="36" width="16" height="4" fill="#FF4365"/>
+              <rect x="34" y="36" width="4" height="4" fill="#FF4365"/>
+              <rect x="38" y="36" width="4" height="4" fill="#E6EBF2"/>
+              <rect x="42" y="36" width="4" height="4" fill="#FF4365"/>
+              <rect x="22" y="40" width="12" height="4" fill="#FF4365"/>
+              <rect x="34" y="40" width="4" height="4" fill="#E6EBF2"/>
+              <rect x="38" y="40" width="4" height="4" fill="#FF4365"/>
+              <rect x="26" y="44" width="12" height="4" fill="#FF4365"/>
+              <rect x="30" y="48" width="4" height="4" fill="#FF4365"/>
+            </g>
+            <text x="79" y="46" font-family="'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="38" font-weight="800" letter-spacing="-0.8" class="fill-[#161B33] dark:fill-white">PngLike</text>
+          </svg>
+          <span class="text-slate-300 dark:text-slate-700">|</span>
+          <span class="font-bold text-slate-800 dark:text-slate-200">Powered by <span class="text-rose-500">Div Sri</span></span>
+        </div>
+        <p id="footerCustomText" class="text-slate-500 leading-relaxed">Powered by Div Sri • Professional 9-in-1 AI Image Studio.</p>
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 text-[11px] font-semibold">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>All AI Systems Operational</span>
+        </div>
+      </div>
+      <div>
+        <h4 class="font-bold text-slate-900 dark:text-white text-sm mb-3">AI Studio Tools</h4>
+        <ul class="space-y-2">
+          <li><a href="#bg-remover" class="hover:text-blue-600 dark:hover:text-blue-400 transition">Background Remover (Free)</a></li>
+          <li><a href="#image-editor" class="hover:text-blue-600 dark:hover:text-blue-400 transition">Image Editor (Free)</a></li>
+          <li><a href="#skin-enhancer" class="hover:text-blue-600 dark:hover:text-blue-400 transition">Skin Enhancer (Free)</a></li>
+          <li><a href="#image-upscaler" class="hover:text-blue-600 dark:hover:text-blue-400 transition">Image Upscaler (Pro)</a></li>
+          <li><a href="#image-extender" class="hover:text-blue-600 dark:hover:text-blue-400 transition">Image Extender (Pro)</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-bold text-slate-900 dark:text-white text-sm mb-3">Company & Resources</h4>
+        <ul class="space-y-2">
+          <li><a href="/about" class="hover:text-blue-600 dark:hover:text-blue-400 transition">About Us</a></li>
+          <li><a href="/blog" class="hover:text-blue-600 dark:hover:text-blue-400 transition">Blog & Tutorials</a></li>
+          <li><a href="/faq" class="hover:text-blue-600 dark:hover:text-blue-400 transition">FAQ & Knowledge Base</a></li>
+          <li><a href="/contact" class="hover:text-blue-600 dark:hover:text-blue-400 transition">Contact & Support</a></li>
+          <li><a href="/dashboard" class="hover:text-blue-600 dark:hover:text-blue-400 transition">User Dashboard</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-bold text-slate-900 dark:text-white text-sm mb-3">Legal & Trust</h4>
+        <ul class="space-y-2">
+          <li><a href="/privacy" class="hover:text-blue-600 dark:hover:text-blue-400 transition">Privacy Policy</a></li>
+          <li><a href="/terms" class="hover:text-blue-600 dark:hover:text-blue-400 transition">Terms of Service</a></li>
+          <li><a href="/cookies" class="hover:text-blue-600 dark:hover:text-blue-400 transition">Cookie Policy</a></li>
+          <li><a href="/sitemap.xml" class="hover:text-blue-600 dark:hover:text-blue-400 transition">XML Sitemap</a></li>
+          <li><a href="/robots.txt" class="hover:text-blue-600 dark:hover:text-blue-400 transition">Robots.txt</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-slate-400 text-[11px]">
+      <p>© 2026 PngLike. Powered by Div Sri. All rights reserved.</p>
+      <div class="flex items-center gap-4">
+        <a href="/privacy" class="hover:underline">Privacy</a>
+        <span>•</span>
+        <a href="/terms" class="hover:underline">Terms</a>
+        <span>•</span>
+        <a href="/cookies" class="hover:underline">Cookies</a>
+        <span>•</span>
+        <a href="/contact" class="hover:underline">Contact</a>
+        <span>•</span>
+        <a href="/faq" class="hover:underline">FAQ</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="fixed bottom-6 right-6 z-50 flex flex-col gap-3 pointer-events-none max-w-sm sm:max-w-md w-full sm:w-auto px-4 sm:px-0"></div>
+
+  <!-- Modal: Guest Access Restriction & Upgrade Popup -->
+  <div id="guestRestrictionModal" class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl space-y-5 animate-in fade-in zoom-in-95 duration-200">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold shadow-inner shrink-0">
+          <i data-lucide="sparkles" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <span class="text-[10px] font-extrabold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/80 px-2.5 py-0.5 rounded-full">Free Account Required</span>
+          <h3 id="restrictionModalTitle" class="text-base font-extrabold text-slate-900 dark:text-white mt-1">Unlock All 9 AI Tools</h3>
+        </div>
+      </div>
+
+      <p id="restrictionModalMessage" class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+        This tool requires a registered account. Create a free account or sign in to continue using our full 9-in-1 AI studio suite with high-resolution processing and personal cloud gallery history.
+      </p>
+
+      <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-800 space-y-2 text-xs">
+        <div class="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+          <i data-lucide="check" class="w-4 h-4 text-emerald-500"></i>
+          <span>What you get with a free account:</span>
+        </div>
+        <ul class="text-[11px] text-slate-500 dark:text-slate-400 space-y-1.5 pl-5 list-disc">
+          <li><strong>10 images per cycle</strong> with automatic 30-minute rest reset (vs 3 daily guest uses)</li>
+          <li><strong>Full access to all 9 AI tools</strong> (Upscaler, Outpainting, Relight, etc.)</li>
+          <li><strong>Upload up to 50 MB images</strong> (vs 10 MB for guests)</li>
+          <li><strong>Personal cloud history</strong> saved automatically in your user dashboard</li>
+        </ul>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 pt-1">
+        <button type="button" id="closeRestrictionModalBtn" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-semibold">
+          Maybe Later
+        </button>
+        <a href="/dashboard?mode=register" class="px-5 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white text-xs font-bold flex items-center gap-1.5 shadow-md shadow-indigo-500/20 transition">
+          <i data-lucide="user-plus" class="w-3.5 h-3.5"></i>
+          <span>Create Free Account</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Client Application Logic -->
+  <script src="/static/app.js?v=2.5"></script>
+  <script>
+    // Initialize Lucide icons safely
+    if (window.lucide && typeof window.lucide.createIcons === "function") {
+      window.lucide.createIcons();
+    }
+  </script>
+</body>
+</html>

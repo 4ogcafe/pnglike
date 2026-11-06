@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PngLike (RemBG Admin Portal) — Powered by Div Sri</title>
+  <link rel="icon" type="image/svg+xml" href="/static/brand/favicon.svg">
+  <link rel="apple-touch-icon" href="/static/brand/logo-icon.svg">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            dark: {
+              800: '#1e293b',
+              850: '#172033',
+              900: '#0f172a',
+              950: '#0a0f1d'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-100 dark:bg-dark-950 text-slate-900 dark:text-slate-100 min-h-screen flex flex-col font-sans antialiased">
+
+  <!-- ============================================== -->
+  <!-- ADMIN LOGIN OVERLAY                            -->
+  <!-- ============================================== -->
+  <div id="loginOverlay" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-md w-full p-8 shadow-2xl">
+      <div class="flex items-center gap-3 mb-6">
+        <img src="/static/brand/logo-icon.svg" alt="PngLike Icon" width="48" height="48" class="w-12 h-12 rounded-2xl shadow-lg">
+        <div>
+          <div class="flex items-center gap-2">
+            <img src="/static/brand/logo-dark-text.svg" alt="PngLike" width="115" height="32" class="h-6 w-auto block dark:hidden object-contain">
+            <img src="/static/brand/logo-white-text.svg" alt="PngLike" width="115" height="32" class="h-6 w-auto hidden dark:block object-contain">
+            <span class="sr-only">RemBG Admin Portal</span>
+          </div>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Admin Control Center • <span class="text-rose-500 font-semibold">Powered by Div Sri</span></p>
+        </div>
+      </div>
+
+      <form id="loginForm" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Admin Username</label>
+          <input type="text" id="loginUsername" value="admin" required class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Admin Password</label>
+          <input type="password" id="loginPassword" value="admin123" required class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+
+        <div id="loginErrorMsg" class="hidden text-xs text-rose-500 font-semibold bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 rounded-xl p-2.5"></div>
+
+        <button type="submit" id="loginSubmitBtn" class="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-bold text-sm shadow-lg shadow-indigo-500/25 flex items-center justify-center gap-2 transition">
+          <i data-lucide="log-in" class="w-4 h-4"></i>
+          <span>Sign In to Admin Dashboard</span>
+        </button>
+      </form>
+
+      <div class="mt-5 pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500">
+        <span>Default: <code class="font-mono text-indigo-500">admin / admin123</code></span>
+        <a href="/" class="text-blue-500 hover:underline flex items-center gap-1">
+          <span>Back to Frontend</span>
+          <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- ADMIN SHELL (SIDEBAR + MAIN CONTENT)           -->
+  <!-- ============================================== -->
+  <div class="flex-1 flex min-h-screen">
+
+    <!-- Left Sidebar -->
+    <aside class="w-64 bg-white dark:bg-dark-900 border-r border-slate-200 dark:border-slate-800 flex flex-col justify-between shrink-0">
+      <div>
+        <!-- Brand Header -->
+        <div class="h-16 px-5 border-b border-slate-200 dark:border-slate-800 flex items-center gap-3">
+          <img src="/static/brand/favicon.svg" alt="PngLike Icon" width="36" height="36" class="w-9 h-9 rounded-xl shadow-md">
+          <div>
+            <div class="flex items-center gap-1.5">
+              <img src="/static/brand/logo-dark-text.svg" alt="PngLike" width="92" height="26" class="h-5 w-auto block dark:hidden object-contain">
+              <img src="/static/brand/logo-white-text.svg" alt="PngLike" width="92" height="26" class="h-5 w-auto hidden dark:block object-contain">
+            </div>
+            <span class="text-[10px] text-rose-500 font-bold uppercase tracking-wider block mt-0.5">Powered by Div Sri</span>
+          </div>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav class="p-3 space-y-1 text-xs font-semibold">
+          <button data-tab="overview" class="admin-nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 transition">
+            <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+            <span>Overview & Analytics</span>
+          </button>
+          <button data-tab="cms" class="admin-nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+            <i data-lucide="Sliders" class="w-4 h-4"></i>
+            <span>Frontend CMS & Flags</span>
+          </button>
+          <button data-tab="blog" class="admin-nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+            <i data-lucide="book-open" class="w-4 h-4"></i>
+            <span>Blog Manager</span>
+          </button>
+          <button data-tab="users" class="admin-nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+            <i data-lucide="users" class="w-4 h-4"></i>
+            <span>Users Manager</span>
+          </button>
+          <button data-tab="models" class="admin-nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+            <i data-lucide="cpu" class="w-4 h-4"></i>
+            <span>AI Models & RAM Cache</span>
+          </button>
+          <button data-tab="samples" class="admin-nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+            <i data-lucide="images" class="w-4 h-4"></i>
+            <span>Sample Gallery Manager</span>
+          </button>
+          <button data-tab="presets" class="admin-nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+            <i data-lucide="bookmark" class="w-4 h-4"></i>
+            <span>Workflow Presets</span>
+          </button>
+          <button data-tab="jobs" class="admin-nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+            <i data-lucide="hard-drive" class="w-4 h-4"></i>
+            <span>Jobs & Storage Moderation</span>
+          </button>
+          <button data-tab="database" class="admin-nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+            <i data-lucide="database" class="w-4 h-4"></i>
+            <span>MySQL & Security</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Bottom User Card -->
+      <div class="p-4 border-t border-slate-200 dark:border-slate-800 space-y-2">
+        <div class="flex items-center justify-between text-xs">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span id="adminUserLabel" class="font-bold text-slate-800 dark:text-slate-200">admin</span>
+          </div>
+          <span class="text-[10px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500">superadmin</span>
+        </div>
+        <button id="logoutBtn" class="w-full py-2 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:text-rose-600 text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+          <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+          <span>Sign Out</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Right Content Area -->
+    <div class="flex-1 flex flex-col min-w-0">
+
+      <!-- Top Header -->
+      <header class="h-16 bg-white/80 dark:bg-dark-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-6 flex items-center justify-between sticky top-0 z-30">
+        <div>
+          <h1 id="pageHeaderTitle" class="font-extrabold text-base text-slate-900 dark:text-white">Overview & Analytics</h1>
+        </div>
+        <div class="flex items-center gap-3">
+          <span id="headerDbBadge" class="text-xs px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 font-medium">
+            MySQL Connected
+          </span>
+          <a href="/blog" target="_blank" class="px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition">
+            <i data-lucide="book-open" class="w-3.5 h-3.5 text-indigo-500"></i>
+            <span>View Blog</span>
+          </a>
+          <a href="/" target="_blank" class="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold flex items-center gap-1.5 shadow-sm transition">
+            <span>View Live Frontend</span>
+            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+          </a>
+          <button id="adminThemeBtn" class="p-2 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
+            <i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i>
+            <i data-lucide="moon" class="w-4 h-4 block dark:hidden"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Views Container -->
+      <main class="flex-1 p-6 max-w-6xl w-full mx-auto space-y-6">
+
+        <!-- ========================================== -->
+        <!-- TAB 1: OVERVIEW & ANALYTICS                -->
+        <!-- ========================================== -->
+        <section id="tab-overview" class="admin-section space-y-6">
+          <!-- KPI Row -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+              <div class="flex items-center justify-between text-xs text-slate-500 mb-2">
+                <span>Total Processed Jobs</span>
+                <i data-lucide="layers" class="w-4 h-4 text-blue-500"></i>
+              </div>
+              <div id="kpiTotalJobs" class="text-3xl font-extrabold text-slate-900 dark:text-white">0</div>
+              <div class="text-[11px] text-slate-400 mt-1">Persisted in MySQL <code class="font-mono">removal_jobs</code></div>
+            </div>
+
+            <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+              <div class="flex items-center justify-between text-xs text-slate-500 mb-2">
+                <span>Avg Inference Speed</span>
+                <i data-lucide="zap" class="w-4 h-4 text-emerald-500"></i>
+              </div>
+              <div id="kpiAvgTime" class="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">0 ms</div>
+              <div class="text-[11px] text-slate-400 mt-1">ONNX Runtime Acceleration</div>
+            </div>
+
+            <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+              <div class="flex items-center justify-between text-xs text-slate-500 mb-2">
+                <span>Output Disk Storage</span>
+                <i data-lucide="hard-drive" class="w-4 h-4 text-indigo-500"></i>
+              </div>
+              <div id="kpiStorage" class="text-3xl font-extrabold text-indigo-600 dark:text-indigo-400">0 KB</div>
+              <div id="kpiPresetsSamples" class="text-[11px] text-slate-400 mt-1">3 Presets • 3 Samples</div>
+            </div>
+
+            <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+              <div class="flex items-center justify-between text-xs text-slate-500 mb-2">
+                <span>Active AI Models in RAM</span>
+                <i data-lucide="cpu" class="w-4 h-4 text-amber-500"></i>
+              </div>
+              <div id="kpiRamModels" class="text-xl font-extrabold text-slate-900 dark:text-white truncate">u2net</div>
+              <div id="kpiDefaultModel" class="text-[11px] text-slate-400 mt-1">Default: u2net</div>
+            </div>
+          </div>
+
+          <!-- Breakdown Row -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+              <h3 class="font-bold text-sm mb-4 flex items-center gap-2">
+                <i data-lucide="pie-chart" class="w-4 h-4 text-blue-500"></i>
+                <span>Jobs by AI Model</span>
+              </h3>
+              <div id="modelsBreakdownList" class="space-y-3 text-xs"></div>
+            </div>
+
+            <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+              <h3 class="font-bold text-sm mb-4 flex items-center gap-2">
+                <i data-lucide="activity" class="w-4 h-4 text-emerald-500"></i>
+                <span>Frontend Status Summary</span>
+              </h3>
+              <div id="frontendStatusSummary" class="grid grid-cols-2 gap-3 text-xs"></div>
+            </div>
+          </div>
+
+          <!-- Recent Jobs Preview Table -->
+          <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="font-bold text-sm flex items-center gap-2">
+                <i data-lucide="clock" class="w-4 h-4 text-indigo-500"></i>
+                <span>Recent Processed Cutouts</span>
+              </h3>
+              <button id="overviewRefreshBtn" class="text-xs text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1">
+                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                <span>Refresh</span>
+              </button>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead>
+                  <tr class="border-b border-slate-200 dark:border-slate-800 text-slate-400">
+                    <th class="pb-2">Preview</th>
+                    <th class="pb-2">Filename</th>
+                    <th class="pb-2">Model</th>
+                    <th class="pb-2">Resolution</th>
+                    <th class="pb-2">Speed</th>
+                    <th class="pb-2">Created At</th>
+                  </tr>
+                </thead>
+                <tbody id="overviewRecentTable" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 2: FRONTEND CMS & FEATURE FLAGS        -->
+        <!-- ========================================== -->
+        <section id="tab-cms" class="admin-section hidden space-y-6">
+          <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm space-y-6">
+            <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
+              <div>
+                <h2 class="font-bold text-base text-slate-900 dark:text-white">Frontend Branding & Content CMS</h2>
+                <p class="text-xs text-slate-500">Changes saved here are stored in MySQL <code class="font-mono">site_settings</code> and update the public frontend immediately.</p>
+              </div>
+              <button id="saveCmsBtn" class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold flex items-center gap-2 shadow-md transition">
+                <i data-lucide="save" class="w-4 h-4"></i>
+                <span>Save & Publish to Frontend</span>
+              </button>
+            </div>
+
+            <!-- Branding & Hero Fields -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Application Title</label>
+                <input type="text" id="cmsSiteTitle" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Subtitle / Tagline</label>
+                <input type="text" id="cmsSiteTagline" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Header Badge Pill</label>
+                <input type="text" id="cmsSiteBadge" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Hero Main Heading</label>
+                <input type="text" id="cmsHeroTitle" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Hero Gradient Highlight Text</label>
+                <input type="text" id="cmsHeroHighlight" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Hero Description Paragraph</label>
+              <textarea id="cmsHeroSubtitle" rows="2" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs"></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Top Announcement Banner Text</label>
+                <input type="text" id="cmsAnnouncementText" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Footer Text</label>
+                <input type="text" id="cmsFooterText" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+              </div>
+            </div>
+
+            <!-- Upload Limits & Defaults -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-slate-200 dark:border-slate-800">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Default AI Model</label>
+                <select id="cmsDefaultModel" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                  <option value="u2net">U2-Net (High Quality)</option>
+                  <option value="u2netp">U2-Netp (Fast / Lightweight)</option>
+                  <option value="u2net_human_seg">U2-Net Human Segmentation</option>
+                  <option value="isnet-general-use">IS-Net General Use</option>
+                  <option value="isnet-anime">IS-Net Anime</option>
+                  <option value="silueta">Silueta</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Max Single Upload Size (MB)</label>
+                <input type="number" id="cmsMaxUploadMb" min="1" max="100" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Max Batch Upload Files</label>
+                <input type="number" id="cmsMaxBatchFiles" min="1" max="200" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+              </div>
+            </div>
+
+            <!-- Feature Toggles -->
+            <div class="pt-4 border-t border-slate-200 dark:border-slate-800">
+              <h3 class="font-bold text-xs uppercase tracking-wider text-slate-400 mb-3">Frontend Feature Flags & Access Control</h3>
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <label class="flex items-center justify-between p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 cursor-pointer">
+                  <div>
+                    <span class="text-xs font-bold block">Announcement Banner</span>
+                    <span class="text-[11px] text-slate-500">Show top promo bar on frontend</span>
+                  </div>
+                  <input type="checkbox" id="cmsAnnouncementEnabled" class="w-4 h-4 accent-blue-600">
+                </label>
+
+                <label class="flex items-center justify-between p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 cursor-pointer">
+                  <div>
+                    <span class="text-xs font-bold block">Batch Remover Tab</span>
+                    <span class="text-[11px] text-slate-500">Allow multi-image ZIP processing</span>
+                  </div>
+                  <input type="checkbox" id="cmsEnableBatch" class="w-4 h-4 accent-blue-600">
+                </label>
+
+                <label class="flex items-center justify-between p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 cursor-pointer">
+                  <div>
+                    <span class="text-xs font-bold block">Public History Tab</span>
+                    <span class="text-[11px] text-slate-500">Show MySQL History tab to users</span>
+                  </div>
+                  <input type="checkbox" id="cmsEnableHistory" class="w-4 h-4 accent-blue-600">
+                </label>
+
+                <label class="flex items-center justify-between p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 cursor-pointer">
+                  <div>
+                    <span class="text-xs font-bold block">Alpha Matting Controls</span>
+                    <span class="text-[11px] text-slate-500">Allow fine edge threshold sliders</span>
+                  </div>
+                  <input type="checkbox" id="cmsEnableAlpha" class="w-4 h-4 accent-blue-600">
+                </label>
+
+                <label class="flex items-center justify-between p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 cursor-pointer">
+                  <div>
+                    <span class="text-xs font-bold block">Custom Backdrop Upload</span>
+                    <span class="text-[11px] text-slate-500">Allow custom background photos</span>
+                  </div>
+                  <input type="checkbox" id="cmsEnableBackdrop" class="w-4 h-4 accent-blue-600">
+                </label>
+
+                <label class="flex items-center justify-between p-3.5 rounded-2xl bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800 cursor-pointer">
+                  <div>
+                    <span class="text-xs font-bold text-rose-600 dark:text-rose-400 block">Maintenance Mode</span>
+                    <span class="text-[11px] text-rose-500">Pause public frontend processing</span>
+                  </div>
+                  <input type="checkbox" id="cmsMaintenanceMode" class="w-4 h-4 accent-rose-600">
+                </label>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Maintenance Mode Message</label>
+              <input type="text" id="cmsMaintenanceMessage" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+            </div>
+
+            <!-- All 9 Image Tools Manager -->
+            <div class="pt-4 border-t border-slate-200 dark:border-slate-800">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+                <div>
+                  <h3 class="font-bold text-xs uppercase tracking-wider text-slate-400">All 9 IMAGE Tools Manager (Working Mode)</h3>
+                  <p class="text-[11px] text-slate-500">Enable or disable individual IMAGE tools in the public "All tools" menu and choose the default active tool.</p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <label class="text-xs font-semibold text-slate-500">Default Tool:</label>
+                  <select id="cmsDefaultTool" class="bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs">
+                    <option value="bg-remover">Background Remover</option>
+                    <option value="image-editor">Image Editor</option>
+                    <option value="image-upscaler">Image Upscaler</option>
+                    <option value="image-extender">Image Extender</option>
+                    <option value="variations">Variations</option>
+                    <option value="cinematic-shot">Cinematic Shot</option>
+                    <option value="skin-enhancer">Skin Enhancer</option>
+                    <option value="relight">Relight</option>
+                    <option value="change-camera">Change Camera</option>
+                  </select>
+                </div>
+              </div>
+              <div id="cmsToolsCheckboxes" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                <!-- Populated by admin.js -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 3: AI MODELS & RAM CACHE               -->
+        <!-- ========================================== -->
+        <section id="tab-models" class="admin-section hidden space-y-6">
+          <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+            <div class="mb-5">
+              <h2 class="font-bold text-base text-slate-900 dark:text-white">ONNX AI Models & Memory Cache Manager</h2>
+              <p class="text-xs text-slate-500">Control which models appear on the frontend dropdown and manage pre-loaded ONNX sessions in RAM.</p>
+            </div>
+            <div id="adminModelsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 4: SAMPLE GALLERY MANAGER              -->
+        <!-- ========================================== -->
+        <section id="tab-samples" class="admin-section hidden space-y-6">
+          <!-- Upload New Sample Form -->
+          <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+            <h2 class="font-bold text-base text-slate-900 dark:text-white mb-1">Add One-Click Sample Image</h2>
+            <p class="text-xs text-slate-500 mb-4">Upload a new test image to display in the public frontend's sample gallery.</p>
+            <form id="uploadSampleForm" class="grid grid-cols-1 sm:grid-cols-4 gap-3 items-end">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Sample Title</label>
+                <input type="text" id="newSampleTitle" placeholder="e.g. Vintage Car" required class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Category Badge</label>
+                <input type="text" id="newSampleCategory" value="Product" required class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Image File</label>
+                <input type="file" id="newSampleFile" accept="image/*" required class="w-full text-xs">
+              </div>
+              <button type="submit" class="py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+                <span>Upload Sample</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- Existing Samples Grid -->
+          <div id="adminSamplesGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 5: WORKFLOW PRESETS MANAGER            -->
+        <!-- ========================================== -->
+        <section id="tab-presets" class="admin-section hidden space-y-6">
+          <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+            <h2 class="font-bold text-base text-slate-900 dark:text-white mb-1">Create Frontend Studio Preset</h2>
+            <p class="text-xs text-slate-500 mb-4">Presets are stored in MySQL <code class="font-mono">preset_configs</code> and available to all frontend users.</p>
+            <form id="createPresetForm" class="grid grid-cols-1 sm:grid-cols-5 gap-3 items-end">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Preset Name</label>
+                <input type="text" id="newPresetName" placeholder="e.g. Anime HD" required class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">AI Model</label>
+                <select id="newPresetModel" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                  <option value="u2net">u2net</option>
+                  <option value="u2netp">u2netp</option>
+                  <option value="isnet-anime">isnet-anime</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Background Mode</label>
+                <select id="newPresetBgMode" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                  <option value="transparent">Transparent</option>
+                  <option value="solid">Solid White (#ffffff)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Export Format</label>
+                <select id="newPresetFormat" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                  <option value="png">PNG</option>
+                  <option value="jpg">JPG</option>
+                  <option value="webp">WebP</option>
+                </select>
+              </div>
+              <button type="submit" class="py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm">
+                <i data-lucide="bookmark-plus" class="w-4 h-4"></i>
+                <span>Save Preset</span>
+              </button>
+            </form>
+          </div>
+
+          <div id="adminPresetsList" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB: BLOG MANAGER (CMS & SEO)              -->
+        <!-- ========================================== -->
+        <section id="tab-blog" class="admin-section hidden space-y-6">
+          <!-- Blog KPI Row -->
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm">
+              <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
+                <span>Total Blog Posts</span>
+                <i data-lucide="book-open" class="w-4 h-4 text-blue-500"></i>
+              </div>
+              <div id="blogKpiTotal" class="text-2xl font-extrabold text-slate-900 dark:text-white">0</div>
+            </div>
+            <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm">
+              <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
+                <span>Published Live</span>
+                <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-500"></i>
+              </div>
+              <div id="blogKpiPublished" class="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400">0</div>
+            </div>
+            <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm">
+              <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
+                <span>Drafts / Featured</span>
+                <i data-lucide="star" class="w-4 h-4 text-amber-500"></i>
+              </div>
+              <div id="blogKpiDraftsFeatured" class="text-2xl font-extrabold text-amber-500">0 / 0</div>
+            </div>
+            <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm">
+              <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
+                <span>Total Article Views</span>
+                <i data-lucide="eye" class="w-4 h-4 text-indigo-500"></i>
+              </div>
+              <div id="blogKpiViews" class="text-2xl font-extrabold text-indigo-600 dark:text-indigo-400">0</div>
+            </div>
+          </div>
+
+          <!-- Create / Edit Blog Post Form -->
+          <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm space-y-5">
+            <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
+              <div>
+                <div class="flex items-center gap-2">
+                  <h2 id="blogFormHeaderTitle" class="font-bold text-base text-slate-900 dark:text-white">Create New Blog Article</h2>
+                  <span id="blogEditModeBadge" class="hidden px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 text-[10px] font-bold uppercase">Editing Existing Post</span>
+                </div>
+                <p class="text-xs text-slate-500">Publish tutorials, release notes, and AI guides to <a href="/blog" target="_blank" class="text-blue-500 hover:underline font-mono">/blog</a> and auto-sync with <code class="font-mono">/sitemap.xml</code>.</p>
+              </div>
+              <button type="button" id="blogCancelEditBtn" class="hidden px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                Cancel Edit / New Post
+              </button>
+            </div>
+
+            <form id="blogEditorForm" class="space-y-4">
+              <input type="hidden" id="blogEditPostId" value="">
+
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="md:col-span-2">
+                  <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Article Title *</label>
+                  <input type="text" id="blogTitleInput" placeholder="e.g. How to Remove Hair Backgrounds with U2-Net" required class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">URL Slug (auto-generated if blank)</label>
+                  <input type="text" id="blogSlugInput" placeholder="how-to-remove-hair-backgrounds" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs font-mono">
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Category</label>
+                  <input type="text" id="blogCategoryInput" list="blogCategorySuggestions" value="AI Tutorials" required class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                  <datalist id="blogCategorySuggestions">
+                    <option value="AI Tutorials"></option>
+                    <option value="Product Photography"></option>
+                    <option value="Computer Vision"></option>
+                    <option value="Portrait Retouching"></option>
+                    <option value="Release Notes"></option>
+                  </datalist>
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Author</label>
+                  <input type="text" id="blogAuthorInput" value="Div Sri" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Read Time (Minutes)</label>
+                  <input type="number" id="blogReadTimeInput" min="1" max="60" value="4" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Tags (comma-separated)</label>
+                  <input type="text" id="blogTagsInput" placeholder="u2net,alpha-matting,ecommerce" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-mono">
+                </div>
+              </div>
+
+              <!-- Cover Image URL + Upload -->
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                <div class="md:col-span-2">
+                  <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Cover Image URL</label>
+                  <input type="text" id="blogCoverInput" value="/static/samples/portrait_person.jpg" placeholder="/static/samples/portrait_person.jpg" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs font-mono">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Or Upload Custom Cover Image</label>
+                  <input type="file" id="blogCoverFileInput" accept="image/*" class="w-full text-xs">
+                </div>
+              </div>
+
+              <!-- Excerpt -->
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Article Summary / Excerpt *</label>
+                <textarea id="blogExcerptInput" rows="2" required placeholder="Short summary displayed on blog cards and search engine snippets..." class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs"></textarea>
+              </div>
+
+              <!-- Content Editor with Quick Formatting Toolbar -->
+              <div>
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+                  <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400">Article Body Content (HTML / Rich Text) *</label>
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <button type="button" data-blog-tag="h2" class="blog-fmt-btn px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-slate-700 text-[11px] font-bold">+ H2</button>
+                    <button type="button" data-blog-tag="h3" class="blog-fmt-btn px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-slate-700 text-[11px] font-bold">+ H3</button>
+                    <button type="button" data-blog-tag="p" class="blog-fmt-btn px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-slate-700 text-[11px] font-bold">+ Paragraph</button>
+                    <button type="button" data-blog-tag="ul" class="blog-fmt-btn px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-slate-700 text-[11px] font-bold">+ List</button>
+                    <button type="button" data-blog-tag="quote" class="blog-fmt-btn px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-slate-700 text-[11px] font-bold">+ Pro Tip</button>
+                    <button type="button" data-blog-tag="code" class="blog-fmt-btn px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-slate-700 text-[11px] font-bold">+ Code</button>
+                  </div>
+                </div>
+                <textarea id="blogContentInput" rows="7" required placeholder="<h2>Introduction</h2><p>Write your tutorial or article content here...</p>" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-xs font-mono"></textarea>
+              </div>
+
+              <!-- SEO Metadata Overrides -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-slate-200 dark:border-slate-800">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">SEO Meta Title (optional)</label>
+                  <input type="text" id="blogMetaTitleInput" placeholder="Defaults to Article Title" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">SEO Meta Description (optional)</label>
+                  <input type="text" id="blogMetaDescInput" placeholder="Defaults to Article Summary" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs">
+                </div>
+              </div>
+
+              <!-- Publish & Featured Toggles + Submit -->
+              <div class="flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-slate-200 dark:border-slate-800">
+                <div class="flex items-center gap-6">
+                  <label class="flex items-center gap-2 text-xs font-bold cursor-pointer">
+                    <input type="checkbox" id="blogPublishedToggle" checked class="w-4 h-4 accent-emerald-600">
+                    <span>Published (Visible on <code class="font-mono">/blog</code>)</span>
+                  </label>
+                  <label class="flex items-center gap-2 text-xs font-bold cursor-pointer">
+                    <input type="checkbox" id="blogFeaturedToggle" class="w-4 h-4 accent-amber-500">
+                    <span>★ Featured Article Spotlight</span>
+                  </label>
+                </div>
+
+                <button type="submit" id="blogSaveSubmitBtn" class="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold flex items-center gap-2 shadow-md transition">
+                  <i data-lucide="send" class="w-4 h-4"></i>
+                  <span id="blogSaveSubmitText">Publish Blog Article</span>
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Existing Blog Articles Table -->
+          <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <h3 class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                <i data-lucide="list" class="w-4 h-4 text-blue-500"></i>
+                <span>Manage Blog Posts in MySQL</span>
+              </h3>
+              <div class="flex items-center gap-2 flex-wrap">
+                <input type="text" id="adminBlogSearchInput" placeholder="Search title or tag..." class="bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs">
+                <select id="adminBlogStatusFilter" class="bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs">
+                  <option value="">All Statuses</option>
+                  <option value="published">Published Only</option>
+                  <option value="draft">Drafts Only</option>
+                  <option value="featured">Featured Only</option>
+                </select>
+                <button type="button" id="adminBlogFilterBtn" class="px-3.5 py-1.5 rounded-xl bg-blue-600 text-white text-xs font-semibold">Filter</button>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead>
+                  <tr class="border-b border-slate-200 dark:border-slate-800 text-slate-400">
+                    <th class="pb-2">Cover</th>
+                    <th class="pb-2">Article Title & Slug</th>
+                    <th class="pb-2">Category</th>
+                    <th class="pb-2">Status</th>
+                    <th class="pb-2">Featured</th>
+                    <th class="pb-2">Views</th>
+                    <th class="pb-2">Published</th>
+                    <th class="pb-2 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="adminBlogTableBody" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 6: JOBS & STORAGE MODERATION           -->
+        <!-- ========================================== -->
+        <section id="tab-jobs" class="admin-section hidden space-y-6">
+          <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <div class="flex items-center gap-2 flex-1 min-w-[240px]">
+                <input type="text" id="jobsSearchInput" placeholder="Search filename or UUID..." class="flex-1 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs">
+                <select id="jobsModelFilter" class="bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                  <option value="">All Models</option>
+                  <option value="u2net">u2net</option>
+                  <option value="u2netp">u2netp</option>
+                </select>
+                <button id="jobsFilterBtn" class="px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-semibold">Filter</button>
+              </div>
+
+              <button id="purgeAllJobsBtn" class="px-4 py-2 rounded-xl bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800 text-xs font-semibold flex items-center gap-1.5">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                <span>Purge All Jobs & Files</span>
+              </button>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead>
+                  <tr class="border-b border-slate-200 dark:border-slate-800 text-slate-400">
+                    <th class="pb-2">ID</th>
+                    <th class="pb-2">Cutout</th>
+                    <th class="pb-2">Original File</th>
+                    <th class="pb-2">Model</th>
+                    <th class="pb-2">Dimensions</th>
+                    <th class="pb-2">Size</th>
+                    <th class="pb-2">Time</th>
+                    <th class="pb-2">Date</th>
+                    <th class="pb-2 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="adminJobsTableBody" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB: USERS MANAGER                         -->
+        <!-- ========================================== -->
+        <section id="tab-users" class="admin-section hidden space-y-6">
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+            <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+              <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Users</span>
+              <div id="admUsersTotalCount" class="text-3xl font-extrabold mt-1">0</div>
+            </div>
+            <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+              <span class="text-xs font-semibold uppercase tracking-wider text-emerald-500">Active (Verified)</span>
+              <div id="admUsersActiveCount" class="text-3xl font-extrabold mt-1">0</div>
+            </div>
+            <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+              <span class="text-xs font-semibold uppercase tracking-wider text-amber-500">Pending Verification</span>
+              <div id="admUsersPendingCount" class="text-3xl font-extrabold mt-1">0</div>
+            </div>
+            <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+              <span class="text-xs font-semibold uppercase tracking-wider text-rose-500">Suspended</span>
+              <div id="admUsersSuspendedCount" class="text-3xl font-extrabold mt-1">0</div>
+            </div>
+          </div>
+
+          <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
+              <div>
+                <h2 class="font-bold text-base flex items-center gap-2">
+                  <i data-lucide="users" class="w-5 h-5 text-indigo-500"></i>
+                  <span>Registered Studio Users</span>
+                </h2>
+                <p class="text-xs text-slate-500">Manage creator accounts, subscription tiers, and account status.</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <input type="text" id="admUsersSearchInput" placeholder="Search username or email..." class="bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs">
+                <a href="/dashboard" target="_blank" class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-1.5">
+                  <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                  <span>Open User Portal</span>
+                </a>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead>
+                  <tr class="border-b border-slate-200 dark:border-slate-800 text-slate-400 uppercase text-[10px]">
+                    <th class="pb-2">User</th>
+                    <th class="pb-2">Email</th>
+                    <th class="pb-2">Plan Tier</th>
+                    <th class="pb-2">Jobs Run</th>
+                    <th class="pb-2">Status</th>
+                    <th class="pb-2">Joined</th>
+                    <th class="pb-2 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="adminUsersTableBody" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 7: MYSQL & ADMIN SECURITY              -->
+        <!-- ========================================== -->
+        <section id="tab-database" class="admin-section hidden grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- MySQL Connection Settings -->
+          <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm space-y-4">
+            <h2 class="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <i data-lucide="database" class="w-5 h-5 text-indigo-500"></i>
+              <span>MySQL Server Connection</span>
+            </h2>
+            <div id="adminDbStatusBox" class="p-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-mono"></div>
+
+            <div class="grid grid-cols-3 gap-3">
+              <div class="col-span-2">
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Host</label>
+                <input type="text" id="admDbHost" value="127.0.0.1" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-mono">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Port</label>
+                <input type="number" id="admDbPort" value="3306" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-mono">
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">User</label>
+                <input type="text" id="admDbUser" value="root" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-mono">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Password</label>
+                <input type="password" id="admDbPass" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-mono">
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Database Schema</label>
+              <input type="text" id="admDbName" value="rembg_studio" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-mono">
+            </div>
+            <button id="admSaveDbBtn" class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-sm">
+              <i data-lucide="plug-zap" class="w-4 h-4"></i>
+              <span>Reconnect & Provision MySQL Schema</span>
+            </button>
+          </div>
+
+          <!-- Administrator Credentials -->
+          <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm space-y-4">
+            <h2 class="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <i data-lucide="key-round" class="w-5 h-5 text-emerald-500"></i>
+              <span>Administrator Account Security</span>
+            </h2>
+            <p class="text-xs text-slate-500">Update the administrator credentials stored in the MySQL <code class="font-mono">admin_users</code> table.</p>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Admin Username</label>
+              <input type="text" id="admNewUsername" value="admin" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">New Password (min 4 characters)</label>
+              <input type="password" id="admNewPassword" placeholder="Enter new password" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+            </div>
+            <button id="admUpdateCredsBtn" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-sm">
+              <i data-lucide="shield-check" class="w-4 h-4"></i>
+              <span>Update Admin Credentials in MySQL</span>
+            </button>
+          </div>
+
+          <!-- Gmail & SMTP Email Service Configuration -->
+          <div class="col-span-1 lg:col-span-2 bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm space-y-4">
+            <div class="flex items-center justify-between">
+              <h2 class="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+                <i data-lucide="mail" class="w-5 h-5 text-indigo-500"></i>
+                <span>Gmail & SMTP Email Verification Service</span>
+              </h2>
+              <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-600 dark:text-slate-300">
+                <input type="checkbox" id="admSmtpEnabled" checked class="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500">
+                <span>Enable Email Verification</span>
+              </label>
+            </div>
+            <p class="text-xs text-slate-500">
+              Configure your Gmail SMTP credentials. Newly registered users will receive a 6-digit verification code and 1-click link to activate their account.
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">SMTP Host</label>
+                <input type="text" id="admSmtpHost" value="smtp.gmail.com" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-mono">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">SMTP Port</label>
+                <input type="number" id="admSmtpPort" value="587" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-mono">
+              </div>
+              <div class="flex items-end pb-2">
+                <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-600 dark:text-slate-300">
+                  <input type="checkbox" id="admSmtpUseTls" checked class="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500">
+                  <span>Use STARTTLS (Port 587)</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Gmail Address / Username</label>
+                <input type="text" id="admSmtpUser" placeholder="yourstudio@gmail.com" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-mono">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Google App Password (16 chars)</label>
+                <input type="password" id="admSmtpPass" placeholder="••••••••••••••••" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-mono">
+                <p class="text-[10px] text-slate-400 mt-0.5">Use an App Password generated in Google Account &gt; Security &gt; 2-Step Verification.</p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Sender Name ("From")</label>
+                <input type="text" id="admSmtpFromName" value="PngLike AI Studio — Powered by Div Sri" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Sender Email ("From Email")</label>
+                <input type="text" id="admSmtpFromEmail" placeholder="support@pnglike.studio or your Gmail" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-mono">
+              </div>
+            </div>
+
+            <div class="pt-2 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div class="flex items-center gap-2 w-full sm:w-auto">
+                <input type="email" id="admSmtpTestRecipient" placeholder="Recipient for test email" class="bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs w-full sm:w-64">
+                <button type="button" id="admTestSmtpBtn" class="px-3.5 py-2 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold shrink-0 flex items-center gap-1.5 transition">
+                  <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                  <span>Test Connection</span>
+                </button>
+              </div>
+              <button type="button" id="admSaveSmtpBtn" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition">
+                <i data-lucide="save" class="w-4 h-4"></i>
+                <span>Save Gmail SMTP Settings</span>
+              </button>
+            </div>
+            <div id="admSmtpStatusBox" class="hidden p-3 rounded-xl text-xs font-semibold"></div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <script src="/static/admin.js"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

@@ -1,0 +1,445 @@
+import os
+from copy import deepcopy
+from typing import List
+
+import numpy as np
+import onnxruntime as ort
+import pooch
+from jsonschema import validate
+from PIL import Image
+from PIL.Image import Image as PILImage
+from scipy.ndimage import map_coordinates
+
+from .base import BaseSession
+
+
+def warp_affine(
+    image: np.ndarray, matrix: np.ndarray, output_shape: tuple
+) -> np.ndarray:
+    """
+    Apply affine transformation to an image (matching cv2.warpAffine behavior).
+
+    cv2.warpAffine maps source coordinates to destination coordinates:
+        dst(M @ [x, y, 1]^T) = src(x, y)
+
+    So to fill dst(x', y'), we compute the inverse:
+        src_coords = M^(-1) @ [x', y', 1]^T
+
+    Args:
+        image: Input image (H, W) or (H, W, C)
+        matrix: 2x3 affine transformation matrix
+        output_shape: (height, width) of output
+
+    Returns:
+        Transformed image
+    """
+    h, w = output_shape
+
+    # Build full 3x3 matrix and compute inverse
+    M_full = np.vstack([matrix, [0, 0, 1]])
+    M_inv = np.linalg.inv(M_full)[:2]
+
+    # Create output coordinate grid
+    cols = np.arange(w)
+    rows = np.arange(h)
+    x_coords, y_coords = np.meshgrid(cols, rows)
+
+    # Apply inverse transform to get source coordinates
+    src_x = M_inv[0, 0] * x_coords + M_inv[0, 1] * y_coords + M_inv[0, 2]
+    src_y = M_inv[1, 0] * x_coords + M_inv[1, 1] * y_coords + M_inv[1, 2]
+
+    if image.ndim == 2:
+        result = map_coordinates(
+            image.astype(np.float64), [src_y, src_x], order=1, mode="constant", cval=0
+        )
+    else:
+        result = np.zeros((h, w, image.shape[2]), dtype=np.float64)
+        for c in range(image.shape[2]):
+            result[:, :, c] = map_coordinates(
+                image[:, :, c].astype(np.float64),
+                [src_y, src_x],
+                order=1,
+                mode="constant",
+                cval=0,
+            )
+
+    return result.astype(image.dtype)
+
+
+def get_preprocess_shape(oldh: int, oldw: int, long_side_length: int):
+    scale = long_side_length * 1.0 / max(oldh, oldw)
+    newh, neww = oldh * scale, oldw * scale
+    neww = int(neww + 0.5)
+    newh = int(newh + 0.5)
+
+    return (newh, neww)
+
+
+def apply_coords(coords: np.ndarray, original_size, target_length):
+    old_h, old_w = original_size
+    new_h, new_w = get_preprocess_shape(
+        original_size[0], original_size[1], target_length
+    )
+
+    coords = deepcopy(coords).astype(float)
+    coords[..., 0] = coords[..., 0] * (new_w / old_w)
+    coords[..., 1] = coords[..., 1] * (new_h / old_h)
+
+    return coords
+
+
+def get_input_points(prompt):
+    points = []
+    labels = []
+
+    for mark in prompt:
+        if mark["type"] == "point":
+            points.append(mark["data"])
+            labels.append(mark["label"])
+        elif mark["type"] == "rectangle":
+            points.append([mark["data"][0], mark["data"][1]])
+            points.append([mark["data"][2], mark["data"][3]])
+            labels.append(2)
+            labels.append(3)
+
+    points, labels = np.array(points), np.array(labels)
+    return points, labels
+
+
+def transform_masks(masks, original_size, transform_matrix):
+    output_masks = []
+
+    for batch in range(masks.shape[0]):
+        batch_masks = []
+        for mask_id in range(masks.shape[1]):
+            mask = masks[batch, mask_id]
+            mask = warp_affine(
+                mask,
+                transform_matrix[:2],
+                (original_size[0], original_size[1]),
+            )
+            batch_masks.append(mask)
+        output_masks.append(batch_masks)
+
+    return np.array(output_masks)
+
+
+#: md5 of every SAM release asset, keyed by filename.
+#:
+#: Two things depend on this table. `sam_model` reaches this module straight
+#: from the public `extras` payload of `/api/remove`, and its value is
+#: interpolated into both download URLs and local filenames, so a name outside
+#: these keys is rejected before it can steer a path or a URL. The digests then
+#: pin what is fetched, matching every other session; SAM used to pass no hash
+#: at all, which left a swapped asset undetected.
+SAM_CHECKSUMS = {
+    "sam_vit_b_01ec64.encoder.onnx": "md5:a780f8ba09bceceaa1435724ed354848",
+    "sam_vit_b_01ec64.decoder.onnx": "md5:c4218b16ec1cb09889fcd6eb7a42a7c9",
+    "sam_vit_b_01ec64.encoder.quant.onnx": "md5:26fc0e01d2fa34ed2d3f91259118482d",
+    "sam_vit_b_01ec64.decoder.quant.onnx": "md5:45391530307d1aee79b2a1507769e6c7",
+    "sam_vit_l_0b3195.encoder.onnx": "md5:6e7c5e3e97b50a9e833e55062ae35182",
+    "sam_vit_l_0b3195.decoder.onnx": "md5:dc760a2912862c05ec3ac2658162a1b5",
+    "sam_vit_l_0b3195.encoder.quant.onnx": "md5:83f7fe08c2f8b94b6d08c3e44cf1de0e",
+    "sam_vit_l_0b3195.decoder.quant.onnx": "md5:e78ca201f5ae92288945623f48088b7c",
+    "sam_vit_h_4b8939.encoder.onnx": "md5:2630bbbf7f256ff82455ecce70467734",
+    "sam_vit_h_4b8939.decoder.onnx": "md5:2241a15c7c5e5b6ac018223d1a795a94",
+    "sam_vit_h_4b8939.encoder.quant.onnx": "md5:391503beb5e5d7d1ae6f55d0cecabd50",
+    "sam_vit_h_4b8939.decoder.quant.onnx": "md5:4c86ebeecbe2e6325203b641b8702a5b",
+    "sam_vit_h_4b8939.encoder_data.1.bin": "md5:22316455879cd64f1414bc2cc84772ab",
+    "sam_vit_h_4b8939.encoder_data.2.bin": "md5:3ca4efe12cd9a686e60364a628546440",
+    "sam_vit_h_4b8939.encoder_data.3.bin": "md5:635041e6eac1c3e6ac7eceeef1ed1f38",
+}
+
+#: SAM checkpoints published as release assets, as an allowlist.
+SAM_MODELS = frozenset(
+    {
+        "sam_vit_b_01ec64",
+        "sam_vit_l_0b3195",
+        "sam_vit_h_4b8939",
+    }
+)
+
+
+class SamSession(BaseSession):
+    """
+    This class represents a session for the Sam model.
+
+    Args:
+        model_name (str): The name of the model.
+        sess_opts (ort.SessionOptions): The session options.
+        *args: Variable length argument list.
+        **kwargs: Arbitrary keyword arguments.
+    """
+
+    def __init__(
+        self,
+        model_name: str,
+        sess_opts: ort.SessionOptions,
+        *args,
+        **kwargs,
+    ):
+        """
+        Initialize a new SamSession with the given model name and session options.
+
+        Args:
+            model_name (str): The name of the model.
+            sess_opts (ort.SessionOptions): The session options.
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+        """
+        self.model_name = model_name
+
+        paths = self.__class__.download_models(*args, **kwargs)
+        self.encoder = ort.InferenceSession(
+            str(paths[0]),
+            sess_options=sess_opts,
+        )
+        self.decoder = ort.InferenceSession(
+            str(paths[1]),
+            sess_options=sess_opts,
+        )
+
+    def predict(
+        self,
+        img: PILImage,
+        *args,
+        **kwargs,
+    ) -> List[PILImage]:
+        """
+        Predict masks for an input image.
+
+        This function takes an image as input and performs various preprocessing steps on the image. It then runs the image through an encoder to obtain an image embedding. The function also takes input labels and points as additional arguments. It concatenates the input points and labels with padding and transforms them. It creates an empty mask input and an indicator for no mask. The function then passes the image embedding, point coordinates, point labels, mask input, and has mask input to a decoder. The decoder generates masks based on the input and returns them as a list of images.
+
+        Parameters:
+            img (PILImage): The input image.
+            *args: Additional arguments.
+            **kwargs: Additional keyword arguments.
+
+        Returns:
+            List[PILImage]: A list of masks generated by the decoder.
+        """
+        prompt = kwargs.get(
+            "sam_prompt",
+            [
+                {
+                    "type": "point",
+                    "label": 1,
+                    "data": [int(img.width / 2), int(img.height / 2)],
+                }
+            ],
+        )
+        schema = {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "type": {"type": "string"},
+                    "label": {"type": "integer"},
+                    "data": {
+                        "type": "array",
+                        "items": {"type": "number"},
+                    },
+                },
+            },
+        }
+
+        validate(instance=prompt, schema=schema)
+
+        target_size = 1024
+        input_size = (684, 1024)
+        encoder_input_name = self.encoder.get_inputs()[0].name
+
+        img = img.convert("RGB")
+        cv_image = np.array(img)
+        original_size = cv_image.shape[:2]
+
+        scale_x = input_size[1] / cv_image.shape[1]
+        scale_y = input_size[0] / cv_image.shape[0]
+        scale = min(scale_x, scale_y)
+
+        transform_matrix = np.array(
+            [
+                [scale, 0, 0],
+                [0, scale, 0],
+                [0, 0, 1],
+            ]
+        )
+
+        cv_image = warp_affine(
+            cv_image,
+            transform_matrix[:2],
+            (input_size[0], input_size[1]),
+        )
+
+        ## encoder
+
+        encoder_inputs = {
+            encoder_input_name: cv_image.astype(np.float32),
+        }
+
+        encoder_output = self.encoder.run(None, encoder_inputs)
+        image_embedding = encoder_output[0]
+
+        ## decoder
+
+        input_points, input_labels = get_input_points(prompt)
+        onnx_coord = np.concatenate([input_points, np.array([[0.0, 0.0]])], axis=0)[
+            None, :, :
+        ]
+        onnx_label = np.concatenate([input_labels, np.array([-1])], axis=0)[
+            None, :
+        ].astype(np.float32)
+        onnx_coord = apply_coords(onnx_coord, input_size, target_size).astype(
+            np.float32
+        )
+
+        onnx_coord = np.concatenate(
+            [
+                onnx_coord,
+                np.ones((1, onnx_coord.shape[1], 1), dtype=np.float32),
+            ],
+            axis=2,
+        )
+        onnx_coord = np.matmul(onnx_coord, transform_matrix.T)
+        onnx_coord = onnx_coord[:, :, :2].astype(np.float32)
+
+        onnx_mask_input = np.zeros((1, 1, 256, 256), dtype=np.float32)
+        onnx_has_mask_input = np.zeros(1, dtype=np.float32)
+
+        decoder_inputs = {
+            "image_embeddings": image_embedding,
+            "point_coords": onnx_coord,
+            "point_labels": onnx_label,
+            "mask_input": onnx_mask_input,
+            "has_mask_input": onnx_has_mask_input,
+            "orig_im_size": np.array(input_size, dtype=np.float32),
+        }
+
+        masks, _, _ = self.decoder.run(None, decoder_inputs)
+        inv_transform_matrix = np.linalg.inv(transform_matrix)
+        masks = transform_masks(masks, original_size, inv_transform_matrix)
+
+        mask = np.zeros((masks.shape[2], masks.shape[3], 3), dtype=np.uint8)
+        for m in masks[0, :, :, :]:
+            mask[m > 0.0] = [255, 255, 255]
+
+        return [Image.fromarray(mask).convert("L")]
+
+    @classmethod
+    def download_models(cls, *args, **kwargs):
+        """
+        Class method to download ONNX model files.
+
+        This method is responsible for downloading two ONNX model files from specified URLs and saving them locally. The downloaded files are saved with the naming convention 'name_encoder.onnx' and 'name_decoder.onnx', where 'name' is the value returned by the 'name' method.
+
+        Parameters:
+            cls: The class object.
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        Returns:
+            tuple: A tuple containing the file paths of the downloaded encoder and decoder models.
+        """
+        model_name = kwargs.get("sam_model", "sam_vit_b_01ec64")
+        quant = bool(kwargs.get("sam_quant", False))
+
+        if model_name not in SAM_MODELS:
+            raise ValueError(
+                f"unknown sam_model {model_name!r}; "
+                f"expected one of {', '.join(sorted(SAM_MODELS))}"
+            )
+
+        def known_hash(fname):
+            if cls.checksum_disabled(*args, **kwargs):
+                return None
+            return SAM_CHECKSUMS.get(fname)
+
+        fname_encoder = f"{model_name}.encoder.onnx"
+        fname_decoder = f"{model_name}.decoder.onnx"
+
+        if quant:
+            fname_encoder = f"{model_name}.encoder.quant.onnx"
+            fname_decoder = f"{model_name}.decoder.quant.onnx"
+
+        existing_encoder = cls.resolve_existing(fname_encoder, *args, **kwargs)
+        existing_decoder = cls.resolve_existing(fname_decoder, *args, **kwargs)
+
+        # The large encoder loads `encoder_data.bin` as a sidecar from its own
+        # directory, so encoder and blob have to stay together. Only reuse a
+        # previous download when the whole set is present in one place.
+        if existing_encoder is not None and existing_decoder is not None:
+            base = os.path.dirname(existing_encoder)
+            needs_blob = fname_encoder == "sam_vit_h_4b8939.encoder.onnx"
+            blob_ok = not needs_blob or os.path.exists(
+                os.path.join(base, "sam_vit_h_4b8939.encoder_data.bin")
+            )
+
+            if os.path.dirname(existing_decoder) == base and blob_ok:
+                return (existing_encoder, existing_decoder)
+
+        target = cls.model_dir(*args, **kwargs)
+
+        pooch.retrieve(
+            f"https://github.com/danielgatis/rembg/releases/download/v0.0.0/{fname_encoder}",
+            known_hash(fname_encoder),
+            fname=fname_encoder,
+            path=target,
+            progressbar=True,
+        )
+
+        pooch.retrieve(
+            f"https://github.com/danielgatis/rembg/releases/download/v0.0.0/{fname_decoder}",
+            known_hash(fname_decoder),
+            fname=fname_decoder,
+            path=target,
+            progressbar=True,
+        )
+
+        if fname_encoder == "sam_vit_h_4b8939.encoder.onnx" and not os.path.exists(
+            os.path.join(target, "sam_vit_h_4b8939.encoder_data.bin")
+        ):
+            content = bytearray()
+
+            for i in range(1, 4):
+                pooch.retrieve(
+                    f"https://github.com/danielgatis/rembg/releases/download/v0.0.0/sam_vit_h_4b8939.encoder_data.{i}.bin",
+                    known_hash(f"sam_vit_h_4b8939.encoder_data.{i}.bin"),
+                    fname=f"sam_vit_h_4b8939.encoder_data.{i}.bin",
+                    path=target,
+                    progressbar=True,
+                )
+
+                fbin = os.path.join(
+                    target,
+                    f"sam_vit_h_4b8939.encoder_data.{i}.bin",
+                )
+                content.extend(open(fbin, "rb").read())
+                os.remove(fbin)
+
+            with open(
+                os.path.join(target, "sam_vit_h_4b8939.encoder_data.bin"),
+                "wb",
+            ) as fp:
+                fp.write(content)
+
+        return (
+            os.path.join(target, fname_encoder),
+            os.path.join(target, fname_decoder),
+        )
+
+    @classmethod
+    def name(cls, *args, **kwargs):
+        """
+        Class method to return a string value.
+
+        This method returns the string value 'sam'.
+
+        Parameters:
+            cls: The class object.
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        Returns:
+            str: The string value 'sam'.
+        """
+        return "sam"

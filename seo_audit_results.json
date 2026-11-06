@@ -1,0 +1,929 @@
+{
+  "pages": {
+    "/": {
+      "label": "Home / Tool Suite",
+      "status": 200,
+      "title": "PngLike \u2014 9-in-1 AI Image Suite & Background Remover | Powered by Div Sri",
+      "title_len": 73,
+      "description": "Process photos with 9 neural image tools: U2-Net background removal, 4x upscaling, AI outpainting, portrait skin retouching, and 3D studio relighting. Powered by Div Sri.",
+      "description_len": 170,
+      "canonical": "https://pnglike.studio/",
+      "robots": "index, follow, max-image-preview:large, max-snippet:-1",
+      "og_title": "PngLike \u2014 9-in-1 AI Image Suite & Background Remover | Powered by Div Sri",
+      "og_desc": "Process photos locally with 9 neural image tools: U2-Net background removal, 4x upscaling, AI outpainting, portrait skin retouching, and 3D studio relighting.",
+      "og_image": "https://pnglike.studio/static/brand/logo-dark-text.svg",
+      "twitter_card": "summary_large_image",
+      "h1_count": 2,
+      "h1s": [
+        "Remove Image Backgrounds",
+        "Instantly with AI"
+      ],
+      "h2_count": 5,
+      "total_images": 2,
+      "missing_alt_count": 0,
+      "missing_alt_samples": [],
+      "schema_count": 1,
+      "schemas": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://pnglike.studio/#organization",
+              "name": "PngLike \u2014 Powered by Div Sri",
+              "url": "https://pnglike.studio/",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://pnglike.studio/static/brand/logo-icon.svg",
+                "width": 512,
+                "height": 512
+              },
+              "founder": {
+                "@type": "Person",
+                "name": "Div Sri"
+              }
+            },
+            {
+              "@type": "WebSite",
+              "@id": "https://pnglike.studio/#website",
+              "url": "https://pnglike.studio/",
+              "name": "PngLike (RemBG Studio) \u2014 Powered by Div Sri",
+              "publisher": {
+                "@id": "https://pnglike.studio/#organization"
+              }
+            },
+            {
+              "@type": "WebApplication",
+              "@id": "https://pnglike.studio/#webapp",
+              "name": "PngLike \u2014 9-in-1 AI Image Suite (Powered by Div Sri)",
+              "url": "https://pnglike.studio/",
+              "applicationCategory": "MultimediaApplication",
+              "operatingSystem": "Web, Windows, macOS, Linux",
+              "browserRequirements": "Requires HTML5 Canvas and JavaScript",
+              "softwareVersion": "2.1.0",
+              "datePublished": "2026-11-06",
+              "dateModified": "2026-11-06",
+              "author": {
+                "@type": "Person",
+                "name": "Div Sri"
+              },
+              "creator": {
+                "@id": "https://pnglike.studio/#organization"
+              },
+              "description": "Single-page AI image studio Powered by Div Sri featuring 9 dedicated computer vision and neural ONNX tools: Image Editor, Image Upscaler, Image Extender, Variations, Cinematic Shot, Background Remover, Skin Enhancer, Relight, and Change Camera.",
+              "featureList": [
+                "Image Editor: Color grading, crop ratios, rotation, and artistic filters",
+                "Image Upscaler: 2x and 4x Lanczos super-resolution with bilateral denoise",
+                "Image Extender: Context-aware AI outpainting and aspect-ratio canvas expansion",
+                "Variations: Multi-style artistic restyling (Cyberpunk, Synthwave, Vintage, Anime, Watercolor)",
+                "Cinematic Shot: AI subject depth-of-field bokeh, Hollywood LUT grading, and 2.39:1 letterbox",
+                "Background Remover: U2-Net, IS-Net, and Silueta ONNX neural background segmentation",
+                "Skin Enhancer: Frequency-separated YCbCr skin retouching with pore texture preservation",
+                "Relight: 3D studio directional key/rim lighting with foreground subject isolation",
+                "Change Camera: 3D projective homography perspective warp and optical lens simulation"
+              ],
+              "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD"
+              }
+            },
+            {
+              "@type": "ItemList",
+              "@id": "https://pnglike.studio/#tools-list",
+              "name": "All 9 Working AI Image Tools",
+              "numberOfItems": 9,
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Background Remover",
+                  "url": "https://pnglike.studio/#bg-remover"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Image Editor",
+                  "url": "https://pnglike.studio/#image-editor"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "name": "Skin Enhancer",
+                  "url": "https://pnglike.studio/#skin-enhancer"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 4,
+                  "name": "Image Upscaler",
+                  "url": "https://pnglike.studio/#image-upscaler"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 5,
+                  "name": "Image Extender",
+                  "url": "https://pnglike.studio/#image-extender"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 6,
+                  "name": "Variations",
+                  "url": "https://pnglike.studio/#variations"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 7,
+                  "name": "Cinematic Shot",
+                  "url": "https://pnglike.studio/#cinematic-shot"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 8,
+                  "name": "Relight",
+                  "url": "https://pnglike.studio/#relight"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 9,
+                  "name": "Change Camera",
+                  "url": "https://pnglike.studio/#change-camera"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "/blog": {
+      "label": "Blog Index",
+      "status": 200,
+      "title": "PngLike Blog \u2014 AI Image Tutorials, Computer Vision & Product Photography | Powered by Div Sri",
+      "title_len": 93,
+      "description": "Official PngLike (RemBG Studio) blog Powered by Div Sri. Deep-dive tutorials on U2-Net AI background removal, alpha matting, 4x upscaling, e-commerce product photography, and 3D relighting.",
+      "description_len": 189,
+      "canonical": "https://pnglike.studio/blog",
+      "robots": "index, follow, max-image-preview:large, max-snippet:-1",
+      "og_title": "PngLike Blog \u2014 AI Image Studio Tutorials & Guides | Powered by Div Sri",
+      "og_desc": "Tutorials, workflows, and computer vision guides for PngLike 9-in-1 AI Image Suite.",
+      "og_image": "https://pnglike.studio/static/brand/logo-dark-text.svg",
+      "twitter_card": "summary_large_image",
+      "h1_count": 1,
+      "h1s": [
+        "AI Image Processing, Neural Cutouts & Studio Guides"
+      ],
+      "h2_count": 1,
+      "total_images": 1,
+      "missing_alt_count": 0,
+      "missing_alt_samples": [],
+      "schema_count": 1,
+      "schemas": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://pnglike.studio/#organization",
+              "name": "PngLike \u2014 Powered by Div Sri",
+              "url": "https://pnglike.studio/",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://pnglike.studio/static/brand/logo-icon.svg",
+                "width": 512,
+                "height": 512
+              },
+              "founder": {
+                "@type": "Person",
+                "name": "Div Sri"
+              }
+            },
+            {
+              "@type": "Blog",
+              "@id": "https://pnglike.studio/blog#blog",
+              "url": "https://pnglike.studio/blog",
+              "name": "PngLike Official Blog & AI Photography Guides",
+              "description": "Deep-dive tutorials on U2-Net AI background removal, e-commerce product photography, 4x super-resolution upscaling, and 3D portrait relighting.",
+              "publisher": {
+                "@id": "https://pnglike.studio/#organization"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "/about": {
+      "label": "About Us",
+      "status": 200,
+      "title": "About Us \u2014 PngLike AI Image Studio | Powered by Div Sri",
+      "title_len": 55,
+      "description": "About PngLike: Professional 9-in-1 AI image editing & background removal studio built and powered by Div Sri. Learn about our local ONNX runtime pipeline, vision, and technology.",
+      "description_len": 178,
+      "canonical": "https://pnglike.studio/about",
+      "robots": "index, follow",
+      "og_title": "About Us \u2014 PngLike AI Image Studio | Powered by Div Sri",
+      "og_desc": "Discover the story and architecture behind PngLike, created by Div Sri. Fast, private, neural background cutout and image editing suite.",
+      "og_image": "https://pnglike.studio/static/brand/logo-dark-text.svg",
+      "twitter_card": "summary_large_image",
+      "h1_count": 1,
+      "h1s": [
+        "About PngLike AI Studio"
+      ],
+      "h2_count": 2,
+      "total_images": 0,
+      "missing_alt_count": 0,
+      "missing_alt_samples": [],
+      "schema_count": 1,
+      "schemas": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "AboutPage",
+              "@id": "https://pnglike.studio/about#webpage",
+              "url": "https://pnglike.studio/about",
+              "name": "About Us \u2014 PngLike AI Image Studio | Powered by Div Sri",
+              "description": "About PngLike: Professional 9-in-1 AI image editing & background removal studio built and powered by Div Sri.",
+              "publisher": {
+                "@type": "Organization",
+                "name": "PngLike \u2014 Powered by Div Sri",
+                "url": "https://pnglike.studio/",
+                "logo": {
+                  "@type": "ImageObject",
+                  "url": "https://pnglike.studio/static/brand/logo-icon.svg"
+                },
+                "founder": {
+                  "@type": "Person",
+                  "name": "Div Sri"
+                }
+              }
+            },
+            {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Home",
+                  "item": "https://pnglike.studio/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "About Us",
+                  "item": "https://pnglike.studio/about"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "/contact": {
+      "label": "Contact Us",
+      "status": 200,
+      "title": "Contact Support \u2014 PngLike AI Image Studio | Powered by Div Sri",
+      "title_len": 62,
+      "description": "Get in touch with the PngLike engineering and support team powered by Div Sri. Submit inquiries, bug reports, feature suggestions, or business partnerships.",
+      "description_len": 156,
+      "canonical": "https://pnglike.studio/contact",
+      "robots": "index, follow",
+      "og_title": "Contact Support \u2014 PngLike AI Image Studio | Powered by Div Sri",
+      "og_desc": "Reach our support and creator team directly for assistance, feedback, bug reports, and questions.",
+      "og_image": "https://pnglike.studio/static/brand/logo-dark-text.svg",
+      "twitter_card": "summary_large_image",
+      "h1_count": 1,
+      "h1s": [
+        "Contact & Support"
+      ],
+      "h2_count": 0,
+      "total_images": 0,
+      "missing_alt_count": 0,
+      "missing_alt_samples": [],
+      "schema_count": 1,
+      "schemas": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "ContactPage",
+              "@id": "https://pnglike.studio/contact#webpage",
+              "url": "https://pnglike.studio/contact",
+              "name": "Contact Support \u2014 PngLike AI Image Studio | Powered by Div Sri",
+              "description": "Get in touch with the PngLike engineering and support team powered by Div Sri for help, bugs, or feature inquiries.",
+              "publisher": {
+                "@type": "Organization",
+                "name": "PngLike \u2014 Powered by Div Sri",
+                "url": "https://pnglike.studio/",
+                "logo": {
+                  "@type": "ImageObject",
+                  "url": "https://pnglike.studio/static/brand/logo-icon.svg"
+                },
+                "contactPoint": {
+                  "@type": "ContactPoint",
+                  "contactType": "customer support",
+                  "url": "https://pnglike.studio/contact",
+                  "availableLanguage": [
+                    "English",
+                    "Spanish",
+                    "German",
+                    "French",
+                    "Japanese"
+                  ]
+                }
+              }
+            },
+            {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Home",
+                  "item": "https://pnglike.studio/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Contact Support",
+                  "item": "https://pnglike.studio/contact"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "/faq": {
+      "label": "FAQ",
+      "status": 200,
+      "title": "Frequently Asked Questions (FAQ) \u2014 PngLike AI Image Studio | Powered by Div Sri",
+      "title_len": 79,
+      "description": "Frequently Asked Questions about PngLike AI Image Studio Powered by Div Sri. Answers about background removal accuracy, commercial use rights, daily quotas, and local AI processing.",
+      "description_len": 181,
+      "canonical": "https://pnglike.studio/faq",
+      "robots": "index, follow",
+      "og_title": "Frequently Asked Questions (FAQ) \u2014 PngLike AI Image Studio | Powered by Div Sri",
+      "og_desc": "Frequently Asked Questions about PngLike AI Image Studio Powered by Div Sri. Answers about commercial rights, in-memory privacy, daily free limits, models, and alpha matting.",
+      "og_image": "https://pnglike.studio/static/brand/logo-dark-text.svg",
+      "twitter_card": "summary_large_image",
+      "h1_count": 1,
+      "h1s": [
+        "Frequently Asked Questions"
+      ],
+      "h2_count": 0,
+      "total_images": 0,
+      "missing_alt_count": 0,
+      "missing_alt_samples": [],
+      "schema_count": 1,
+      "schemas": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "WebPage",
+              "@id": "https://pnglike.studio/faq#webpage",
+              "url": "https://pnglike.studio/faq",
+              "name": "Frequently Asked Questions (FAQ) \u2014 PngLike AI Image Studio | Powered by Div Sri",
+              "description": "Answers to common questions regarding PngLike background removal, commercial licensing, privacy, and models.",
+              "publisher": {
+                "@type": "Organization",
+                "name": "PngLike \u2014 Powered by Div Sri",
+                "url": "https://pnglike.studio/",
+                "logo": {
+                  "@type": "ImageObject",
+                  "url": "https://pnglike.studio/static/brand/logo-icon.svg"
+                }
+              }
+            },
+            {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Home",
+                  "item": "https://pnglike.studio/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "FAQ",
+                  "item": "https://pnglike.studio/faq"
+                }
+              ]
+            },
+            {
+              "@type": "FAQPage",
+              "@id": "https://pnglike.studio/faq#faq",
+              "mainEntity": [
+                {
+                  "@type": "Question",
+                  "name": "Can I use generated images for commercial purposes?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes! You retain 100% full intellectual property ownership, copyright, and commercial licensing for all images processed through PngLike. You are free to use them on Amazon, Shopify, marketing collateral, client deliverables, YouTube thumbnails, and print merchandise without royalties."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Is my image data kept private?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes. PngLike processes files in-memory using localized ONNX neural networks. We do not sell your photos, train generative models on your private portraits, or inspect your creations. Guest outputs are stored only ephemerally and automatically cleaned up."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "What is the difference between Guest and Registered user accounts?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Guests can process up to 3 images daily with a 10 MB file size cap. Creating a free registered account (verified via Gmail) immediately unlocks 100 generations per day (in 10-image bursts with 30-minute rest cooldowns), 50 MB upload limits, personal cloud gallery history, and full access to all 9 neural tools."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Which neural network model should I select?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "For general photos, products, and objects, U2-Net or IS-Net General delivers the highest edge quality. For human portraits with complex hair strands, choose U2-Net Human Seg. For rapid bulk processing, choose U2-Netp or Silueta. For manga and illustration artwork, select IS-Net Anime."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "What does Alpha Matting do?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Alpha Matting is a refined mathematical post-processing pass that examines the trimap boundary between subject and background. It calculates continuous transparency values (alpha from 0.0 to 1.0) along fuzzy borders, ensuring that fine hair strands, fur, transparent glass, and veil fabric blend naturally without jagged halos."
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "/privacy": {
+      "label": "Privacy Policy",
+      "status": 200,
+      "title": "Privacy Policy \u2014 PngLike AI Image Studio | Powered by Div Sri",
+      "title_len": 61,
+      "description": "Privacy Policy for PngLike 9-in-1 AI Image Studio Powered by Div Sri. Learn how your images are processed privately in real-time memory with zero data selling, and your rights under GDPR and CCPA.",
+      "description_len": 196,
+      "canonical": "https://pnglike.studio/privacy",
+      "robots": "index, follow",
+      "og_title": "Privacy Policy \u2014 PngLike AI Image Studio | Powered by Div Sri",
+      "og_desc": "In-memory neural processing, zero data sales, transparent quotas, and user ownership guarantees.",
+      "og_image": "https://pnglike.studio/static/brand/logo-dark-text.svg",
+      "twitter_card": "summary_large_image",
+      "h1_count": 1,
+      "h1s": [
+        "Privacy Policy"
+      ],
+      "h2_count": 7,
+      "total_images": 0,
+      "missing_alt_count": 0,
+      "missing_alt_samples": [],
+      "schema_count": 1,
+      "schemas": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "WebPage",
+              "@id": "https://pnglike.studio/privacy#webpage",
+              "url": "https://pnglike.studio/privacy",
+              "name": "Privacy Policy \u2014 PngLike AI Image Studio | Powered by Div Sri",
+              "description": "Privacy practices, localized in-memory neural processing, and user data protection commitments for PngLike AI Studio.",
+              "publisher": {
+                "@type": "Organization",
+                "name": "PngLike \u2014 Powered by Div Sri",
+                "url": "https://pnglike.studio/",
+                "logo": {
+                  "@type": "ImageObject",
+                  "url": "https://pnglike.studio/static/brand/logo-icon.svg"
+                }
+              }
+            },
+            {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Home",
+                  "item": "https://pnglike.studio/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Privacy Policy",
+                  "item": "https://pnglike.studio/privacy"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "/terms": {
+      "label": "Terms of Service",
+      "status": 200,
+      "title": "Terms of Service \u2014 PngLike AI Image Studio | Powered by Div Sri",
+      "title_len": 63,
+      "description": "Terms of Service for PngLike AI Studio Powered by Div Sri. Intellectual property rights, acceptable use guidelines, API policies, and user generation ownership.",
+      "description_len": 160,
+      "canonical": "https://pnglike.studio/terms",
+      "robots": "index, follow",
+      "og_title": "Terms of Service \u2014 PngLike AI Image Studio | Powered by Div Sri",
+      "og_desc": "Transparent fair use, 100% intellectual property ownership of your creations, and service availability terms.",
+      "og_image": "https://pnglike.studio/static/brand/logo-dark-text.svg",
+      "twitter_card": "summary_large_image",
+      "h1_count": 1,
+      "h1s": [
+        "Terms of Service"
+      ],
+      "h2_count": 6,
+      "total_images": 0,
+      "missing_alt_count": 0,
+      "missing_alt_samples": [],
+      "schema_count": 1,
+      "schemas": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "WebPage",
+              "@id": "https://pnglike.studio/terms#webpage",
+              "url": "https://pnglike.studio/terms",
+              "name": "Terms of Service \u2014 PngLike AI Image Studio | Powered by Div Sri",
+              "description": "Intellectual property rights, commercial use policies, acceptable use guidelines, and terms for PngLike.",
+              "publisher": {
+                "@type": "Organization",
+                "name": "PngLike \u2014 Powered by Div Sri",
+                "url": "https://pnglike.studio/",
+                "logo": {
+                  "@type": "ImageObject",
+                  "url": "https://pnglike.studio/static/brand/logo-icon.svg"
+                }
+              }
+            },
+            {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Home",
+                  "item": "https://pnglike.studio/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Terms of Service",
+                  "item": "https://pnglike.studio/terms"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "/cookies": {
+      "label": "Cookie Policy",
+      "status": 200,
+      "title": "Cookie Policy \u2014 PngLike AI Image Studio | Powered by Div Sri",
+      "title_len": 60,
+      "description": "Cookie Policy for PngLike 9-in-1 AI Studio Powered by Div Sri. Transparent details on local storage, session cookies, and zero third-party ad tracker tracking.",
+      "description_len": 159,
+      "canonical": "https://pnglike.studio/cookies",
+      "robots": "index, follow",
+      "og_title": "Cookie Policy \u2014 PngLike AI Image Studio | Powered by Div Sri",
+      "og_desc": "Transparent explanation of browser local storage, session authentication, and tracker-free AI image studio.",
+      "og_image": "https://pnglike.studio/static/brand/logo-dark-text.svg",
+      "twitter_card": "summary_large_image",
+      "h1_count": 1,
+      "h1s": [
+        "Cookie Policy"
+      ],
+      "h2_count": 3,
+      "total_images": 0,
+      "missing_alt_count": 0,
+      "missing_alt_samples": [],
+      "schema_count": 1,
+      "schemas": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "WebPage",
+              "@id": "https://pnglike.studio/cookies#webpage",
+              "url": "https://pnglike.studio/cookies",
+              "name": "Cookie Policy \u2014 PngLike AI Image Studio | Powered by Div Sri",
+              "description": "Cookie Policy for PngLike 9-in-1 AI Studio Powered by Div Sri: local storage, sessions, and zero third-party tracking.",
+              "publisher": {
+                "@type": "Organization",
+                "name": "PngLike \u2014 Powered by Div Sri",
+                "url": "https://pnglike.studio/",
+                "logo": {
+                  "@type": "ImageObject",
+                  "url": "https://pnglike.studio/static/brand/logo-icon.svg"
+                }
+              }
+            },
+            {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Home",
+                  "item": "https://pnglike.studio/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Cookie Policy",
+                  "item": "https://pnglike.studio/cookies"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "/blog/ecommerce-product-photography-pure-white-studio-catalogs": {
+      "label": "Blog Post 1 - Ecommerce",
+      "status": 200,
+      "title": "E-Commerce Product Photography Guide \u2014 Pure White Studio Cutouts \u2014 PngLike Blog | Powered by Div Sri",
+      "title_len": 100,
+      "description": "Automate Amazon and Shopify product photography with PngLike Batch Studio, pure #FFFFFF backdrops, and 4x Lanczos super-resolution upscaling.",
+      "description_len": 141,
+      "canonical": "https://pnglike.studio/blog/ecommerce-product-photography-pure-white-studio-catalogs",
+      "robots": "index, follow, max-image-preview:large, max-snippet:-1",
+      "og_title": "E-Commerce Product Photography Guide \u2014 Pure White Studio Cutouts \u2014 PngLike Blog | Powered by Div Sri",
+      "og_desc": "Automate Amazon and Shopify product photography with PngLike Batch Studio, pure #FFFFFF backdrops, and 4x Lanczos super-resolution upscaling.",
+      "og_image": "https://pnglike.studio/static/samples/product_sneaker.jpg",
+      "twitter_card": "summary_large_image",
+      "h1_count": 1,
+      "h1s": [
+        "AI Image Processing, Neural Cutouts & Studio Guides"
+      ],
+      "h2_count": 1,
+      "total_images": 1,
+      "missing_alt_count": 0,
+      "missing_alt_samples": [],
+      "schema_count": 1,
+      "schemas": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://pnglike.studio/#organization",
+              "name": "PngLike \u2014 Powered by Div Sri",
+              "url": "https://pnglike.studio/",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://pnglike.studio/static/brand/logo-icon.svg"
+              }
+            },
+            {
+              "@type": "BlogPosting",
+              "@id": "https://pnglike.studio/blog/ecommerce-product-photography-pure-white-studio-catalogs#article",
+              "headline": "E-Commerce Product Photography: Creating Pure White Studio Catalogs in Seconds",
+              "description": "Automate Amazon and Shopify product photography with PngLike Batch Studio, pure #FFFFFF backdrops, and 4x Lanczos super-resolution upscaling.",
+              "image": "https://pnglike.studio/static/samples/product_sneaker.jpg",
+              "author": {
+                "@type": "Person",
+                "name": "Div Sri"
+              },
+              "publisher": {
+                "@id": "https://pnglike.studio/#organization"
+              },
+              "datePublished": "2026-11-06 07:07:07",
+              "dateModified": "2026-11-06 07:07:07",
+              "mainEntityOfPage": {
+                "@type": "WebPage",
+                "@id": "https://pnglike.studio/blog/ecommerce-product-photography-pure-white-studio-catalogs"
+              }
+            },
+            {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Home",
+                  "item": "https://pnglike.studio/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Blog",
+                  "item": "https://pnglike.studio/blog"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "name": "E-Commerce Product Photography: Creating Pure White Studio Catalogs in Seconds",
+                  "item": "https://pnglike.studio/blog/ecommerce-product-photography-pure-white-studio-catalogs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "/blog/mastering-ai-background-removal-u2net-alpha-matting": {
+      "label": "Blog Post 2 - U2Net",
+      "status": 200,
+      "title": "Mastering Hair-Level AI Background Removal with U2-Net \u2014 PngLike Blog | Powered by Div Sri",
+      "title_len": 90,
+      "description": "Step-by-step guide to achieving razor-sharp hair and fur cutouts using U2-Net ONNX neural segmentation and alpha matting in PngLike Studio.",
+      "description_len": 139,
+      "canonical": "https://pnglike.studio/blog/mastering-ai-background-removal-u2net-alpha-matting",
+      "robots": "index, follow, max-image-preview:large, max-snippet:-1",
+      "og_title": "Mastering Hair-Level AI Background Removal with U2-Net \u2014 PngLike Blog | Powered by Div Sri",
+      "og_desc": "Step-by-step guide to achieving razor-sharp hair and fur cutouts using U2-Net ONNX neural segmentation and alpha matting in PngLike Studio.",
+      "og_image": "https://pnglike.studio/static/samples/portrait_person.jpg",
+      "twitter_card": "summary_large_image",
+      "h1_count": 1,
+      "h1s": [
+        "AI Image Processing, Neural Cutouts & Studio Guides"
+      ],
+      "h2_count": 1,
+      "total_images": 1,
+      "missing_alt_count": 0,
+      "missing_alt_samples": [],
+      "schema_count": 1,
+      "schemas": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://pnglike.studio/#organization",
+              "name": "PngLike \u2014 Powered by Div Sri",
+              "url": "https://pnglike.studio/",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://pnglike.studio/static/brand/logo-icon.svg"
+              }
+            },
+            {
+              "@type": "BlogPosting",
+              "@id": "https://pnglike.studio/blog/mastering-ai-background-removal-u2net-alpha-matting#article",
+              "headline": "Mastering Hair-Level AI Background Removal with U2-Net & Alpha Matting",
+              "description": "Step-by-step guide to achieving razor-sharp hair and fur cutouts using U2-Net ONNX neural segmentation and alpha matting in PngLike Studio.",
+              "image": "https://pnglike.studio/static/samples/portrait_person.jpg",
+              "author": {
+                "@type": "Person",
+                "name": "Div Sri"
+              },
+              "publisher": {
+                "@id": "https://pnglike.studio/#organization"
+              },
+              "datePublished": "2026-11-06 07:07:07",
+              "dateModified": "2026-11-06 07:07:07",
+              "mainEntityOfPage": {
+                "@type": "WebPage",
+                "@id": "https://pnglike.studio/blog/mastering-ai-background-removal-u2net-alpha-matting"
+              }
+            },
+            {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Home",
+                  "item": "https://pnglike.studio/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Blog",
+                  "item": "https://pnglike.studio/blog"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "name": "Mastering Hair-Level AI Background Removal with U2-Net & Alpha Matting",
+                  "item": "https://pnglike.studio/blog/mastering-ai-background-removal-u2net-alpha-matting"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "/blog/inside-pnglike-9-in-1-ai-image-suite-3d-relight-cinematic": {
+      "label": "Blog Post 3 - 9-in-1 Suite",
+      "status": 200,
+      "title": "Inside PngLike 9-in-1 AI Image Suite: Relight, Cinematic & Camera Tools \u2014 PngLike Blog | Powered by Div Sri",
+      "title_len": 107,
+      "description": "Deep dive into the 9 neural and computer vision tools powering PngLike Studio: 3D Relight, Cinematic Shot, Skin Enhancer, Image Extender, and Change Camera.",
+      "description_len": 156,
+      "canonical": "https://pnglike.studio/blog/inside-pnglike-9-in-1-ai-image-suite-3d-relight-cinematic",
+      "robots": "index, follow, max-image-preview:large, max-snippet:-1",
+      "og_title": "Inside PngLike 9-in-1 AI Image Suite: Relight, Cinematic & Camera Tools \u2014 PngLike Blog | Powered by Div Sri",
+      "og_desc": "Deep dive into the 9 neural and computer vision tools powering PngLike Studio: 3D Relight, Cinematic Shot, Skin Enhancer, Image Extender, and Change Camera.",
+      "og_image": "https://pnglike.studio/static/samples/coffee_mug.jpg",
+      "twitter_card": "summary_large_image",
+      "h1_count": 1,
+      "h1s": [
+        "AI Image Processing, Neural Cutouts & Studio Guides"
+      ],
+      "h2_count": 1,
+      "total_images": 1,
+      "missing_alt_count": 0,
+      "missing_alt_samples": [],
+      "schema_count": 1,
+      "schemas": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://pnglike.studio/#organization",
+              "name": "PngLike \u2014 Powered by Div Sri",
+              "url": "https://pnglike.studio/",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://pnglike.studio/static/brand/logo-icon.svg"
+              }
+            },
+            {
+              "@type": "BlogPosting",
+              "@id": "https://pnglike.studio/blog/inside-pnglike-9-in-1-ai-image-suite-3d-relight-cinematic#article",
+              "headline": "Inside PngLike 9-in-1 AI Image Suite: 3D Relighting, Cinematic Bokeh & Camera Warp",
+              "description": "Deep dive into the 9 neural and computer vision tools powering PngLike Studio: 3D Relight, Cinematic Shot, Skin Enhancer, Image Extender, and Change Camera.",
+              "image": "https://pnglike.studio/static/samples/coffee_mug.jpg",
+              "author": {
+                "@type": "Person",
+                "name": "Div Sri"
+              },
+              "publisher": {
+                "@id": "https://pnglike.studio/#organization"
+              },
+              "datePublished": "2026-11-06 07:07:07",
+              "dateModified": "2026-11-06 07:07:07",
+              "mainEntityOfPage": {
+                "@type": "WebPage",
+                "@id": "https://pnglike.studio/blog/inside-pnglike-9-in-1-ai-image-suite-3d-relight-cinematic"
+              }
+            },
+            {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Home",
+                  "item": "https://pnglike.studio/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Blog",
+                  "item": "https://pnglike.studio/blog"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "name": "Inside PngLike 9-in-1 AI Image Suite: 3D Relighting, Cinematic Bokeh & Camera Warp",
+                  "item": "https://pnglike.studio/blog/inside-pnglike-9-in-1-ai-image-suite-3d-relight-cinematic"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "robots_txt": {
+    "status": 200,
+    "has_sitemap": true,
+    "content_sample": "User-agent: *\nAllow: /\nAllow: /blog\nAllow: /about\nAllow: /faq\nAllow: /contact\nAllow: /privacy\nAllow: /terms\nAllow: /cookies\nDisallow: /admin\nDisallow: /api/admin/\nDisallow: /dashboard\nDisallow: /api/user/\n\nUser-agent: GPTBot\nAllow: /\n\nUser-agent: OAI"
+  },
+  "sitemap_xml": {
+    "status": 200,
+    "total_urls": 11,
+    "urls": [
+      "https://pnglike.studio/",
+      "https://pnglike.studio/blog",
+      "https://pnglike.studio/about",
+      "https://pnglike.studio/faq",
+      "https://pnglike.studio/contact",
+      "https://pnglike.studio/privacy",
+      "https://pnglike.studio/terms",
+      "https://pnglike.studio/cookies",
+      "https://pnglike.studio/blog/ecommerce-product-photography-pure-white-studio-catalogs",
+      "https://pnglike.studio/blog/mastering-ai-background-removal-u2net-alpha-matting",
+      "https://pnglike.studio/blog/inside-pnglike-9-in-1-ai-image-suite-3d-relight-cinematic"
+    ]
+  },
+  "llms_txt": {
+    "status": 200,
+    "has_content": true
+  }
+}
