@@ -55,4 +55,5 @@ DirectoryIndex index.html index.php /static/index.html
 <IfModule mod_headers.c>
     Header set X-Content-Type-Options "nosniff"
     Header set X-Frame-Options "SAMEORIGIN"
+    Header set Permissions-Policy "camera=(), microphone=(), geolocation=(), unload=*"
 </IfModule>

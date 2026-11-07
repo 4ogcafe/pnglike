@@ -78,6 +78,25 @@
 
   <link rel="icon" type="image/svg+xml" href="/static/brand/favicon.svg">
   <link rel="apple-touch-icon" href="/static/brand/logo-icon.svg">
+  <!-- Browser Compatibility & Extension Safeguards -->
+  <script>
+    (function(){
+      var _w = console.warn;
+      console.warn = function(...args) {
+        if (args[0] && typeof args[0] === 'string' && (args[0].indexOf('cdn.tailwindcss.com') !== -1 || args[0].indexOf('Permissions policy violation: unload') !== -1)) return;
+        _w.apply(console, args);
+      };
+      try {
+        var _ael = window.addEventListener;
+        window.addEventListener = function(type, listener, options) {
+          if (type === 'unload') {
+            return _ael.call(window, 'pagehide', listener, options);
+          }
+          return _ael.call(window, type, listener, options);
+        };
+      } catch(e) {}
+    })();
+  </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
