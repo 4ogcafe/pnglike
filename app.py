@@ -2042,7 +2042,7 @@ async def register_user_account(payload: UserRegisterPayload, request: Request):
         raise HTTPException(status_code=400, detail=str(e))
 
     # Send Gmail verification email with 6-digit code and 1-click activation link
-    base_url = str(request.base_url).rstrip("/")
+    base_url = SITE_BASE_URL or str(request.base_url).rstrip("/")
     mail_res = await run_in_threadpool(
         send_verification_email,
         user["email"],
@@ -2142,7 +2142,7 @@ async def resend_verification_email_code(payload: UserResendVerificationPayload,
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-    base_url = str(request.base_url).rstrip("/")
+    base_url = SITE_BASE_URL or str(request.base_url).rstrip("/")
     mail_res = await run_in_threadpool(
         send_verification_email,
         user["email"],

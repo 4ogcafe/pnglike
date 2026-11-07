@@ -188,7 +188,7 @@ INDEXNOW_KEY=your_indexnow_api_key
 ```bash
 python run_app.py
 ```
-Open **`http://127.0.0.1:7860`** in your browser.
+Open **`https://pnglike.com`** (or **`http://127.0.0.1:7860`** for local development) in your browser.
 
 ---
 

@@ -84,7 +84,7 @@ def send_verification_email(
     username: str,
     verification_code: str,
     verification_token: str,
-    base_url: str = "http://127.0.0.1:7860",
+    base_url: str = "https://pnglike.com",
     db_manager=None,
 ) -> Dict[str, Any]:
     """
