@@ -2650,9 +2650,12 @@ async def serve_llms_txt():
 @app.get("/{key_file}.txt")
 async def serve_indexnow_key_txt(key_file: str):
     """Serve dynamic IndexNow host verification key file for Bing, Copilot, Naver, and Yandex."""
-    indexnow_key = os.getenv("INDEXNOW_KEY", "").strip()
-    if indexnow_key and key_file == indexnow_key:
+    indexnow_key = os.getenv("INDEXNOW_KEY", "950cf4f1e8b64e1f90b053abbfd50843").strip()
+    if indexnow_key and (key_file == indexnow_key or key_file == "indexnow"):
         return Response(content=indexnow_key, media_type="text/plain; charset=utf-8")
+    key_file_path = BASE_DIR / f"{key_file}.txt"
+    if key_file_path.exists():
+        return Response(content=key_file_path.read_text(encoding="utf-8").strip(), media_type="text/plain; charset=utf-8")
     raise HTTPException(status_code=404, detail="File not found")
 
 
