@@ -21,8 +21,7 @@
 }
 
 #loginOverlay.hidden,
-#userAuthOverlay.hidden,
-.hidden {
+#userAuthOverlay.hidden {
   display: none !important;
 }
 

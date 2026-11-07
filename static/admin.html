@@ -24,7 +24,7 @@
       }
     }
   </script>
-  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="/static/style.css?v=3.2">
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="bg-slate-100 dark:bg-dark-950 text-slate-900 dark:text-slate-100 min-h-screen flex flex-col font-sans antialiased">
@@ -81,11 +81,11 @@
     <!-- Mobile Drawer Backdrop Overlay -->
     <div id="adminMobileBackdrop" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-40 hidden lg:hidden transition-opacity"></div>
 
-    <!-- Left Sidebar (Responsive Drawer on Mobile, Fixed Sidebar on Desktop) -->
-    <aside id="adminSidebar" class="w-72 lg:w-64 bg-white dark:bg-dark-900 border-r border-slate-200 dark:border-slate-800 flex flex-col justify-between shrink-0 fixed lg:static inset-y-0 left-0 z-50 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none">
-      <div>
+    <!-- Left Sidebar (Responsive Drawer on Mobile, Sticky Viewport Height on Desktop) -->
+    <aside id="adminSidebar" class="w-72 lg:w-64 bg-white dark:bg-dark-900 border-r border-slate-200 dark:border-slate-800 flex flex-col justify-between shrink-0 fixed lg:sticky top-0 h-screen inset-y-0 left-0 z-50 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none overflow-hidden">
+      <div class="flex-1 flex flex-col min-h-0">
         <!-- Brand Header with Mobile Close Button -->
-        <div class="h-16 px-4 sm:px-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <div class="h-16 px-4 sm:px-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
           <div class="flex items-center gap-2.5">
             <img src="/static/brand/favicon.svg" alt="PngLike Icon" width="36" height="36" class="w-9 h-9 rounded-xl shadow-md shrink-0">
             <div>
@@ -101,14 +101,14 @@
           </button>
         </div>
 
-        <!-- Navigation Menu -->
-        <nav class="p-3 space-y-1 text-xs font-semibold">
+        <!-- Navigation Menu (Scrollable) -->
+        <nav class="flex-1 p-3 space-y-1 text-xs font-semibold overflow-y-auto">
           <button data-tab="overview" class="admin-nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 transition">
             <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
             <span>Overview & Analytics</span>
           </button>
           <button data-tab="cms" class="admin-nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-            <i data-lucide="Sliders" class="w-4 h-4"></i>
+            <i data-lucide="sliders" class="w-4 h-4"></i>
             <span>Frontend CMS & Flags</span>
           </button>
           <button data-tab="blog" class="admin-nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
@@ -146,8 +146,8 @@
         </nav>
       </div>
 
-      <!-- Bottom User Card -->
-      <div class="p-3.5 border-t border-slate-200 dark:border-slate-800 space-y-2">
+      <!-- Bottom User Card (Always Pinned at Bottom of Sidebar) -->
+      <div class="p-3.5 border-t border-slate-200 dark:border-slate-800 space-y-2 shrink-0 bg-white dark:bg-dark-900">
         <div id="adminSidebarProfileBtn" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/80 cursor-pointer transition group" title="Click to view & edit Profile">
           <div id="adminSidebarAvatar" class="w-9 h-9 rounded-xl flex items-center justify-center text-white font-extrabold text-xs shadow-sm ring-2 ring-indigo-500/20 shrink-0 overflow-hidden bg-indigo-600">
             AD
@@ -1413,7 +1413,7 @@
   <!-- Toast Container -->
   <div id="toastContainer" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-  <script src="/static/admin.js"></script>
+  <script src="/static/admin.js?v=3.2"></script>
   <script>
     if (window.lucide && typeof window.lucide.createIcons === 'function') {
       window.lucide.createIcons();

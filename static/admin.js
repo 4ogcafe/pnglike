@@ -118,6 +118,11 @@ document.addEventListener("DOMContentLoaded", () => {
         if (tab === "jobs") loadAdminJobs();
         if (tab === "database") loadDatabaseTab();
         if (tab === "profile") loadAdminProfile();
+        setTimeout(() => {
+          if (window.lucide && typeof window.lucide.createIcons === 'function') {
+            window.lucide.createIcons();
+          }
+        }, 50);
       });
     });
 

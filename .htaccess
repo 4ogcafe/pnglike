@@ -1,0 +1,49 @@
+# ==============================================================
+# PngLike AI Studio - Apache & LiteSpeed Configuration (.htaccess)
+# ==============================================================
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # 1. If backend Uvicorn is running as a local reverse proxy on port 7860
+    # Uncomment the following lines if your host supports mod_proxy:
+    # RewriteCond %{REQUEST_URI} !^/static/
+    # RewriteRule ^(.*)$ http://127.0.0.1:7860/$1 [P,L]
+
+    # 2. Direct static routes (Fallback when served via LiteSpeed/Apache directly)
+    RewriteCond %{DOCUMENT_ROOT}/static/$1 -f [OR]
+    RewriteCond %{DOCUMENT_ROOT}/static/$1 -d
+    RewriteRule ^(.*)$ /static/$1 [L]
+
+    # 3. Clean SPA URLs mapping to static pages
+    RewriteRule ^$ /static/index.html [L]
+    RewriteRule ^admin/?$ /static/admin.html [L]
+    RewriteRule ^dashboard/?$ /static/dashboard.html [L]
+    RewriteRule ^blog/?$ /static/blog.html [L]
+    RewriteRule ^about/?$ /static/about.html [L]
+    RewriteRule ^contact/?$ /static/contact.html [L]
+    RewriteRule ^faq/?$ /static/faq.html [L]
+    RewriteRule ^privacy/?$ /static/privacy.html [L]
+    RewriteRule ^terms/?$ /static/terms.html [L]
+    RewriteRule ^cookies/?$ /static/cookies.html [L]
+</IfModule>
+
+# Security & Directory Listing Controls
+Options -Indexes +FollowSymLinks
+
+# Standard Web Server MIME Types
+<IfModule mod_mime.c>
+    AddType text/html .html
+    AddType text/css .css
+    AddType application/javascript .js
+    AddType image/svg+xml .svg
+    AddType image/webp .webp
+    AddType application/json .json
+</IfModule>
+
+# Caching & Header Controls
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+</IfModule>

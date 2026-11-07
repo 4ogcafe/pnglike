@@ -1,0 +1,16 @@
+services:
+  pnglike:
+    build: .
+    container_name: pnglike-app
+    restart: always
+    ports:
+      - "7860:7860"
+    environment:
+      - APP_ENV=production
+      - HOST=0.0.0.0
+      - PORT=7860
+      - U2NET_HOME=/app/models
+    volumes:
+      - ./static/outputs:/app/static/outputs
+      - ./static/avatars:/app/static/avatars
+      - ./models:/app/models
