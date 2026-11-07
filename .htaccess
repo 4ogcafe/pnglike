@@ -52,6 +52,8 @@ DirectoryIndex index.html index.php /static/index.html
     AddType image/svg+xml .svg
     AddType image/webp .webp
     AddType application/json .json
+    AddType application/xml .xml
+    AddType text/plain .txt
 </IfModule>
 
 # Security Headers Fallback

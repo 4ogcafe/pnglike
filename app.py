@@ -2551,17 +2551,25 @@ async def serve_robots_txt(request: Request):
 
 @app.get("/sitemap.xml")
 async def serve_sitemap_xml(request: Request):
+    sitemap_path = BASE_DIR / "sitemap.xml"
+    if sitemap_path.exists():
+        content = sitemap_path.read_text(encoding="utf-8")
+        site_base = os.getenv("SITE_BASE_URL", "").rstrip("/")
+        if site_base and site_base != "https://pnglike.com":
+            content = content.replace("https://pnglike.com", site_base)
+        return Response(content=content, media_type="application/xml; charset=utf-8")
+
     site_base = os.getenv("SITE_BASE_URL", "").rstrip("/") or str(request.base_url).rstrip("/")
     blog_data = await run_in_threadpool(db_manager.list_blog_posts, True, None, None, False, 100, 0)
     blog_urls_xml = ""
     for post in blog_data.get("posts", []):
-        lastmod = (post.get("updated_at") or post.get("created_at") or "2026-11-06")[:10]
+        lastmod = (post.get("updated_at") or post.get("created_at") or "2026-11-07")[:10]
         blog_urls_xml += (
             f"  <url>\n"
             f"    <loc>{site_base}/blog/{post['slug']}</loc>\n"
             f"    <lastmod>{lastmod}</lastmod>\n"
             f"    <changefreq>weekly</changefreq>\n"
-            f"    <priority>0.7</priority>\n"
+            f"    <priority>0.8</priority>\n"
             f"  </url>\n"
         )
 
@@ -2580,7 +2588,7 @@ async def serve_sitemap_xml(request: Request):
         pages_xml += (
             f"  <url>\n"
             f"    <loc>{site_base}{path}</loc>\n"
-            f"    <lastmod>2026-11-06</lastmod>\n"
+            f"    <lastmod>2026-11-07</lastmod>\n"
             f"    <changefreq>{changefreq}</changefreq>\n"
             f"    <priority>{priority}</priority>\n"
             f'    <xhtml:link rel="alternate" hreflang="x-default" href="{site_base}{path}" />\n'
@@ -2591,7 +2599,7 @@ async def serve_sitemap_xml(request: Request):
     sitemap_xml = f"""<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
 {pages_xml}{blog_urls_xml}</urlset>"""
-    return Response(content=sitemap_xml, media_type="application/xml")
+    return Response(content=sitemap_xml, media_type="application/xml; charset=utf-8")
 
 
 @app.get("/llms.txt")
