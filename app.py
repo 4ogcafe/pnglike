@@ -2657,6 +2657,7 @@ if static_dir.exists():
 
 
 @app.get("/blog")
+@app.get("/blog.html")
 @app.get("/blog/{slug}")
 async def serve_blog_page(slug: Optional[str] = None):
     blog_file = BASE_DIR / "static" / "blog.html"
@@ -2772,6 +2773,7 @@ async def serve_blog_page(slug: Optional[str] = None):
 
 
 @app.get("/dashboard")
+@app.get("/dashboard.html")
 @app.get("/login")
 @app.get("/register")
 @app.get("/verify")
@@ -2783,6 +2785,7 @@ async def serve_user_dashboard():
 
 
 @app.get("/admin")
+@app.get("/admin.html")
 async def serve_admin_dashboard():
     admin_file = BASE_DIR / "static" / "admin.html"
     if admin_file.exists():
@@ -2791,6 +2794,7 @@ async def serve_admin_dashboard():
 
 
 @app.get("/privacy")
+@app.get("/privacy.html")
 async def serve_privacy_page():
     privacy_file = BASE_DIR / "static" / "privacy.html"
     if privacy_file.exists():
@@ -2799,6 +2803,7 @@ async def serve_privacy_page():
 
 
 @app.get("/terms")
+@app.get("/terms.html")
 async def serve_terms_page():
     terms_file = BASE_DIR / "static" / "terms.html"
     if terms_file.exists():
@@ -2807,6 +2812,7 @@ async def serve_terms_page():
 
 
 @app.get("/cookies")
+@app.get("/cookies.html")
 async def serve_cookies_page():
     cookies_file = BASE_DIR / "static" / "cookies.html"
     if cookies_file.exists():
@@ -2815,6 +2821,7 @@ async def serve_cookies_page():
 
 
 @app.get("/about")
+@app.get("/about.html")
 async def serve_about_page():
     about_file = BASE_DIR / "static" / "about.html"
     if about_file.exists():
@@ -2823,6 +2830,7 @@ async def serve_about_page():
 
 
 @app.get("/contact")
+@app.get("/contact.html")
 async def serve_contact_page():
     contact_file = BASE_DIR / "static" / "contact.html"
     if contact_file.exists():
@@ -2831,6 +2839,7 @@ async def serve_contact_page():
 
 
 @app.get("/faq")
+@app.get("/faq.html")
 async def serve_faq_page():
     faq_file = BASE_DIR / "static" / "faq.html"
     if faq_file.exists():
@@ -2839,6 +2848,7 @@ async def serve_faq_page():
 
 
 @app.get("/")
+@app.get("/index.html")
 async def serve_index():
     index_file = BASE_DIR / "static" / "index.html"
     if index_file.exists():

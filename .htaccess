@@ -1,38 +1,47 @@
 # ==============================================================
-# PngLike AI Studio - Apache & LiteSpeed Configuration (.htaccess)
+# PngLike AI Studio - LiteSpeed & Apache Configuration (.htaccess)
 # ==============================================================
+
+# Directory default index resolution
+DirectoryIndex index.html index.php /static/index.html
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /
 
-    # 1. If backend Uvicorn is running as a local reverse proxy on port 7860
-    # Uncomment the following lines if your host supports mod_proxy:
-    # RewriteCond %{REQUEST_URI} !^/static/
-    # RewriteRule ^(.*)$ http://127.0.0.1:7860/$1 [P,L]
+    # 1. Reverse proxy /api to Uvicorn if mod_proxy is available
+    <IfModule mod_proxy.c>
+        RewriteCond %{REQUEST_URI} ^/api/
+        RewriteRule ^api/(.*)$ http://127.0.0.1:7860/api/$1 [P,L]
+    </IfModule>
 
-    # 2. Direct static routes (Fallback when served via LiteSpeed/Apache directly)
-    RewriteCond %{DOCUMENT_ROOT}/static/$1 -f [OR]
-    RewriteCond %{DOCUMENT_ROOT}/static/$1 -d
-    RewriteRule ^(.*)$ /static/$1 [L]
+    # 2. If the exact requested file exists in root or static, serve it directly
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
 
-    # 3. Clean SPA URLs mapping to static pages
-    RewriteRule ^$ /static/index.html [L]
-    RewriteRule ^admin/?$ /static/admin.html [L]
-    RewriteRule ^dashboard/?$ /static/dashboard.html [L]
-    RewriteRule ^blog/?$ /static/blog.html [L]
-    RewriteRule ^about/?$ /static/about.html [L]
-    RewriteRule ^contact/?$ /static/contact.html [L]
-    RewriteRule ^faq/?$ /static/faq.html [L]
-    RewriteRule ^privacy/?$ /static/privacy.html [L]
-    RewriteRule ^terms/?$ /static/terms.html [L]
-    RewriteRule ^cookies/?$ /static/cookies.html [L]
+    # 3. Clean SPA URLs -> map to root HTML files
+    RewriteRule ^$ /index.html [L]
+    RewriteRule ^admin/?$ /admin.html [L]
+    RewriteRule ^dashboard/?$ /dashboard.html [L]
+    RewriteRule ^login/?$ /dashboard.html [L]
+    RewriteRule ^register/?$ /dashboard.html [L]
+    RewriteRule ^verify/?$ /dashboard.html [L]
+    RewriteRule ^blog/?$ /blog.html [L]
+    RewriteRule ^about/?$ /about.html [L]
+    RewriteRule ^contact/?$ /contact.html [L]
+    RewriteRule ^faq/?$ /faq.html [L]
+    RewriteRule ^privacy/?$ /privacy.html [L]
+    RewriteRule ^terms/?$ /terms.html [L]
+    RewriteRule ^cookies/?$ /cookies.html [L]
 </IfModule>
 
-# Security & Directory Listing Controls
-Options -Indexes +FollowSymLinks
+# Safe directory listing protection (mod_autoindex without forbidden Options)
+<IfModule mod_autoindex.c>
+    IndexIgnore *
+</IfModule>
 
-# Standard Web Server MIME Types
+# Standard MIME types
 <IfModule mod_mime.c>
     AddType text/html .html
     AddType text/css .css
@@ -42,7 +51,7 @@ Options -Indexes +FollowSymLinks
     AddType application/json .json
 </IfModule>
 
-# Caching & Header Controls
+# Security Headers Fallback
 <IfModule mod_headers.c>
     Header set X-Content-Type-Options "nosniff"
     Header set X-Frame-Options "SAMEORIGIN"
