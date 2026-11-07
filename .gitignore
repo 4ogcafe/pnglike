@@ -50,6 +50,7 @@ ENV/
 .venv/
 
 # IDE and Editor configurations
+.claude/
 .jetro/
 .vscode/
 .idea/
