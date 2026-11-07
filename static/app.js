@@ -1187,6 +1187,7 @@ document.addEventListener("DOMContentLoaded", () => {
   async function checkServerStatus() {
     try {
       const res = await fetch("/api/status");
+      if (!res.ok) throw new Error("Status " + res.status);
       const data = await res.json();
       if (data.status === "online" && modelStatusText) {
         modelStatusText.innerText = `${data.default_model.toUpperCase()} Loaded • Ready`;
@@ -1210,41 +1211,61 @@ document.addEventListener("DOMContentLoaded", () => {
   async function loadSampleImages() {
     try {
       const res = await fetch("/api/samples");
+      if (!res.ok) {
+        renderDefaultSamples();
+        return;
+      }
       const data = await res.json();
-      if (!data.samples || data.samples.length === 0) return;
-
-      samplesContainer.innerHTML = "";
-      data.samples.forEach(sample => {
-        const card = document.createElement("div");
-        card.className = "group relative rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-white dark:bg-dark-900 shadow-sm hover:shadow-md hover:border-blue-500 dark:hover:border-blue-500 cursor-pointer transition p-2";
-        card.innerHTML = `
-          <div class="aspect-[4/3] rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 mb-2">
-            <img src="${sample.url}" alt="${sample.name} sample photo for AI image tools" width="280" height="210" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-          </div>
-          <div class="flex items-center justify-between px-1">
-            <span class="text-xs font-semibold text-slate-800 dark:text-slate-200">${sample.name}</span>
-            <span class="text-[10px] text-blue-500 font-medium">${sample.category}</span>
-          </div>
-        `;
-
-        card.addEventListener("click", async () => {
-          showToast(`Loading ${sample.name}...`, "info");
-          try {
-            const imgRes = await fetch(sample.url);
-            const blob = await imgRes.blob();
-            const file = new File([blob], sample.filename, { type: "image/jpeg" });
-            handleImageFile(file);
-          } catch (err) {
-            showToast("Failed to load sample image", "error");
-          }
-        });
-
-        samplesContainer.appendChild(card);
-      });
-      safeCreateIcons();
+      if (!data.samples || data.samples.length === 0) {
+        renderDefaultSamples();
+        return;
+      }
+      renderSampleCards(data.samples);
     } catch (err) {
-      console.warn("Samples could not be loaded:", err);
+      renderDefaultSamples();
     }
+  }
+
+  function renderDefaultSamples() {
+    const defaults = [
+      { name: "Coffee Mug", category: "Object", filename: "coffee_mug.jpg", url: "/static/samples/coffee_mug.jpg" },
+      { name: "Portrait Person", category: "Portrait", filename: "portrait_person.jpg", url: "/static/samples/portrait_person.jpg" },
+      { name: "Sneaker Shoe", category: "Product", filename: "sneaker_shoe.jpg", url: "/static/samples/sneaker_shoe.jpg" }
+    ];
+    renderSampleCards(defaults);
+  }
+
+  function renderSampleCards(samples) {
+    if (!samplesContainer) return;
+    samplesContainer.innerHTML = "";
+    samples.forEach(sample => {
+      const card = document.createElement("div");
+      card.className = "group relative rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-white dark:bg-dark-900 shadow-sm hover:shadow-md hover:border-blue-500 dark:hover:border-blue-500 cursor-pointer transition p-2";
+      card.innerHTML = `
+        <div class="aspect-[4/3] rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 mb-2">
+          <img src="${sample.url}" alt="${sample.name} sample photo for AI image tools" width="280" height="210" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+        </div>
+        <div class="flex items-center justify-between px-1">
+          <span class="text-xs font-semibold text-slate-800 dark:text-slate-200">${sample.name}</span>
+          <span class="text-[10px] text-blue-500 font-medium">${sample.category}</span>
+        </div>
+      `;
+
+      card.addEventListener("click", async () => {
+        showToast(`Loading ${sample.name}...`, "info");
+        try {
+          const imgRes = await fetch(sample.url);
+          const blob = await imgRes.blob();
+          const file = new File([blob], sample.filename, { type: "image/jpeg" });
+          handleImageFile(file);
+        } catch (err) {
+          showToast("Failed to load sample image", "error");
+        }
+      });
+
+      samplesContainer.appendChild(card);
+    });
+    safeCreateIcons();
   }
 
   // ----------------------------------------------------

@@ -1,7 +1,44 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en" class="dark" data-grammarly="false" data-grammarly-disable="true">
 <head>
   <meta charset="UTF-8">
+  <meta name="grammarly" content="false">
+  <!-- Immediate Extension & Permissions-Policy Safeguards (Runs at document_start) -->
+  <script>
+    (function(){
+      // 1. Permanently silence Tailwind Play CDN dev warnings and unload violation console logs
+      var _w = console.warn;
+      console.warn = function(...args) {
+        if (args[0] && typeof args[0] === 'string' && (
+          args[0].indexOf('cdn.tailwindcss.com') !== -1 ||
+          args[0].indexOf('unload is not allowed') !== -1 ||
+          args[0].indexOf('Permissions policy violation: unload') !== -1
+        )) return;
+        _w.apply(console, args);
+      };
+      // 2. Intercept EventTarget.prototype.addEventListener to safely redirect 'unload' to 'pagehide'
+      try {
+        var _origAEL = EventTarget.prototype.addEventListener;
+        EventTarget.prototype.addEventListener = function(type, listener, options) {
+          if (type === 'unload') {
+            return _origAEL.call(this, 'pagehide', listener, options);
+          }
+          return _origAEL.call(this, type, listener, options);
+        };
+      } catch(e) {}
+      // 3. Intercept window.onunload property setter
+      try {
+        Object.defineProperty(window, 'onunload', {
+          get: function() { return null; },
+          set: function(fn) {
+            if (typeof fn === 'function') window.addEventListener('pagehide', fn);
+          },
+          configurable: true
+        });
+      } catch(e) {}
+    })();
+  </script>
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PngLike — 9-in-1 AI Image Suite & Background Remover | Powered by Div Sri</title>
   <meta name="description" content="Process photos with 9 neural image tools: U2-Net background removal, 4x upscaling, AI outpainting, portrait skin retouching, and 3D studio relighting. Powered by Div Sri.">
@@ -126,26 +163,7 @@
   <link rel="icon" type="image/svg+xml" href="/static/brand/favicon.svg">
   <link rel="apple-touch-icon" href="/static/brand/logo-icon.svg">
   <!-- Tailwind CSS -->
-  <!-- Browser Compatibility & Extension Safeguards -->
-  <script>
-    (function(){
-      var _w = console.warn;
-      console.warn = function(...args) {
-        if (args[0] && typeof args[0] === 'string' && (args[0].indexOf('cdn.tailwindcss.com') !== -1 || args[0].indexOf('Permissions policy violation: unload') !== -1)) return;
-        _w.apply(console, args);
-      };
-      try {
-        var _ael = window.addEventListener;
-        window.addEventListener = function(type, listener, options) {
-          if (type === 'unload') {
-            return _ael.call(window, 'pagehide', listener, options);
-          }
-          return _ael.call(window, type, listener, options);
-        };
-      } catch(e) {}
-    })();
-  </script>
-  <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -174,7 +192,7 @@
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body class="bg-slate-50 dark:bg-dark-950 text-slate-900 dark:text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-blue-500 selection:text-white">
+<body class="bg-slate-50 dark:bg-dark-950 text-slate-900 dark:text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-blue-500 selection:text-white" data-grammarly="false" data-grammarly-skip="true">
 
   <!-- Dynamic Announcement Banner (Managed by Admin CMS) -->
   <div id="siteAnnouncementBar" class="hidden bg-gradient-to-r from-indigo-600 via-blue-600 to-indigo-600 text-white text-xs font-semibold py-2 px-4 text-center shadow-sm">

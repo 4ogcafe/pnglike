@@ -9,11 +9,14 @@ DirectoryIndex index.html index.php /static/index.html
     RewriteEngine On
     RewriteBase /
 
-    # 1. Reverse proxy /api to Uvicorn if mod_proxy is available
-    <IfModule mod_proxy.c>
-        RewriteCond %{REQUEST_URI} ^/api/
-        RewriteRule ^api/(.*)$ http://127.0.0.1:7860/api/$1 [P,L]
-    </IfModule>
+    # 1. Standalone Uvicorn Reverse Proxy (Optional)
+    # If running standalone Uvicorn daemon on port 7860, uncomment the RewriteRule below.
+    # When using cPanel / CloudLinux / Hostinger "Setup Python App", Passenger handles
+    # all /api requests directly through passenger_wsgi.py.
+    # <IfModule mod_proxy.c>
+    #     RewriteCond %{REQUEST_URI} ^/api/
+    #     RewriteRule ^api/(.*)$ http://127.0.0.1:7860/api/$1 [P,L]
+    # </IfModule>
 
     # 2. If the exact requested file exists in root or static, serve it directly
     RewriteCond %{REQUEST_FILENAME} -f [OR]
