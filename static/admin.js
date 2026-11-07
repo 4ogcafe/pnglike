@@ -66,6 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
       overview: "Overview & Analytics",
       cms: "Frontend CMS & Feature Flags",
       blog: "Blog & Tutorials Manager",
+      indexnow: "IndexNow & Real-Time Search Engine Indexing",
       users: "Users & Subscriptions Manager",
       models: "AI Models & RAM Cache Manager",
       samples: "Sample Gallery Manager",
@@ -111,6 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (tab === "overview") loadOverview();
         if (tab === "cms") loadCmsSettings();
         if (tab === "blog") loadAdminBlog();
+        if (tab === "indexnow") loadIndexNowTab();
         if (tab === "users") loadAdminUsers();
         if (tab === "models") loadAdminModels();
         if (tab === "samples") loadAdminSamples();
@@ -285,6 +287,150 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("refreshSessionsBtn")?.addEventListener("click", loadAdminSessions);
     document.getElementById("revokeOtherSessionsBtn")?.addEventListener("click", handleRevokeOtherAdminSessions);
     document.getElementById("exportAdminProfileBtn")?.addEventListener("click", handleExportAdminProfile);
+
+    // IndexNow Action Listeners
+    document.getElementById("btnIndexNowSubmitAll")?.addEventListener("click", async () => {
+      const btn = document.getElementById("btnIndexNowSubmitAll");
+      const origText = btn.innerHTML;
+      try {
+        btn.disabled = true;
+        btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i><span>Submitting...</span>`;
+        safeCreateIcons();
+        const res = await adminFetch("/api/admin/indexnow/submit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ target: "sitemap" }),
+        });
+        const data = await res.json();
+        showToast(data.message || `Submitted ${data.urls_count} URLs to IndexNow!`, data.success ? "success" : "error");
+        loadIndexNowTab();
+      } catch (e) {
+        showToast(e.message, "error");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = origText;
+        safeCreateIcons();
+      }
+    });
+
+    document.getElementById("btnIndexNowSubmitHome")?.addEventListener("click", async () => {
+      const btn = document.getElementById("btnIndexNowSubmitHome");
+      const origText = btn.innerHTML;
+      try {
+        btn.disabled = true;
+        btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i><span>Pinging...</span>`;
+        safeCreateIcons();
+        const res = await adminFetch("/api/admin/indexnow/submit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ target: "home" }),
+        });
+        const data = await res.json();
+        showToast(data.message || "Submitted Homepage to IndexNow!", data.success ? "success" : "error");
+        loadIndexNowTab();
+      } catch (e) {
+        showToast(e.message, "error");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = origText;
+        safeCreateIcons();
+      }
+    });
+
+    document.getElementById("btnIndexNowSubmitBlog")?.addEventListener("click", async () => {
+      const btn = document.getElementById("btnIndexNowSubmitBlog");
+      const origText = btn.innerHTML;
+      try {
+        btn.disabled = true;
+        btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i><span>Submitting...</span>`;
+        safeCreateIcons();
+        const res = await adminFetch("/api/admin/indexnow/submit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ target: "blog" }),
+        });
+        const data = await res.json();
+        showToast(data.message || "Submitted Blog posts to IndexNow!", data.success ? "success" : "error");
+        loadIndexNowTab();
+      } catch (e) {
+        showToast(e.message, "error");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = origText;
+        safeCreateIcons();
+      }
+    });
+
+    document.getElementById("btnIndexNowSubmitCustom")?.addEventListener("click", async () => {
+      const input = document.getElementById("idxCustomUrlsInput");
+      const raw = (input?.value || "").trim();
+      if (!raw) {
+        showToast("Please enter at least one URL to submit.", "error");
+        return;
+      }
+      const urls = raw.split(/[\n,]+/).map(s => s.trim()).filter(Boolean);
+      const btn = document.getElementById("btnIndexNowSubmitCustom");
+      const origText = btn.innerHTML;
+      try {
+        btn.disabled = true;
+        btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i><span>Submitting...</span>`;
+        safeCreateIcons();
+        const res = await adminFetch("/api/admin/indexnow/submit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ urls: urls, triggered_by: "custom_input" }),
+        });
+        const data = await res.json();
+        showToast(data.message || `Submitted ${urls.length} custom URL(s)!`, data.success ? "success" : "error");
+        if (data.success && input) input.value = "";
+        loadIndexNowTab();
+      } catch (e) {
+        showToast(e.message, "error");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = origText;
+        safeCreateIcons();
+      }
+    });
+
+    document.getElementById("indexNowConfigForm")?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      try {
+        const payload = {
+          indexnow_key: document.getElementById("idxConfigKey").value.trim(),
+          indexnow_host: document.getElementById("idxConfigHost").value.trim(),
+          indexnow_key_location: document.getElementById("idxConfigKeyLocation").value.trim(),
+          indexnow_auto_submit_blog: document.getElementById("idxAutoBlogToggle").checked,
+          indexnow_auto_submit_cms: document.getElementById("idxAutoCmsToggle").checked,
+        };
+        const res = await adminFetch("/api/admin/indexnow/settings", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        showToast("IndexNow configuration saved successfully!", "success");
+        loadIndexNowTab();
+      } catch (err) {
+        showToast(err.message, "error");
+      }
+    });
+
+    document.getElementById("btnRefreshIndexNowLog")?.addEventListener("click", () => {
+      loadIndexNowTab();
+      showToast("IndexNow logs refreshed.", "info");
+    });
+
+    document.getElementById("btnClearIndexNowLog")?.addEventListener("click", async () => {
+      if (!confirm("Are you sure you want to clear the IndexNow submission history?")) return;
+      try {
+        await adminFetch("/api/admin/indexnow/history", { method: "DELETE" });
+        showToast("IndexNow submission history cleared.", "success");
+        loadIndexNowTab();
+      } catch (e) {
+        showToast(e.message, "error");
+      }
+    });
   }
 
   // --------------------------------------------------------
@@ -524,6 +670,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <td class="py-2.5 font-mono text-slate-500">${post.views_count}</td>
           <td class="py-2.5 text-slate-400">${post.published_date || ""}</td>
           <td class="py-2.5 text-right space-x-2 whitespace-nowrap">
+            <button class="indexnow-blog-btn text-emerald-600 dark:text-emerald-400 hover:underline font-bold" title="Instant IndexNow Push to Bing & Search Engines">⚡ Index</button>
             <button class="edit-blog-btn text-indigo-600 dark:text-indigo-400 hover:underline font-bold">Edit</button>
             <a href="/blog/${post.slug}" target="_blank" class="text-blue-500 hover:underline font-semibold">View</a>
             <button class="del-blog-btn text-rose-500 hover:underline font-semibold">Delete</button>
@@ -558,6 +705,21 @@ document.addEventListener("DOMContentLoaded", () => {
           await adminFetch(`/api/admin/blog/${post.id}`, { method: "DELETE" });
           showToast(`Deleted blog article "${post.title}"`, "info");
           loadAdminBlog();
+        });
+
+        tr.querySelector(".indexnow-blog-btn")?.addEventListener("click", async () => {
+          try {
+            showToast(`Submitting /blog/${post.slug} to IndexNow...`, "info");
+            const res = await adminFetch("/api/admin/indexnow/submit", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ urls: [`https://pnglike.com/blog/${post.slug}`], triggered_by: "blog_row_push" }),
+            });
+            const d = await res.json();
+            showToast(d.message || "Submitted to IndexNow!", d.success ? "success" : "error");
+          } catch (e) {
+            showToast(e.message, "error");
+          }
         });
 
         tbody.appendChild(tr);
@@ -1823,6 +1985,120 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
     showToast("Admin profile and audit data downloaded!", "success");
+  }
+
+  // --------------------------------------------------------
+  // INDEXNOW & INSTANT SEO ENGINE
+  // --------------------------------------------------------
+  async function loadIndexNowTab() {
+    try {
+      const res = await adminFetch("/api/admin/indexnow/status");
+      if (!res.ok) throw new Error("Failed to load IndexNow status.");
+      const data = await res.json();
+
+      // Update Health Badges
+      const keyBadge = document.getElementById("idxKeyStatusBadge");
+      if (keyBadge) {
+        if (data.key_file_exists) {
+          keyBadge.innerText = "Hosted & Valid";
+          keyBadge.parentElement.className = "flex items-center justify-center gap-1.5 mt-1 text-emerald-600 dark:text-emerald-400 font-bold text-xs";
+        } else {
+          keyBadge.innerText = "File Missing";
+          keyBadge.parentElement.className = "flex items-center justify-center gap-1.5 mt-1 text-rose-600 dark:text-rose-400 font-bold text-xs";
+        }
+      }
+
+      const autoBadge = document.getElementById("idxAutoStatusBadge");
+      if (autoBadge) {
+        autoBadge.innerText = (data.auto_submit_blog && data.auto_submit_cms) ? "Enabled (Blog + CMS)" : data.auto_submit_blog ? "Blog Only" : "Manual Only";
+      }
+
+      // Populate Settings Inputs
+      const keyInput = document.getElementById("idxConfigKey");
+      if (keyInput) keyInput.value = data.key || "";
+
+      const hostInput = document.getElementById("idxConfigHost");
+      if (hostInput) hostInput.value = data.host || "pnglike.com";
+
+      const keyLocInput = document.getElementById("idxConfigKeyLocation");
+      if (keyLocInput) keyLocInput.value = data.key_location || `https://${data.host}/${data.key}.txt`;
+
+      const keyLink = document.getElementById("idxKeyFileLink");
+      if (keyLink) {
+        keyLink.href = data.key_location || `https://${data.host}/${data.key}.txt`;
+      }
+
+      const blogToggle = document.getElementById("idxAutoBlogToggle");
+      if (blogToggle) blogToggle.checked = !!data.auto_submit_blog;
+
+      const cmsToggle = document.getElementById("idxAutoCmsToggle");
+      if (cmsToggle) cmsToggle.checked = !!data.auto_submit_cms;
+
+      // Populate Submissions Table
+      renderIndexNowSubmissions(data.submissions || []);
+      safeCreateIcons();
+    } catch (err) {
+      showToast(err.message || "Could not load IndexNow settings.", "error");
+    }
+  }
+
+  function renderIndexNowSubmissions(submissions) {
+    const tbody = document.getElementById("idxSubmissionsTableBody");
+    if (!tbody) return;
+    tbody.innerHTML = "";
+
+    if (!submissions || submissions.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6" class="py-8 text-center text-slate-400">
+            <i data-lucide="inbox" class="w-6 h-6 mx-auto mb-2 opacity-50"></i>
+            <div>No IndexNow submissions recorded yet. Use the quick buttons above to submit pages.</div>
+          </td>
+        </tr>
+      `;
+      safeCreateIcons();
+      return;
+    }
+
+    submissions.forEach(sub => {
+      const tr = document.createElement("tr");
+      tr.className = "hover:bg-slate-50 dark:hover:bg-slate-800/40 text-xs";
+
+      let statusBadge = "";
+      if (sub.status === "success" || sub.status_code === 200) {
+        statusBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">200 OK • PUSHED</span>`;
+      } else if (sub.status_code === 202) {
+        statusBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300">202 ACCEPTED</span>`;
+      } else if (sub.status === "warning" || sub.status_code === 429) {
+        statusBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300">RATE LIMITED</span>`;
+      } else {
+        statusBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300">${sub.status_code || "ERR"} FAILED</span>`;
+      }
+
+      const previewUrls = (sub.urls || []).slice(0, 2).map(u => {
+        try {
+          return new URL(u).pathname || u;
+        } catch (_) {
+          return u;
+        }
+      }).join(", ");
+      const extraCount = (sub.urls || []).length > 2 ? ` +${(sub.urls || []).length - 2} more` : "";
+
+      tr.innerHTML = `
+        <td class="py-2.5 font-mono text-slate-500 whitespace-nowrap">${sub.submitted_at || "-"}</td>
+        <td class="py-2.5">
+          <span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold uppercase text-[10px]">${sub.triggered_by || "manual"}</span>
+        </td>
+        <td class="py-2.5 font-bold text-slate-800 dark:text-slate-200">${sub.urls_count || (sub.urls || []).length}</td>
+        <td class="py-2.5 max-w-[240px] truncate text-slate-600 dark:text-slate-300 font-mono text-[11px]" title="${(sub.urls || []).join('\n')}">
+          ${previewUrls}${extraCount}
+        </td>
+        <td class="py-2.5 font-mono text-slate-500">${sub.status_code ? `HTTP ${sub.status_code}` : "N/A"}</td>
+        <td class="py-2.5 text-right whitespace-nowrap">${statusBadge}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+    safeCreateIcons();
   }
 
   // --------------------------------------------------------

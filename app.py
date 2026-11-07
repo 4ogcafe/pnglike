@@ -1,3 +1,4 @@
+import asyncio
 import io
 import math
 import os
@@ -10,6 +11,7 @@ import uuid
 import zipfile
 from typing import Optional, List, Dict, Any
 from pathlib import Path
+import httpx
 
 logger = logging.getLogger("app")
 
@@ -263,6 +265,21 @@ class BlogPostUpdatePayload(BaseModel):
     is_featured: Optional[bool] = None
     meta_title: Optional[str] = None
     meta_description: Optional[str] = None
+
+
+class IndexNowSubmitPayload(BaseModel):
+    urls: Optional[List[str]] = None
+    target: Optional[str] = None
+    triggered_by: Optional[str] = "manual"
+
+
+class IndexNowSettingsPayload(BaseModel):
+    indexnow_enabled: Optional[bool] = None
+    indexnow_key: Optional[str] = None
+    indexnow_host: Optional[str] = None
+    indexnow_key_location: Optional[str] = None
+    indexnow_auto_submit_blog: Optional[bool] = None
+    indexnow_auto_submit_cms: Optional[bool] = None
 
 
 class UserRegisterPayload(BaseModel):
@@ -1741,6 +1758,13 @@ async def admin_update_settings(
     """Update frontend CMS & feature-flag settings in MySQL."""
     updates = {k: v for k, v in payload.model_dump().items() if v is not None}
     updated = await run_in_threadpool(db_manager.update_site_settings, updates)
+    if updated.get("indexnow_auto_submit_cms", True):
+        try:
+            raw_host = (updated.get("indexnow_host") or "pnglike.com").strip()
+            host = raw_host.replace("https://", "").replace("http://", "").split("/")[0]
+            asyncio.create_task(dispatch_indexnow_submission([f"https://{host}/"], triggered_by="auto_cms_update"))
+        except Exception:
+            pass
     return {"settings": updated}
 
 
@@ -1948,6 +1972,16 @@ async def admin_create_blog_post(
         meta_title=payload.meta_title,
         meta_description=payload.meta_description,
     )
+    if created.get("is_published"):
+        try:
+            settings = await run_in_threadpool(db_manager.get_site_settings)
+            if settings.get("indexnow_auto_submit_blog", True):
+                raw_host = (settings.get("indexnow_host") or "pnglike.com").strip()
+                host = raw_host.replace("https://", "").replace("http://", "").split("/")[0]
+                post_url = f"https://{host}/blog/{created['slug']}"
+                asyncio.create_task(dispatch_indexnow_submission([post_url], triggered_by="auto_blog_publish"))
+        except Exception:
+            pass
     return {"post": created}
 
 
@@ -1962,6 +1996,16 @@ async def admin_update_blog_post(
     updated = await run_in_threadpool(db_manager.update_blog_post, post_id, updates)
     if not updated:
         raise HTTPException(status_code=404, detail="Blog post not found.")
+    if updated.get("is_published"):
+        try:
+            settings = await run_in_threadpool(db_manager.get_site_settings)
+            if settings.get("indexnow_auto_submit_blog", True):
+                raw_host = (settings.get("indexnow_host") or "pnglike.com").strip()
+                host = raw_host.replace("https://", "").replace("http://", "").split("/")[0]
+                post_url = f"https://{host}/blog/{updated['slug']}"
+                asyncio.create_task(dispatch_indexnow_submission([post_url], triggered_by="auto_blog_update"))
+        except Exception:
+            pass
     return {"post": updated}
 
 
@@ -2516,6 +2560,220 @@ async def admin_list_contact_messages(
 ):
     """List contact messages and feedback tickets for admin review."""
     return await run_in_threadpool(db_manager.list_contact_messages, limit, offset)
+
+
+# --------------------------------------------------------
+# INDEXNOW INSTANT SEARCH ENGINE INDEXING ENGINE
+# --------------------------------------------------------
+def get_all_sitemap_urls(host: str = "pnglike.com") -> List[str]:
+    """Compile comprehensive list of all canonical public routes and published blog posts."""
+    site_base = f"https://{host}".rstrip("/")
+    urls = [
+        f"{site_base}/",
+        f"{site_base}/blog",
+        f"{site_base}/dashboard",
+        f"{site_base}/login",
+        f"{site_base}/register",
+        f"{site_base}/about",
+        f"{site_base}/contact",
+        f"{site_base}/privacy",
+        f"{site_base}/terms",
+        f"{site_base}/cookies",
+        f"{site_base}/faq",
+    ]
+    try:
+        blog_data = db_manager.list_blog_posts(published_only=True, limit=100)
+        for post in blog_data.get("posts", []):
+            urls.append(f"{site_base}/blog/{post['slug']}")
+    except Exception:
+        pass
+    seen = set()
+    result = []
+    for u in urls:
+        if u not in seen:
+            seen.add(u)
+            result.append(u)
+    return result
+
+
+async def dispatch_indexnow_submission(urls: List[str], triggered_by: str = "manual") -> Dict[str, Any]:
+    """Submit URLs to IndexNow search engine gateway (api.indexnow.org) and record telemetry."""
+    settings = await run_in_threadpool(db_manager.get_site_settings)
+    if not settings.get("indexnow_enabled", True):
+        return {"success": False, "message": "IndexNow submission is currently disabled in site settings."}
+
+    key = (settings.get("indexnow_key") or os.getenv("INDEXNOW_KEY", "950cf4f1e8b64e1f90b053abbfd50843")).strip()
+    raw_host = (settings.get("indexnow_host") or "pnglike.com").strip()
+    host = raw_host.replace("https://", "").replace("http://", "").split("/")[0]
+    key_location = (settings.get("indexnow_key_location") or f"https://{host}/{key}.txt").strip()
+
+    cleaned_urls = []
+    for u in urls:
+        u_str = str(u).strip()
+        if not u_str:
+            continue
+        if not u_str.startswith("http://") and not u_str.startswith("https://"):
+            u_str = f"https://{host}/{u_str.lstrip('/')}"
+        cleaned_urls.append(u_str)
+
+    unique_urls = list(dict.fromkeys(cleaned_urls))
+    if not unique_urls:
+        return {"success": False, "message": "No valid URLs provided to submit to IndexNow."}
+
+    endpoint = "https://api.indexnow.org/indexnow"
+    payload = {
+        "host": host,
+        "key": key,
+        "keyLocation": key_location,
+        "urlList": unique_urls,
+    }
+
+    status_code = None
+    response_text = ""
+    status = "error"
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            resp = await client.post(
+                endpoint,
+                json=payload,
+                headers={"Content-Type": "application/json; charset=utf-8"},
+            )
+            status_code = resp.status_code
+            response_text = resp.text
+            if status_code in (200, 202):
+                status = "success"
+            elif status_code == 429:
+                status = "warning"
+            else:
+                status = "failed"
+    except Exception as exc:
+        status = "failed"
+        response_text = f"Connection error: {str(exc)}"
+
+    sub_record = await run_in_threadpool(
+        db_manager.record_indexnow_submission,
+        host=host,
+        key=key,
+        urls=unique_urls,
+        endpoint=endpoint,
+        status_code=status_code,
+        response_body=response_text,
+        status=status,
+        triggered_by=triggered_by,
+    )
+
+    msg_map = {
+        200: f"Successfully submitted {len(unique_urls)} URL(s) to IndexNow (Bing, Copilot, Yandex, Naver, Seznam).",
+        202: f"Submitted {len(unique_urls)} URL(s) to IndexNow (Key in review / pending crawler verification).",
+        400: "IndexNow returned HTTP 400: Invalid payload or URL format.",
+        403: "IndexNow returned HTTP 403: Key not valid or key file could not be verified.",
+        422: "IndexNow returned HTTP 422: URLs do not match the specified host.",
+        429: "IndexNow returned HTTP 429: Rate limit exceeded (Too many requests).",
+    }
+    summary_message = msg_map.get(status_code, f"IndexNow responded with status {status_code}: {response_text[:120]}") if status_code else response_text
+
+    return {
+        "success": status in ("success", "warning"),
+        "status": status,
+        "status_code": status_code,
+        "urls_count": len(unique_urls),
+        "urls": unique_urls,
+        "message": summary_message,
+        "submission": sub_record,
+    }
+
+
+@app.get("/api/admin/indexnow/status")
+async def admin_get_indexnow_status(admin: Dict[str, Any] = Depends(require_admin)):
+    """Retrieve IndexNow key status, endpoints, and recent submission logs."""
+    settings = await run_in_threadpool(db_manager.get_site_settings)
+    key = (settings.get("indexnow_key") or os.getenv("INDEXNOW_KEY", "950cf4f1e8b64e1f90b053abbfd50843")).strip()
+    raw_host = (settings.get("indexnow_host") or "pnglike.com").strip()
+    host = raw_host.replace("https://", "").replace("http://", "").split("/")[0]
+    key_location = (settings.get("indexnow_key_location") or f"https://{host}/{key}.txt").strip()
+
+    key_file = BASE_DIR / f"{key}.txt"
+    key_file_exists = key_file.exists()
+
+    submissions = await run_in_threadpool(db_manager.list_indexnow_submissions, 50)
+
+    return {
+        "enabled": settings.get("indexnow_enabled", True),
+        "key": key,
+        "host": host,
+        "key_location": key_location,
+        "key_file_exists": key_file_exists,
+        "auto_submit_blog": settings.get("indexnow_auto_submit_blog", True),
+        "auto_submit_cms": settings.get("indexnow_auto_submit_cms", True),
+        "endpoint": "https://api.indexnow.org/indexnow",
+        "supported_engines": ["Microsoft Bing", "Microsoft Copilot", "Yandex", "Naver", "Seznam"],
+        "submissions_count": len(submissions),
+        "submissions": submissions,
+    }
+
+
+@app.post("/api/admin/indexnow/submit")
+async def admin_submit_indexnow(
+    payload: IndexNowSubmitPayload,
+    admin: Dict[str, Any] = Depends(require_admin),
+):
+    """Trigger manual or batch IndexNow submission for specific URLs or full sitemap."""
+    target = (payload.target or "").lower().strip()
+    settings = await run_in_threadpool(db_manager.get_site_settings)
+    raw_host = (settings.get("indexnow_host") or "pnglike.com").strip()
+    host = raw_host.replace("https://", "").replace("http://", "").split("/")[0]
+
+    if target in ("all", "sitemap") or (not payload.urls and not target):
+        urls = await run_in_threadpool(get_all_sitemap_urls, host)
+        reason = "sitemap_all"
+    elif target == "home":
+        urls = [f"https://{host}/"]
+        reason = "manual_home"
+    elif target == "blog":
+        blog_data = await run_in_threadpool(db_manager.list_blog_posts, True, None, None, False, 100, 0)
+        urls = [f"https://{host}/blog/{p['slug']}" for p in blog_data.get("posts", [])]
+        reason = "manual_blog"
+    else:
+        urls = payload.urls or []
+        reason = payload.triggered_by or "manual"
+
+    if not urls:
+        raise HTTPException(status_code=400, detail="No URLs specified for IndexNow submission.")
+
+    result = await dispatch_indexnow_submission(urls, triggered_by=reason)
+    return result
+
+
+@app.put("/api/admin/indexnow/settings")
+async def admin_update_indexnow_settings(
+    payload: IndexNowSettingsPayload,
+    admin: Dict[str, Any] = Depends(require_admin),
+):
+    """Update IndexNow API key, host, or automation toggle settings."""
+    updates = {}
+    if payload.indexnow_enabled is not None:
+        updates["indexnow_enabled"] = payload.indexnow_enabled
+    if payload.indexnow_key is not None and payload.indexnow_key.strip():
+        updates["indexnow_key"] = payload.indexnow_key.strip()
+    if payload.indexnow_host is not None and payload.indexnow_host.strip():
+        updates["indexnow_host"] = payload.indexnow_host.strip()
+    if payload.indexnow_key_location is not None and payload.indexnow_key_location.strip():
+        updates["indexnow_key_location"] = payload.indexnow_key_location.strip()
+    if payload.indexnow_auto_submit_blog is not None:
+        updates["indexnow_auto_submit_blog"] = payload.indexnow_auto_submit_blog
+    if payload.indexnow_auto_submit_cms is not None:
+        updates["indexnow_auto_submit_cms"] = payload.indexnow_auto_submit_cms
+
+    if updates:
+        await run_in_threadpool(db_manager.update_site_settings, updates)
+    return {"success": True, "settings": await run_in_threadpool(db_manager.get_site_settings)}
+
+
+@app.delete("/api/admin/indexnow/history")
+async def admin_clear_indexnow_history(admin: Dict[str, Any] = Depends(require_admin)):
+    """Clear past IndexNow submission logs."""
+    count = await run_in_threadpool(db_manager.clear_indexnow_submissions)
+    return {"success": True, "cleared_count": count}
 
 
 # --------------------------------------------------------

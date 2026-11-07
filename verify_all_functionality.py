@@ -104,6 +104,13 @@ def test_admin_workflows():
     r_users = client.get("/api/admin/users", headers=headers)
     record(cat, "GET /api/admin/users", r_users.status_code == 200, f"Total registered users: {r_users.json().get('total', 0)}")
 
+    # IndexNow Status & Submission Verification
+    r_idx_status = client.get("/api/admin/indexnow/status", headers=headers)
+    record(cat, "GET /api/admin/indexnow/status", r_idx_status.status_code == 200 and r_idx_status.json().get("key_file_exists"), f"IndexNow key {r_idx_status.json().get('key')} verified")
+
+    r_idx_submit = client.post("/api/admin/indexnow/submit", headers=headers, json={"target": "home"})
+    record(cat, "POST /api/admin/indexnow/submit", r_idx_submit.status_code == 200 and r_idx_submit.json().get("urls_count") >= 1, "Submitted homepage to IndexNow")
+
     return headers
 
 def test_blog_cms(admin_headers):

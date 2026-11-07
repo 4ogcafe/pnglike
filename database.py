@@ -71,6 +71,12 @@ DEFAULT_SITE_SETTINGS: Dict[str, str] = {
     "smtp_from_name": "PngLike AI Studio",
     "smtp_from_email": "",
     "smtp_use_tls": "true",
+    "indexnow_enabled": "true",
+    "indexnow_key": "950cf4f1e8b64e1f90b053abbfd50843",
+    "indexnow_host": "pnglike.com",
+    "indexnow_key_location": "https://pnglike.com/950cf4f1e8b64e1f90b053abbfd50843.txt",
+    "indexnow_auto_submit_blog": "true",
+    "indexnow_auto_submit_cms": "true",
 }
 
 
@@ -651,6 +657,46 @@ class AdminSession(Base):
         }
 
 
+class IndexNowSubmission(Base):
+    """Persistent telemetry log of IndexNow real-time search engine submissions."""
+
+    __tablename__ = "indexnow_submissions"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    submitted_at = Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None), index=True)
+    host = Column(String(255), default="pnglike.com", nullable=False)
+    key = Column(String(255), nullable=False)
+    urls_count = Column(Integer, default=1, nullable=False)
+    urls_json = Column(Text, nullable=False)
+    endpoint = Column(String(255), default="https://api.indexnow.org/indexnow", nullable=False)
+    status_code = Column(Integer, nullable=True)
+    response_body = Column(Text, nullable=True)
+    status = Column(String(50), default="success", nullable=False)
+    triggered_by = Column(String(100), default="manual", nullable=False)
+
+    def to_dict(self) -> Dict[str, Any]:
+        import json
+        urls = []
+        try:
+            urls = json.loads(self.urls_json) if self.urls_json else []
+        except Exception:
+            urls = [self.urls_json] if self.urls_json else []
+
+        return {
+            "id": self.id,
+            "submitted_at": self.submitted_at.strftime("%Y-%m-%d %H:%M:%S") if self.submitted_at else None,
+            "host": self.host,
+            "key": self.key,
+            "urls_count": self.urls_count,
+            "urls": urls,
+            "endpoint": self.endpoint,
+            "status_code": self.status_code,
+            "response_body": self.response_body,
+            "status": self.status,
+            "triggered_by": self.triggered_by,
+        }
+
+
 class DatabaseManager:
     """Manages the MySQL database connection, auto-provisioning, and ORM operations."""
 
@@ -1119,6 +1165,12 @@ class DatabaseManager:
             ],
             "maintenance_mode": raw.get("maintenance_mode", "false").lower() == "true",
             "maintenance_message": raw.get("maintenance_message", ""),
+            "indexnow_enabled": raw.get("indexnow_enabled", "true").lower() == "true",
+            "indexnow_key": raw.get("indexnow_key", "950cf4f1e8b64e1f90b053abbfd50843"),
+            "indexnow_host": raw.get("indexnow_host", "pnglike.com"),
+            "indexnow_key_location": raw.get("indexnow_key_location", "https://pnglike.com/950cf4f1e8b64e1f90b053abbfd50843.txt"),
+            "indexnow_auto_submit_blog": raw.get("indexnow_auto_submit_blog", "true").lower() == "true",
+            "indexnow_auto_submit_cms": raw.get("indexnow_auto_submit_cms", "true").lower() == "true",
         }
 
     def update_site_settings(self, updates: Dict[str, Any]) -> Dict[str, Any]:
@@ -2496,6 +2548,54 @@ class DatabaseManager:
         with self.get_session() as db:
             db.query(AdminSession).filter(AdminSession.token == token.strip()).delete()
             db.commit()
+
+    def record_indexnow_submission(
+        self,
+        host: str,
+        key: str,
+        urls: List[str],
+        endpoint: str,
+        status_code: Optional[int],
+        response_body: Optional[str],
+        status: str,
+        triggered_by: str = "manual",
+    ) -> Dict[str, Any]:
+        """Record an IndexNow real-time search engine submission."""
+        import json
+        with self.get_session() as db:
+            sub = IndexNowSubmission(
+                host=host,
+                key=key,
+                urls_count=len(urls),
+                urls_json=json.dumps(urls),
+                endpoint=endpoint,
+                status_code=status_code,
+                response_body=(response_body or "")[:2000],
+                status=status,
+                triggered_by=triggered_by,
+            )
+            db.add(sub)
+            db.commit()
+            db.refresh(sub)
+            return sub.to_dict()
+
+    def list_indexnow_submissions(self, limit: int = 50) -> List[Dict[str, Any]]:
+        """Retrieve recent IndexNow submissions."""
+        with self.get_session() as db:
+            subs = (
+                db.query(IndexNowSubmission)
+                .order_by(desc(IndexNowSubmission.id))
+                .limit(limit)
+                .all()
+            )
+            return [s.to_dict() for s in subs]
+
+    def clear_indexnow_submissions(self) -> int:
+        """Clear the IndexNow submission history log."""
+        with self.get_session() as db:
+            count = db.query(IndexNowSubmission).delete()
+            db.commit()
+            return count
 
 
 # Global database manager instance
