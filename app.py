@@ -55,7 +55,7 @@ app = FastAPI(
 # --------------------------------------------------------
 # PRODUCTION SECURITY: CORS, SECURITY HEADERS & UPLOAD LIMITS
 # --------------------------------------------------------
-SITE_BASE_URL = os.getenv("SITE_BASE_URL", "https://pnglike.studio").rstrip("/")
+SITE_BASE_URL = os.getenv("SITE_BASE_URL", "https://pnglike.com").rstrip("/")
 raw_allowed_origins = os.getenv("ALLOWED_ORIGINS", "")
 ALLOWED_ORIGINS = [
     origin.strip()
@@ -2598,7 +2598,7 @@ async def serve_sitemap_xml(request: Request):
 async def serve_llms_txt():
     blog_data = await run_in_threadpool(db_manager.list_blog_posts, True, None, None, False, 20, 0)
     blog_lines = "\n".join(
-        f"- [{p['title']}](http://127.0.0.1:7860/blog/{p['slug']}): {p['excerpt']}"
+        f"- [{p['title']}]({SITE_BASE_URL}/blog/{p['slug']}): {p['excerpt']}"
         for p in blog_data.get("posts", [])
     )
     llms_md = f"""# PngLike — 9-in-1 AI Image Suite & Neural Background Remover (Powered by Div Sri)
@@ -2620,12 +2620,12 @@ async def serve_llms_txt():
 {blog_lines}
 
 ## Company & Legal Resources
-- [About Us](http://127.0.0.1:7860/about): Brand mission, creator spotlight (Div Sri), AI architecture, and local ONNX runtime pipeline.
-- [FAQ & Knowledge Base](http://127.0.0.1:7860/faq): Answers to common questions regarding neural cutouts, guest vs registered quotas, and privacy.
-- [Contact Support](http://127.0.0.1:7860/contact): Direct assistance, bug reporting, and feedback submissions.
-- [Privacy Policy](http://127.0.0.1:7860/privacy): In-memory processing guarantees, zero data selling, GDPR & CCPA rights.
-- [Terms of Service](http://127.0.0.1:7860/terms): Fair use policy, 100% intellectual property ownership of user creations, usage limits.
-- [Cookie Policy](http://127.0.0.1:7860/cookies): Local storage keys, session tokens, and dark mode preferences.
+- [About Us]({SITE_BASE_URL}/about): Brand mission, creator spotlight (Div Sri), AI architecture, and local ONNX runtime pipeline.
+- [FAQ & Knowledge Base]({SITE_BASE_URL}/faq): Answers to common questions regarding neural cutouts, guest vs registered quotas, and privacy.
+- [Contact Support]({SITE_BASE_URL}/contact): Direct assistance, bug reporting, and feedback submissions.
+- [Privacy Policy]({SITE_BASE_URL}/privacy): In-memory processing guarantees, zero data selling, GDPR & CCPA rights.
+- [Terms of Service]({SITE_BASE_URL}/terms): Fair use policy, 100% intellectual property ownership of user creations, usage limits.
+- [Cookie Policy]({SITE_BASE_URL}/cookies): Local storage keys, session tokens, and dark mode preferences.
 
 ## API Endpoints
 - `GET /api/tools`: Lists the 9 active IMAGE tools and metadata.
@@ -2674,9 +2674,9 @@ async def serve_blog_page(slug: Optional[str] = None):
                 clean_base_title = re.sub(r'[\-—|]\s*PngLike Blog.*$', '', raw_title, flags=re.IGNORECASE).strip()
                 post_title = f"{clean_base_title} — PngLike Blog | Powered by Div Sri"
                 post_desc = post.get('meta_description') or post.get('excerpt') or "PngLike AI Studio deep-dive tutorial."
-                post_url = f"https://pnglike.studio/blog/{clean_slug}"
+                post_url = f"https://pnglike.com/blog/{clean_slug}"
                 raw_cover = post.get('cover_image') or "/static/brand/logo-dark-text.svg"
-                cover_url = raw_cover if raw_cover.startswith("http") else f"https://pnglike.studio{raw_cover}"
+                cover_url = raw_cover if raw_cover.startswith("http") else f"https://pnglike.com{raw_cover}"
                 author_name = post.get('author') or "Div Sri"
                 pub_date = str(post.get('created_at') or "2026-11-06")
                 mod_date = str(post.get('updated_at') or pub_date)
@@ -2703,12 +2703,12 @@ async def serve_blog_page(slug: Optional[str] = None):
                     "@graph": [
                         {
                             "@type": "Organization",
-                            "@id": "https://pnglike.studio/#organization",
+                            "@id": "https://pnglike.com/#organization",
                             "name": "PngLike — Powered by Div Sri",
-                            "url": "https://pnglike.studio/",
+                            "url": "https://pnglike.com/",
                             "logo": {
                                 "@type": "ImageObject",
-                                "url": "https://pnglike.studio/static/brand/logo-icon.svg"
+                                "url": "https://pnglike.com/static/brand/logo-icon.svg"
                             }
                         },
                         {
@@ -2722,7 +2722,7 @@ async def serve_blog_page(slug: Optional[str] = None):
                                 "name": author_name
                             },
                             "publisher": {
-                                "@id": "https://pnglike.studio/#organization"
+                                "@id": "https://pnglike.com/#organization"
                             },
                             "datePublished": pub_date,
                             "dateModified": mod_date,
@@ -2738,13 +2738,13 @@ async def serve_blog_page(slug: Optional[str] = None):
                                     "@type": "ListItem",
                                     "position": 1,
                                     "name": "Home",
-                                    "item": "https://pnglike.studio/"
+                                    "item": "https://pnglike.com/"
                                 },
                                 {
                                     "@type": "ListItem",
                                     "position": 2,
                                     "name": "Blog",
-                                    "item": "https://pnglike.studio/blog"
+                                    "item": "https://pnglike.com/blog"
                                 },
                                 {
                                     "@type": "ListItem",

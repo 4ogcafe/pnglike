@@ -1,5 +1,5 @@
 # Robots.txt for PngLike — Powered by Div Sri
-# Production Domain: https://pnglike.studio/
+# Production Domain: https://pnglike.com/
 
 User-agent: *
 Allow: /
@@ -60,4 +60,4 @@ Disallow: /dashboard
 Disallow: /api/
 
 # XML Sitemap
-Sitemap: https://pnglike.studio/sitemap.xml
+Sitemap: https://pnglike.com/sitemap.xml

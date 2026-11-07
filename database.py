@@ -929,7 +929,7 @@ class DatabaseManager:
                         AdminUser(
                             username=default_admin_user,
                             full_name=os.getenv("ADMIN_NAME", "System Administrator"),
-                            email=os.getenv("ADMIN_EMAIL", "admin@pnglike.studio"),
+                            email=os.getenv("ADMIN_EMAIL", "admin@pnglike.com"),
                             designation="Lead AI Systems Architect",
                             department="DevOps & AI Infrastructure",
                             location="Tokyo, Japan",
@@ -1045,7 +1045,7 @@ class DatabaseManager:
                     db.add(
                         AppUser(
                             username="demo",
-                            email="demo@pnglike.studio",
+                            email="demo@pnglike.com",
                             full_name="Demo Creator",
                             password_hash=hash_password("user123"),
                             avatar_color="#3b82f6",

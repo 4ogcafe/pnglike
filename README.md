@@ -6,7 +6,7 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
 [![ONNX Runtime](https://img.shields.io/badge/ONNX_Runtime-1.20+-005CED?logo=onnx&logoColor=white)](https://onnxruntime.ai)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4+-38B2AC?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
-[![SEO Score](https://img.shields.io/badge/SEO_Score-98.2%2F100_A%2B-brightgreen?logo=google)](https://pnglike.studio)
+[![SEO Score](https://img.shields.io/badge/SEO_Score-98.2%2F100_A%2B-brightgreen?logo=google)](https://pnglike.com)
 [![License](https://img.shields.io/badge/License-Proprietary%20%2F%20Commercial-purple)](LICENSE)
 
 ---
@@ -83,7 +83,7 @@ PngLike is engineered to resist abuse, unauthorized multi-accounting, and denial
 
 PngLike scores **98.2/100 (A+)** in technical SEO, structured data validation, and AI search readiness:
 
-* **Unified Canonicals**: 100% production-domain consistency across all routes (`https://pnglike.studio/`).
+* **Unified Canonicals**: 100% production-domain consistency across all routes (`https://pnglike.com/`).
 * **Schema.org Structured Data (@graph)**:
   * `WebApplication`: Details softwareCategory, browser requirements, and all 9 tools.
   * `ItemList`: Machine-readable catalog of all working image tools.
@@ -236,5 +236,5 @@ python verify_all_functionality.py
 
 * **Founder & Lead Architect**: **Div Sri**
 * **Project**: **PngLike**
-* **Official URL**: [https://pnglike.studio](https://pnglike.studio)
+* **Official URL**: [https://pnglike.com](https://pnglike.com)
 * **Copyright**: © 2026 PngLike Studio. All Rights Reserved.

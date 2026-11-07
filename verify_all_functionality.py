@@ -173,7 +173,7 @@ def test_presets_crud(admin_headers):
 def test_user_lifecycle_and_security():
     cat = "6. User Registration, Profile & Dashboard"
     test_user_ident = "studio_creator_test"
-    test_email = "creator.test@pnglike.studio"
+    test_email = "creator.test@pnglike.com"
     test_pass = "CreatorSecretPass123!#"
 
     # Ensure clean state if previously registered

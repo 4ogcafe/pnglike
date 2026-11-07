@@ -5,7 +5,7 @@ import requests
 from PIL import Image
 
 import os
-BASE_URL = os.getenv("TEST_SERVER_URL", "http://127.0.0.1:7861")
+BASE_URL = os.getenv("TEST_SERVER_URL", "http://127.0.0.1:7860")
 
 
 def wait_for_server(timeout: float = 20.0) -> bool:
@@ -313,7 +313,7 @@ def run_e2e_tests():
         f"{BASE_URL}/api/auth/register",
         json={
             "username": "bot_tester",
-            "email": "clean.tester@pnglike.studio",
+            "email": "clean.tester@pnglike.com",
             "password": "SecurePassword123!#",
             "full_name": "Bot Test",
             "website": "http://spambot.xyz",
@@ -381,7 +381,7 @@ def run_e2e_tests():
         ("/terms", ["Terms of Service", "PngLike", "Powered by Div Sri", "Commercial Ownership Guarantee"]),
         ("/cookies", ["Cookie Policy", "pnglike_user_token", "pnglike_theme"]),
         ("/about", ["About PngLike", "Powered by Div Sri", "9-in-1 AI Tool Suite"]),
-        ("/contact", ["Contact & Support", "support@pnglike.studio"]),
+        ("/contact", ["Contact & Support", "support@pnglike.com"]),
         ("/faq", ["Frequently Asked Questions", "Is PngLike completely free to use?"]),
     ]
     for page_path, expected_snippets in pages_to_verify:

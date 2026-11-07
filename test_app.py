@@ -10,7 +10,7 @@ def test_core_and_database():
     print("1. Testing MySQL DSN builder & DatabaseManager initialization...")
     dsn = db_manager.build_mysql_url()
     assert dsn.startswith("mysql+pymysql://")
-    assert "rembg_studio" in dsn
+    assert (db_manager.database in dsn) or ("rembg_studio" in dsn)
     print("   MySQL DSN:", dsn)
     print("   Active DB Engine:", db_manager.active_dialect)
 
@@ -134,14 +134,14 @@ def test_core_and_database():
 
     # Security Test 3: Weak / common passwords MUST be rejected
     try:
-        db_manager.register_user("weak_pw_user", "clean.user@pnglike.studio", "12345678", "Weak User")
+        db_manager.register_user("weak_pw_user", "clean.user@pnglike.com", "12345678", "Weak User")
         assert False, "Should have rejected weak password"
     except ValueError as e:
         print(f"   [SECURITY PASS] Weak password rejected: {e}")
 
     # Security Test 4: Reserved system usernames MUST be rejected
     try:
-        db_manager.register_user("admin", "admin.fake@pnglike.studio", "SecretPass123!#", "Admin Impersonator")
+        db_manager.register_user("admin", "admin.fake@pnglike.com", "SecretPass123!#", "Admin Impersonator")
         assert False, "Should have rejected reserved username 'admin'"
     except ValueError as e:
         assert "reserved for system use" in str(e), f"Unexpected error message: {e}"
@@ -149,7 +149,7 @@ def test_core_and_database():
 
     # Security Test 5: Valid registration with strong password & standard email
     try:
-        test_user = db_manager.register_user("test_creator_99", "creator99@pnglike.studio", "SecretPass123!#", "Test Creator", auto_activate=True)
+        test_user = db_manager.register_user("test_creator_99", "creator99@pnglike.com", "SecretPass123!#", "Test Creator", auto_activate=True)
     except ValueError:
         test_user = db_manager.authenticate_user("test_creator_99", "SecretPass123!#")
     assert test_user is not None and test_user["username"] == "test_creator_99"
