@@ -1406,11 +1406,20 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!res.ok) {
         let errorDetail = `${toolMeta.name} execution failed.`;
         try {
-          const errData = await res.json();
-          errorDetail = errData.detail || errorDetail;
-        } catch (_) {
-          errorDetail = (await res.text()) || errorDetail;
-        }
+          const rawText = await res.text();
+          try {
+            const errData = JSON.parse(rawText);
+            errorDetail = errData.detail || errorDetail;
+          } catch (_) {
+            if (rawText && !rawText.trim().startsWith("<")) {
+              errorDetail = rawText;
+            } else if (res.status === 404) {
+              errorDetail = "API service endpoint not found (404). Backend server is not running or route not configured.";
+            } else if (res.status === 500) {
+              errorDetail = "Server error (500). Please check backend logs or try another image.";
+            }
+          }
+        } catch (_) {}
 
         if (res.status === 403 || res.status === 429) {
           if (res.status === 429 && (errorDetail.includes("limitation reached") || errorDetail.includes("rest cooldown"))) {
@@ -1935,8 +1944,13 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!res.ok) {
         let errDetail = "Batch processing failed on server.";
         try {
-          const errData = await res.json();
-          errDetail = errData.detail || errDetail;
+          const rawText = await res.text();
+          try {
+            const errData = JSON.parse(rawText);
+            errDetail = errData.detail || errDetail;
+          } catch (_) {
+            if (rawText && !rawText.trim().startsWith("<")) errDetail = rawText;
+          }
         } catch (_) {}
         throw new Error(errDetail);
       }
