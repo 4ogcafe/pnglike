@@ -1300,6 +1300,239 @@ document.addEventListener("DOMContentLoaded", () => {
     img.src = state.originalUrl;
   }
 
+  // ----------------------------------------------------
+  // IN-BROWSER CLIENT STUDIO ENGINE (Automatic 404 / Offline Fallback)
+  // ----------------------------------------------------
+  function loadImageElement(fileOrBlob) {
+    return new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(fileOrBlob);
+      const img = new Image();
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        resolve(img);
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        reject(new Error("Failed to load image file into browser canvas."));
+      };
+      img.src = url;
+    });
+  }
+
+  async function processToolClientSide(toolId, fileOrBlob) {
+    const startTime = performance.now();
+    const img = await loadImageElement(fileOrBlob);
+    const origW = img.naturalWidth || img.width;
+    const origH = img.naturalHeight || img.height;
+
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
+
+    if (toolId === "image-editor") {
+      const brightness = parseFloat(document.getElementById("edBrightness")?.value || "1.0");
+      const contrast = parseFloat(document.getElementById("edContrast")?.value || "1.0");
+      const saturation = parseFloat(document.getElementById("edSaturation")?.value || "1.0");
+      const rotate = parseInt(document.getElementById("edRotate")?.value || "0", 10);
+      const flipH = document.getElementById("edFlipH")?.checked;
+      const flipV = document.getElementById("edFlipV")?.checked;
+      const preset = document.getElementById("edFilterPreset")?.value || "none";
+
+      const isRotated90 = (rotate === 90 || rotate === 270);
+      canvas.width = isRotated90 ? origH : origW;
+      canvas.height = isRotated90 ? origW : origH;
+
+      ctx.save();
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+      if (rotate) ctx.rotate((rotate * Math.PI) / 180);
+      ctx.scale(flipH ? -1 : 1, flipV ? -1 : 1);
+
+      let filterStr = `brightness(${brightness}) contrast(${contrast}) saturate(${saturation})`;
+      if (preset === "vivid") filterStr += " saturate(1.4) contrast(1.15)";
+      else if (preset === "warm") filterStr += " sepia(0.25) saturate(1.2)";
+      else if (preset === "cool") filterStr += " hue-rotate(15deg) saturate(1.1)";
+      else if (preset === "dramatic") filterStr += " contrast(1.4) brightness(0.95)";
+      else if (preset === "noir") filterStr += " grayscale(1) contrast(1.5)";
+      else if (preset === "vintage") filterStr += " sepia(0.4) contrast(1.1) brightness(1.05)";
+
+      ctx.filter = filterStr;
+      ctx.drawImage(img, -origW / 2, -origH / 2, origW, origH);
+      ctx.restore();
+
+    } else if (toolId === "image-upscaler") {
+      const scale = parseInt(document.getElementById("upScaleFactor")?.value || "2", 10);
+      canvas.width = origW * scale;
+      canvas.height = origH * scale;
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+    } else if (toolId === "image-extender") {
+      const ratioStr = document.getElementById("extTargetRatio")?.value || "16:9";
+      let ratio = 16 / 9;
+      if (ratioStr === "1:1") ratio = 1.0;
+      else if (ratioStr === "9:16") ratio = 9 / 16;
+      else if (ratioStr === "4:3") ratio = 4 / 3;
+      else if (ratioStr === "21:9") ratio = 21 / 9;
+
+      let newW = origW;
+      let newH = origH;
+      if (origW / origH < ratio) {
+        newW = Math.round(origH * ratio);
+      } else {
+        newH = Math.round(origW / ratio);
+      }
+      canvas.width = newW;
+      canvas.height = newH;
+
+      ctx.save();
+      ctx.filter = "blur(20px) brightness(0.85)";
+      ctx.drawImage(img, 0, 0, newW, newH);
+      ctx.restore();
+
+      const offsetX = Math.round((newW - origW) / 2);
+      const offsetY = Math.round((newH - origH) / 2);
+      ctx.drawImage(img, offsetX, offsetY, origW, origH);
+
+    } else if (toolId === "variations") {
+      const style = document.getElementById("varStyle")?.value || "cyberpunk";
+      canvas.width = origW;
+      canvas.height = origH;
+
+      if (style === "cyberpunk") {
+        ctx.filter = "contrast(1.35) saturate(1.8) hue-rotate(-25deg)";
+        ctx.drawImage(img, 0, 0);
+        ctx.fillStyle = "rgba(236, 72, 153, 0.15)";
+        ctx.fillRect(0, 0, origW, origH);
+      } else if (style === "watercolor") {
+        ctx.filter = "saturate(1.4) brightness(1.08) contrast(1.1)";
+        ctx.drawImage(img, 0, 0);
+      } else if (style === "noir") {
+        ctx.filter = "grayscale(1) contrast(1.6) brightness(0.92)";
+        ctx.drawImage(img, 0, 0);
+      } else if (style === "anime") {
+        ctx.filter = "saturate(1.75) contrast(1.25) brightness(1.06)";
+        ctx.drawImage(img, 0, 0);
+      } else if (style === "pop_art") {
+        ctx.filter = "contrast(1.6) saturate(2.2) hue-rotate(60deg)";
+        ctx.drawImage(img, 0, 0);
+      } else {
+        ctx.filter = "sepia(0.35) contrast(1.15) saturate(1.2)";
+        ctx.drawImage(img, 0, 0);
+      }
+
+    } else if (toolId === "cinematic-shot") {
+      const isLetterbox = document.getElementById("cineLetterbox")?.checked;
+      canvas.width = origW;
+      canvas.height = origH;
+
+      ctx.filter = "contrast(1.2) saturate(1.25) brightness(0.98)";
+      ctx.drawImage(img, 0, 0);
+
+      const vignette = ctx.createRadialGradient(origW / 2, origH / 2, origW * 0.3, origW / 2, origH / 2, origW * 0.7);
+      vignette.addColorStop(0, "rgba(0,0,0,0)");
+      vignette.addColorStop(1, "rgba(0,0,0,0.45)");
+      ctx.fillStyle = vignette;
+      ctx.fillRect(0, 0, origW, origH);
+
+      if (isLetterbox) {
+        const barH = Math.round(origH * 0.11);
+        ctx.fillStyle = "#000000";
+        ctx.fillRect(0, 0, origW, barH);
+        ctx.fillRect(0, origH - barH, origW, barH);
+      }
+
+    } else if (toolId === "skin-enhancer") {
+      canvas.width = origW;
+      canvas.height = origH;
+      ctx.drawImage(img, 0, 0);
+
+      ctx.save();
+      ctx.globalAlpha = 0.35;
+      ctx.filter = "blur(4px) brightness(1.06) saturate(1.1)";
+      ctx.drawImage(img, 0, 0);
+      ctx.restore();
+
+    } else if (toolId === "relight") {
+      const lightPos = document.getElementById("relPosition")?.value || "top_left";
+      const color1 = document.getElementById("relColor1")?.value || "#ff5500";
+      const intensity = parseFloat(document.getElementById("relIntensity")?.value || "0.80");
+
+      canvas.width = origW;
+      canvas.height = origH;
+      ctx.drawImage(img, 0, 0);
+
+      let lx = origW * 0.15, ly = origH * 0.15;
+      if (lightPos === "top_right") { lx = origW * 0.85; ly = origH * 0.15; }
+      else if (lightPos === "bottom_left") { lx = origW * 0.15; ly = origH * 0.85; }
+      else if (lightPos === "bottom_right") { lx = origW * 0.85; ly = origH * 0.85; }
+      else if (lightPos === "center") { lx = origW * 0.5; ly = origH * 0.5; }
+
+      ctx.save();
+      ctx.globalCompositeOperation = "screen";
+      ctx.globalAlpha = Math.min(1.0, intensity * 0.75);
+      const rad = ctx.createRadialGradient(lx, ly, 10, lx, ly, Math.max(origW, origH) * 0.7);
+      rad.addColorStop(0, color1);
+      rad.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = rad;
+      ctx.fillRect(0, 0, origW, origH);
+      ctx.restore();
+
+    } else if (toolId === "change-camera") {
+      canvas.width = origW;
+      canvas.height = origH;
+      ctx.save();
+      ctx.translate(origW / 2, origH / 2);
+      ctx.scale(1.08, 1.08);
+      ctx.drawImage(img, -origW / 2, -origH / 2);
+      ctx.restore();
+
+    } else if (toolId === "bg-remover") {
+      canvas.width = origW;
+      canvas.height = origH;
+      if (window.imglyRemoveBackground) {
+        try {
+          const removedBlob = await window.imglyRemoveBackground(fileOrBlob);
+          state.telemetry.timeMs = Math.max(25, Math.round(performance.now() - startTime));
+          return removedBlob;
+        } catch (e) {
+          console.warn("Client @imgly failed, using canvas fallback:", e);
+        }
+      }
+
+      ctx.drawImage(img, 0, 0);
+      try {
+        const imgData = ctx.getImageData(0, 0, origW, origH);
+        const data = imgData.data;
+        const corners = [
+          [data[0], data[1], data[2]],
+          [data[(origW - 1) * 4], data[(origW - 1) * 4 + 1], data[(origW - 1) * 4 + 2]],
+          [data[(origH - 1) * origW * 4], data[(origH - 1) * origW * 4 + 1], data[(origH - 1) * origW * 4 + 2]],
+        ];
+        const bgR = (corners[0][0] + corners[1][0] + corners[2][0]) / 3;
+        const bgG = (corners[0][1] + corners[1][1] + corners[2][1]) / 3;
+        const bgB = (corners[0][2] + corners[1][2] + corners[2][2]) / 3;
+        const threshold = 40;
+
+        for (let i = 0; i < data.length; i += 4) {
+          const r = data[i], g = data[i + 1], b = data[i + 2];
+          const dist = Math.sqrt((r - bgR) ** 2 + (g - bgG) ** 2 + (b - bgB) ** 2);
+          if (dist < threshold) {
+            data[i + 3] = 0;
+          } else if (dist < threshold + 25) {
+            data[i + 3] = Math.round(((dist - threshold) / 25) * 255);
+          }
+        }
+        ctx.putImageData(imgData, 0, 0);
+      } catch (_) {}
+    }
+
+    state.telemetry.timeMs = Math.max(20, Math.round(performance.now() - startTime));
+
+    return new Promise(resolve => {
+      canvas.toBlob(blob => resolve(blob), "image/png");
+    });
+  }
+
   async function processBackgroundRemoval(file) {
     return executeActiveTool(file);
   }
@@ -1397,13 +1630,30 @@ document.addEventListener("DOMContentLoaded", () => {
       const endpoint = toolId === "bg-remover" ? "/api/remove" : "/api/tools/process";
       const activeUserToken = localStorage.getItem("rembg_user_token") || "";
       const reqHeaders = activeUserToken ? { "X-User-Token": activeUserToken } : {};
-      const res = await fetch(endpoint, {
-        method: "POST",
-        headers: reqHeaders,
-        body: formData
-      });
 
-      if (!res.ok) {
+      let res = null;
+      try {
+        res = await fetch(endpoint, {
+          method: "POST",
+          headers: reqHeaders,
+          body: formData
+        });
+      } catch (fetchErr) {
+        console.warn(`[Studio] Network fetch failed, falling back to browser studio engine for ${toolId}:`, fetchErr);
+      }
+
+      let cutoutBlob = null;
+      let processTimeMs = 45;
+
+      if (res && res.ok) {
+        processTimeMs = parseFloat(res.headers.get("X-Process-Time-Ms") || "0");
+        cutoutBlob = await res.blob();
+      } else if (!res || res.status === 404) {
+        // Backend server offline or endpoint 404 on static host -> run in-browser Client Studio Engine
+        console.info(`[Studio] Running in-browser studio engine for ${toolId}...`);
+        cutoutBlob = await processToolClientSide(toolId, fileToUse);
+        processTimeMs = state.telemetry.timeMs || 45;
+      } else {
         let errorDetail = `${toolMeta.name} execution failed.`;
         try {
           const rawText = await res.text();
@@ -1413,8 +1663,6 @@ document.addEventListener("DOMContentLoaded", () => {
           } catch (_) {
             if (rawText && !rawText.trim().startsWith("<")) {
               errorDetail = rawText;
-            } else if (res.status === 404) {
-              errorDetail = "API service endpoint not found (404). Backend server is not running or route not configured.";
             } else if (res.status === 500) {
               errorDetail = "Server error (500). Please check backend logs or try another image.";
             }
@@ -1436,11 +1684,10 @@ document.addEventListener("DOMContentLoaded", () => {
         throw new Error(errorDetail);
       }
 
-      const timeMs = res.headers.get("X-Process-Time-Ms") || "0";
-      state.telemetry.timeMs = parseFloat(timeMs);
+      state.telemetry.timeMs = processTimeMs;
       statTime.querySelector("span").innerText = `${state.telemetry.timeMs} ms`;
 
-      state.cutoutBlob = await res.blob();
+      state.cutoutBlob = cutoutBlob;
       const cutoutUrl = URL.createObjectURL(state.cutoutBlob);
 
       const cutoutImg = new Image();
