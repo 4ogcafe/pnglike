@@ -920,7 +920,7 @@
   "robots_txt": {
     "status": 200,
     "has_sitemap": true,
-    "content_sample": "# Robots.txt for PngLike \u2014 Powered by Div Sri\n# Production Domain: https://pnglike.com/\n\nUser-agent: *\nAllow: /\nAllow: /blog\nAllow: /about\nAllow: /faq\nAllow: /contact\nAllow: /privacy\nAllow: /terms\nAllow: /cookies\nAllow: /static/\nAllow: /api/blog\nAllo"
+    "content_sample": "# Robots.txt for PngLike \u2014 Powered by Div Sri\n# Production Domain: https://pnglike.com/\n\nUser-agent: *\nAllow: /\nAllow: /blog\nAllow: /about\nAllow: /faq\nAllow: /contact\nAllow: /privacy\nAllow: /terms\nAllow: /cookies\nAllow: /static/\nAllow: /api/\n\n# Micro"
   },
   "sitemap_xml": {
     "status": 200,

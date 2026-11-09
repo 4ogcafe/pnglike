@@ -2797,8 +2797,10 @@ async def serve_robots_txt(request: Request):
         "Allow: /privacy\n"
         "Allow: /terms\n"
         "Allow: /cookies\n"
-        "Disallow: /admin\n"
-        "Disallow: /dashboard\n\n"
+        "Allow: /static/\n"
+        "Allow: /api/\n\n"
+        "User-agent: Bingbot\n"
+        "Allow: /\n\n"
         f"Sitemap: {site_base}/sitemap.xml\n"
     )
     return Response(content=robots_content, media_type="text/plain; charset=utf-8")
@@ -3106,7 +3108,7 @@ async def serve_blog_page(slug: Optional[str] = None):
 async def serve_user_dashboard():
     dashboard_file = BASE_DIR / "static" / "dashboard.html"
     if dashboard_file.exists():
-        return FileResponse(dashboard_file)
+        return FileResponse(dashboard_file, headers={"X-Robots-Tag": "noindex, nofollow"})
     raise HTTPException(status_code=404, detail="User Dashboard UI file not found.")
 
 
@@ -3115,7 +3117,7 @@ async def serve_user_dashboard():
 async def serve_admin_dashboard():
     admin_file = BASE_DIR / "static" / "admin.html"
     if admin_file.exists():
-        return FileResponse(admin_file)
+        return FileResponse(admin_file, headers={"X-Robots-Tag": "noindex, nofollow"})
     raise HTTPException(status_code=404, detail="Admin UI file not found.")
 
 
