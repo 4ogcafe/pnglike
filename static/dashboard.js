@@ -70,16 +70,36 @@ async function safeJsonFromRes(res) {
   };
 }
 
+function showLoginScreen() {
+  document.getElementById("userDashboardShell")?.classList.add("hidden");
+  document.getElementById("userAuthOverlay")?.classList.remove("hidden");
+}
+
+function showAuthenticatedDashboard() {
+  document.getElementById("userAuthOverlay")?.classList.add("hidden");
+  document.getElementById("userDashboardShell")?.classList.remove("hidden");
+}
+
+function isFallbackStatus(status) {
+  return !status || status === 404 || status === 405 || status === 502 || status === 503;
+}
+
 async function userFetch(url, options = {}) {
   const headers = Object.assign({}, options.headers || {}, {
     "X-User-Token": userToken,
   });
-  const res = await fetch(url, Object.assign({}, options, { headers }));
+  let res = null;
+  try {
+    res = await fetch(url, Object.assign({}, options, { headers }));
+  } catch (_) {
+    return { ok: false, status: 404, text: async () => "" };
+  }
   if (res.status === 401) {
     localStorage.removeItem("rembg_user_token");
+    localStorage.removeItem("pnglike_user_token");
     userToken = "";
-    const overlay = document.getElementById("userAuthOverlay");
-    if (overlay) overlay.classList.remove("hidden");
+    currentUser = null;
+    showLoginScreen();
     throw new Error("Session expired. Please sign in again.");
   }
   return res;
@@ -409,18 +429,18 @@ function saveLocalUsers(users) {
 }
 
 function getActiveLocalUser() {
-  const users = getLocalUsers();
-  if (userToken && userToken.startsWith("local_tok_")) {
-    const uname = userToken.replace("local_tok_", "");
-    const found = users.find(u => u.username.toLowerCase() === uname.toLowerCase());
-    if (found) return found;
+  if (!userToken || !userToken.startsWith("local_tok_")) {
+    return null;
   }
-  return users[0];
+  const users = getLocalUsers();
+  const uname = userToken.replace("local_tok_", "");
+  const found = users.find(u => u.username.toLowerCase() === uname.toLowerCase() && u.is_active !== false);
+  return found || null;
 }
 
 async function loadUserDashboard() {
   if (!userToken) {
-    document.getElementById("userAuthOverlay")?.classList.remove("hidden");
+    showLoginScreen();
     return;
   }
 
@@ -430,8 +450,16 @@ async function loadUserDashboard() {
     if (res.ok) {
       const parsed = await safeJsonFromRes(res);
       data = parsed.data;
-    } else if (res.status === 404) {
+    } else if (isFallbackStatus(res.status)) {
       const localUser = getActiveLocalUser();
+      if (!localUser) {
+        localStorage.removeItem("rembg_user_token");
+        localStorage.removeItem("pnglike_user_token");
+        userToken = "";
+        currentUser = null;
+        showLoginScreen();
+        return;
+      }
       data = {
         user: localUser,
         stats: { total_jobs: 0, avg_process_time_ms: 42, total_storage_mb: 0, favorite_model: "u2net", model_breakdown: {} },
@@ -442,7 +470,7 @@ async function loadUserDashboard() {
     }
     if (!data || !data.user) throw new Error("Invalid dashboard data");
 
-    document.getElementById("userAuthOverlay")?.classList.add("hidden");
+    showAuthenticatedDashboard();
     populateUserIdentity(data.user);
 
     const stats = data.stats || {};
@@ -457,6 +485,11 @@ async function loadUserDashboard() {
     renderUserGallery(userJobsCache);
   } catch (err) {
     console.warn("Auth check / dashboard load:", err.message);
+    localStorage.removeItem("rembg_user_token");
+    localStorage.removeItem("pnglike_user_token");
+    userToken = "";
+    currentUser = null;
+    showLoginScreen();
   }
 }
 
@@ -521,21 +554,30 @@ document.addEventListener("DOMContentLoaded", () => {
     const password = document.getElementById("loginPassword").value;
 
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ identifier, password }),
-      });
+      let res = null;
+      try {
+        res = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ identifier, password }),
+        });
+      } catch (_) {}
       let { ok, status, data, detail } = await safeJsonFromRes(res);
-      if (!ok && status === 404) {
+      if (!ok && isFallbackStatus(status)) {
         const users = getLocalUsers();
         const idLower = identifier.toLowerCase();
         const found = users.find(
           u => (u.username.toLowerCase() === idLower || (u.email || "").toLowerCase() === idLower) && u.password === password
         );
         if (found) {
-          ok = true;
-          data = { token: `local_tok_${found.username}`, user: found };
+          if (found.is_active === false) {
+            status = 403;
+            pendingVerificationEmail = found.email || identifier;
+            detail = "Your account is not active yet. Please enter your 6-digit verification code to activate it.";
+          } else {
+            ok = true;
+            data = { token: `local_tok_${found.username}`, user: found };
+          }
         } else {
           detail = "Invalid username/email or password.";
         }
@@ -555,7 +597,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       userToken = data.token;
       localStorage.setItem("rembg_user_token", userToken);
-      document.getElementById("userAuthOverlay")?.classList.add("hidden");
+      localStorage.setItem("pnglike_user_token", userToken);
       await loadUserDashboard();
     } catch (err) {
       showAuthAlert("Network error while signing in.");
@@ -714,19 +756,22 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      const res = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username,
-          email,
-          password,
-          full_name,
-          website: honeypot
-        }),
-      });
+      let res = null;
+      try {
+        res = await fetch("/api/auth/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username,
+            email,
+            password,
+            full_name,
+            website: honeypot
+          }),
+        });
+      } catch (_) {}
       let { ok, status, data, detail } = await safeJsonFromRes(res);
-      if (!ok && status === 404) {
+      if (!ok && isFallbackStatus(status)) {
         const users = getLocalUsers();
         if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
           showAuthAlert("Username is already registered.");
@@ -809,13 +854,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      const res = await fetch("/api/auth/verify-code", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: pendingVerificationEmail, code }),
-      });
+      let res = null;
+      try {
+        res = await fetch("/api/auth/verify-code", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: pendingVerificationEmail, code }),
+        });
+      } catch (_) {}
       let { ok, status, data, detail } = await safeJsonFromRes(res);
-      if (!ok && status === 404) {
+      if (!ok && isFallbackStatus(status)) {
         const users = getLocalUsers();
         const found = users.find(u => (u.email || "").toLowerCase() === pendingVerificationEmail.toLowerCase());
         if (found && (!found.verify_code || found.verify_code === code || code.length === 6)) {
@@ -834,7 +882,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       userToken = data.token;
       localStorage.setItem("rembg_user_token", userToken);
-      document.getElementById("userAuthOverlay")?.classList.add("hidden");
+      localStorage.setItem("pnglike_user_token", userToken);
       await loadUserDashboard();
     } catch (err) {
       showAuthAlert("Network error while verifying code.");
@@ -851,13 +899,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      const res = await fetch("/api/auth/resend-verification", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: pendingVerificationEmail }),
-      });
+      let res = null;
+      try {
+        res = await fetch("/api/auth/resend-verification", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: pendingVerificationEmail }),
+        });
+      } catch (_) {}
       let { ok, status, data, detail } = await safeJsonFromRes(res);
-      if (!ok && status === 404) {
+      if (!ok && isFallbackStatus(status)) {
         const devCode = String(Math.floor(100000 + Math.random() * 900000));
         const users = getLocalUsers();
         const found = users.find(u => (u.email || "").toLowerCase() === pendingVerificationEmail.toLowerCase());
@@ -896,9 +947,10 @@ document.addEventListener("DOMContentLoaded", () => {
       await userFetch("/api/auth/logout", { method: "POST" });
     } catch (_) {}
     localStorage.removeItem("rembg_user_token");
+    localStorage.removeItem("pnglike_user_token");
     userToken = "";
     currentUser = null;
-    document.getElementById("userAuthOverlay")?.classList.remove("hidden");
+    showLoginScreen();
   });
 
   // Clear all personal jobs
@@ -1034,9 +1086,13 @@ document.addEventListener("DOMContentLoaded", () => {
         body: JSON.stringify(payload),
       });
       let { ok, status, data, detail } = await safeJsonFromRes(res);
-      if (!ok && status === 404) {
+      if (!ok && isFallbackStatus(status)) {
         const users = getLocalUsers();
         const active = getActiveLocalUser();
+        if (!active) {
+          showLoginScreen();
+          return;
+        }
         const idx = users.findIndex(u => u.username === active.username);
         const updated = Object.assign({}, active, payload);
         if (payload.new_password) updated.password = payload.new_password;
@@ -1082,7 +1138,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (res.ok) {
         const parsed = await safeJsonFromRes(res);
         data = parsed.data;
-      } else if (res.status === 404) {
+      } else if (isFallbackStatus(res.status)) {
         data = { user: getActiveLocalUser(), exported_at: new Date().toISOString(), jobs: userJobsCache };
       } else {
         throw new Error("Could not export account data");
@@ -1120,10 +1176,12 @@ document.addEventListener("DOMContentLoaded", () => {
         body: JSON.stringify({ confirm_phrase: confirmPhrase, password }),
       });
       let { ok, status, detail } = await safeJsonFromRes(res);
-      if (!ok && status === 404) {
+      if (!ok && isFallbackStatus(status)) {
         const active = getActiveLocalUser();
-        const users = getLocalUsers().filter(u => u.username !== active.username);
-        saveLocalUsers(users);
+        if (active) {
+          const users = getLocalUsers().filter(u => u.username !== active.username);
+          saveLocalUsers(users);
+        }
         ok = true;
       }
       if (!ok) {
@@ -1131,6 +1189,10 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
       localStorage.removeItem("rembg_user_token");
+      localStorage.removeItem("pnglike_user_token");
+      userToken = "";
+      currentUser = null;
+      showLoginScreen();
       alert("Your account and personal image history have been permanently deleted.");
       window.location.href = "/";
     } catch (err) {

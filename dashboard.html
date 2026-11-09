@@ -71,7 +71,7 @@
   <!-- ============================================== -->
   <!-- USER LOGIN & REGISTER OVERLAY                  -->
   <!-- ============================================== -->
-  <div id="userAuthOverlay" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+  <div id="userAuthOverlay" class="fixed inset-0 z-[100] bg-slate-950 flex items-center justify-center p-4 overflow-y-auto">
     <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-md w-full p-7 sm:p-8 shadow-2xl my-auto">
       <!-- Brand Header -->
       <div class="flex items-center justify-between gap-3 mb-6">
@@ -271,7 +271,7 @@
   <!-- ============================================== -->
   <!-- USER DASHBOARD SHELL (SIDEBAR + MAIN CONTENT)  -->
   <!-- ============================================== -->
-  <div class="flex-1 flex min-h-screen relative overflow-x-hidden">
+  <div id="userDashboardShell" class="hidden flex-1 flex min-h-screen relative overflow-x-hidden">
 
     <!-- Mobile Drawer Backdrop Overlay -->
     <div id="userMobileBackdrop" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-40 hidden md:hidden transition-opacity"></div>
@@ -866,7 +866,7 @@
     </div>
   </div>
 
-  <script src="/static/dashboard.js?v=2.9"></script>
+  <script src="/static/dashboard.js?v=3.0"></script>
 </body>
 </html>
 

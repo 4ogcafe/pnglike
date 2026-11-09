@@ -69,7 +69,7 @@
   <!-- ============================================== -->
   <!-- ADMIN LOGIN OVERLAY                            -->
   <!-- ============================================== -->
-  <div id="loginOverlay" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
+  <div id="loginOverlay" class="fixed inset-0 z-[100] bg-slate-950 flex items-center justify-center p-4">
     <div class="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-md w-full p-8 shadow-2xl">
       <div class="flex items-center gap-3 mb-6">
         <img src="/static/brand/logo-icon.svg" alt="PngLike Icon" width="48" height="48" class="w-12 h-12 rounded-2xl shadow-lg">
@@ -113,7 +113,7 @@
   <!-- ============================================== -->
   <!-- ADMIN SHELL (SIDEBAR + MAIN CONTENT)           -->
   <!-- ============================================== -->
-  <div class="flex-1 flex min-h-screen relative overflow-x-hidden">
+  <div id="adminDashboardShell" class="hidden flex-1 flex min-h-screen relative overflow-x-hidden">
 
     <!-- Mobile Drawer Backdrop Overlay -->
     <div id="adminMobileBackdrop" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-40 hidden lg:hidden transition-opacity"></div>
@@ -1685,7 +1685,7 @@
   <!-- Toast Container -->
   <div id="toastContainer" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-  <script src="/static/admin.js?v=3.4"></script>
+  <script src="/static/admin.js?v=3.5"></script>
   <script>
     if (window.lucide && typeof window.lucide.createIcons === 'function') {
       window.lucide.createIcons();

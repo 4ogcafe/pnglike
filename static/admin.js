@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // DOM References
   const loginOverlay = document.getElementById("loginOverlay");
+  const adminDashboardShell = document.getElementById("adminDashboardShell");
   const loginForm = document.getElementById("loginForm");
   const loginUsername = document.getElementById("loginUsername");
   const loginPassword = document.getElementById("loginPassword");
@@ -19,6 +20,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const adminUserLabel = document.getElementById("adminUserLabel");
   const pageHeaderTitle = document.getElementById("pageHeaderTitle");
   const headerDbBadge = document.getElementById("headerDbBadge");
+
+  function showAdminLoginScreen() {
+    if (adminDashboardShell) adminDashboardShell.classList.add("hidden");
+    if (loginOverlay) loginOverlay.classList.remove("hidden");
+  }
+
+  function showAdminDashboardScreen() {
+    if (loginOverlay) loginOverlay.classList.add("hidden");
+    if (adminDashboardShell) adminDashboardShell.classList.remove("hidden");
+  }
 
   // Initialize Theme & Session
   initTheme();
@@ -358,6 +369,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (path === "/api/admin/me" && method === "GET") {
+      if (!adminToken || !adminToken.startsWith("local_admin_tok_")) {
+        return makeSyntheticResponse(401, { detail: "Unauthorized" });
+      }
       return makeSyntheticResponse(200, { admin: getLocalAdmin() });
     }
 
@@ -845,7 +859,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (res.status === 401 && !url.includes("/api/admin/login")) {
-      loginOverlay.classList.remove("hidden");
+      adminToken = "";
+      localStorage.removeItem("rembg_admin_token");
+      localStorage.removeItem("pnglike_admin_token");
+      showAdminLoginScreen();
       throw new Error("Admin session expired. Please sign in.");
     }
     // Wrap res.json to protect against HTML 404/500/Cloudflare responses
@@ -856,7 +873,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function verifyExistingSession() {
     if (!adminToken) {
-      loginOverlay.classList.remove("hidden");
+      showAdminLoginScreen();
       return;
     }
     try {
@@ -865,12 +882,15 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await res.json();
       onLoginSuccess(data.admin);
     } catch (e) {
-      loginOverlay.classList.remove("hidden");
+      adminToken = "";
+      localStorage.removeItem("rembg_admin_token");
+      localStorage.removeItem("pnglike_admin_token");
+      showAdminLoginScreen();
     }
   }
 
   function onLoginSuccess(admin) {
-    loginOverlay.classList.add("hidden");
+    showAdminDashboardScreen();
     adminUserLabel.innerText = "@" + (admin.username || "admin");
     document.getElementById("admNewUsername").value = admin.username || "admin";
     loadAdminProfile(true);
@@ -997,7 +1017,7 @@ document.addEventListener("DOMContentLoaded", () => {
       adminToken = "";
       localStorage.removeItem("rembg_admin_token");
       localStorage.removeItem("pnglike_admin_token");
-      loginOverlay.classList.remove("hidden");
+      showAdminLoginScreen();
       showToast("Signed out of Admin Portal.", "info");
     });
 
