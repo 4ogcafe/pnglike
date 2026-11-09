@@ -31,6 +31,7 @@ DirectoryIndex index.html index.php /static/index.html
     RewriteRule ^register/?$ /dashboard.html [L]
     RewriteRule ^verify/?$ /dashboard.html [L]
     RewriteRule ^blog/?$ /blog.html [L]
+    RewriteRule ^blog/([^/]+)/?$ /blog.html [L]
     RewriteRule ^about/?$ /about.html [L]
     RewriteRule ^contact/?$ /contact.html [L]
     RewriteRule ^faq/?$ /faq.html [L]

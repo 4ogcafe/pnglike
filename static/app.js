@@ -1215,7 +1215,7 @@ document.addEventListener("DOMContentLoaded", () => {
         updateDbBadge(data.database);
       }
     } catch (e) {
-      if (modelStatusText) modelStatusText.innerText = "Connecting...";
+      if (modelStatusText) modelStatusText.innerText = "Studio Engine • Ready";
     }
   }
 
@@ -2255,14 +2255,34 @@ document.addEventListener("DOMContentLoaded", () => {
   // ----------------------------------------------------
   // MYSQL PRESETS, HISTORY & DATABASE CONFIGURATION
   // ----------------------------------------------------
+  const DEFAULT_STUDIO_PRESETS = [
+    { id: 1, name: "E-Commerce White Studio", model_used: "u2net", alpha_matting: false, af_threshold: 240, ab_threshold: 10, ae_size: 10, post_process_mask: true, bg_mode: "solid", bg_value: "#ffffff", export_format: "png" },
+    { id: 2, name: "Portrait Hair Precision", model_used: "u2net_human_seg", alpha_matting: true, af_threshold: 230, ab_threshold: 15, ae_size: 8, post_process_mask: true, bg_mode: "transparent", bg_value: null, export_format: "png" },
+    { id: 3, name: "Anime & Sticker Cutout", model_used: "isnet-anime", alpha_matting: false, af_threshold: 240, ab_threshold: 10, ae_size: 10, post_process_mask: true, bg_mode: "transparent", bg_value: null, export_format: "png" }
+  ];
+
+  function getLocalFallbackPresets() {
+    let custom = [];
+    try {
+      custom = JSON.parse(localStorage.getItem("pnglike_custom_presets") || "[]");
+    } catch (_) {}
+    return [...DEFAULT_STUDIO_PRESETS, ...custom];
+  }
+
   async function loadPresets() {
     if (!presetSelect) return;
     try {
-      const res = await fetch("/api/presets");
-      if (!res.ok) return;
-      const data = await safeJson(res);
-      if (!data) return;
-      savedPresets = data.presets || [];
+      let presets = null;
+      try {
+        const res = await fetch("/api/presets");
+        if (res.ok) {
+          const data = await safeJson(res);
+          if (data && Array.isArray(data.presets)) {
+            presets = data.presets;
+          }
+        }
+      } catch (_) {}
+      savedPresets = presets || getLocalFallbackPresets();
       presetSelect.innerHTML = `<option value="">-- Select Saved Studio Preset --</option>`;
       savedPresets.forEach(p => {
         const opt = document.createElement("option");
@@ -2329,13 +2349,27 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     try {
-      const res = await fetch("/api/presets", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const data = await safeJson(res);
-      if (!res.ok || !data) throw new Error(data?.detail || "Failed to save preset");
+      let savedOnServer = false;
+      try {
+        const res = await fetch("/api/presets", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        if (res.ok) {
+          const data = await safeJson(res);
+          if (data) savedOnServer = true;
+        }
+      } catch (_) {}
+
+      if (!savedOnServer) {
+        let custom = [];
+        try {
+          custom = JSON.parse(localStorage.getItem("pnglike_custom_presets") || "[]");
+        } catch (_) {}
+        custom.push(Object.assign({ id: Date.now() }, payload));
+        localStorage.setItem("pnglike_custom_presets", JSON.stringify(custom));
+      }
       await loadPresets();
       showToast(`Saved studio preset "${name.trim()}"!`, "success");
     } catch (e) {

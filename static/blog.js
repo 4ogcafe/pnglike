@@ -12,6 +12,66 @@ document.addEventListener("DOMContentLoaded", () => {
   let allPosts = [];
   let currentSlug = null;
 
+  const FALLBACK_BLOG_POSTS = [
+    {
+      id: 1,
+      title: "Mastering Hair-Level AI Background Removal with U2-Net & Alpha Matting",
+      slug: "mastering-ai-background-removal-u2net-alpha-matting",
+      excerpt: "Learn how to combine U2-Net deep salient object detection with foreground/background alpha matting thresholds for studio-grade hair, fur, and semi-transparent cutouts.",
+      category: "AI Tutorials",
+      tags: "u2net,alpha-matting,background-remover,onnx,portrait",
+      tag_list: ["u2net", "alpha-matting", "background-remover", "onnx", "portrait"],
+      cover_image: "/static/samples/portrait_person.jpg",
+      author: "Div Sri",
+      read_time_minutes: 5,
+      is_published: true,
+      is_featured: true,
+      views_count: 142,
+      published_date: "Nov 06, 2026",
+      meta_title: "Mastering Hair-Level AI Background Removal with U2-Net — PngLike Blog",
+      meta_description: "Step-by-step guide to achieving razor-sharp hair and fur cutouts using U2-Net ONNX neural segmentation and alpha matting in PngLike Studio.",
+      content: "<h2>Why Standard Cutouts Struggle with Hair and Fine Edges</h2><p>Traditional binary segmentation masks classify every pixel as either 100% foreground or 100% background. While that works well for hard-edged boxes or shoes, human hair, pet fur, and glass edges contain mixed transparency (alpha values between <code>0.05</code> and <code>0.95</code>).</p><h3>1. Choosing the Right ONNX Neural Model</h3><ul><li><strong>U2-Net (High Quality)</strong>: Our flagship 176 MB two-level nested U-structure architecture. Ideal for general studio photography and complex silhouettes.</li><li><strong>U2-Net Human Segmentation</strong>: Specifically fine-tuned on human portraits, clothing textures, and flyaway hair strands.</li><li><strong>IS-Net Anime</strong>: Engineered for 2D illustrations, cel-shaded artwork, and vector linework.</li></ul><h3>2. Fine-Tuning Alpha Matting Thresholds</h3><p>When you enable <strong>Alpha Matting</strong> in PngLike's Background Remover panel, the trimap refinement solver uses three key parameters:</p><ul><li><strong>Foreground Threshold (default 240)</strong>: Pixels with probability above this value are locked as pure opaque subject. Lowering to <code>225</code> preserves more wisps of hair.</li><li><strong>Background Threshold (default 10)</strong>: Pixels below this probability are cleared to 0% alpha. Raising to <code>20</code> eliminates color spill from studio backdrops.</li><li><strong>Erode Size (default 10)</strong>: Controls the width of the unknown trimap boundary zone where closed-form alpha matting computes sub-pixel transparency.</li></ul><blockquote>Pro Tip: Enable <strong>Post-Process Mask</strong> alongside Alpha Matting to automatically smooth morphological jagged edges before compositing onto a solid or gradient backdrop.</blockquote>"
+    },
+    {
+      id: 2,
+      title: "E-Commerce Product Photography: Creating Pure White Studio Catalogs in Seconds",
+      slug: "ecommerce-product-photography-pure-white-studio-catalogs",
+      excerpt: "How online sellers and brand designers use PngLike's Batch Studio, 4x Super-Resolution Upscaler, and Pure White (#FFFFFF) presets to meet Amazon and Shopify marketplace specs.",
+      category: "Product Photography",
+      tags: "ecommerce,batch-processing,product-photos,upscaler,presets",
+      tag_list: ["ecommerce", "batch-processing", "product-photos", "upscaler", "presets"],
+      cover_image: "/static/samples/product_sneaker.jpg",
+      author: "Div Sri",
+      read_time_minutes: 4,
+      is_published: true,
+      is_featured: true,
+      views_count: 98,
+      published_date: "Nov 06, 2026",
+      meta_title: "E-Commerce Product Photography Guide — Pure White Studio Cutouts",
+      meta_description: "Automate Amazon and Shopify product photography with PngLike Batch Studio, pure #FFFFFF backdrops, and 4x Lanczos super-resolution upscaling.",
+      content: "<h2>Marketplace Compliance Made Effortless</h2><p>Major e-commerce marketplaces require primary product listings to feature a pure white (<code>RGB 255, 255, 255</code> / <code>#FFFFFF</code>) background with crisp object edges and high resolution (at least 1600px on the longest side).</p><h3>Step 1: One-Click 'E-Commerce White Studio' Preset</h3><p>Inside the PngLike AI Image Studio, select the <strong>E-Commerce White Studio</strong> preset from the top preset selector. This automatically configures:</p><ul><li>Model: <code>u2net</code> with morphological mask post-processing enabled</li><li>Background Mode: Solid <code>#ffffff</code> pure studio white</li><li>Export Format: High-quality 95% JPEG or lossless PNG</li></ul><h3>Step 2: Upscaling Low-Resolution Vendor Photos</h3><p>Switch directly to the <strong>Image Upscaler</strong> tool in the 9-in-1 Dock to boost supplier images by <strong>2x or 4x</strong> using Lanczos-4 interpolation paired with bilateral noise reduction and unsharp edge enhancement.</p><h3>Step 3: Multi-Image ZIP Batch Processing</h3><p>Have 50 product SKUs to shoot? Open the <strong>Batch Studio</strong> tab, drag and drop your entire folder, and download a single ready-to-publish ZIP archive in seconds.</p>"
+    },
+    {
+      id: 3,
+      title: "Inside PngLike 9-in-1 AI Image Suite: 3D Relighting, Cinematic Bokeh & Camera Warp",
+      slug: "inside-pnglike-9-in-1-ai-image-suite-3d-relight-cinematic",
+      excerpt: "Explore the computer vision pipelines behind PngLike's 9 working IMAGE tools—from surface-normal 3D studio relighting to anamorphic bokeh and projective homography camera shifts.",
+      category: "Computer Vision",
+      tags: "relight,cinematic-shot,change-camera,skin-enhancer,computer-vision",
+      tag_list: ["relight", "cinematic-shot", "change-camera", "skin-enhancer", "computer-vision"],
+      cover_image: "/static/samples/coffee_mug.jpg",
+      author: "Div Sri",
+      read_time_minutes: 6,
+      is_published: true,
+      is_featured: false,
+      views_count: 76,
+      published_date: "Nov 06, 2026",
+      meta_title: "Inside PngLike 9-in-1 AI Image Suite: Relight, Cinematic & Camera Tools",
+      meta_description: "Deep dive into the 9 neural and computer vision tools powering PngLike Studio: 3D Relight, Cinematic Shot, Skin Enhancer, Image Extender, and Change Camera.",
+      content: "<h2>One Unified Workspace, Nine Specialized Vision Engines</h2><p>PngLike (Powered by Div Sri) combines ONNX Runtime neural segmentation with real-time NumPy/Pillow signal processing so every tool runs locally on your machine with zero cloud latency or privacy risks.</p><h3>Highlights from the 9-Tool Dock</h3><ul><li><strong>Relight (3D Light)</strong>: Isolates the foreground subject via U2-Net, estimates a 3D hemisphere surface normal map from luminance gradients, and casts dual directional key and rim lights (including Neon Split).</li><li><strong>Cinematic Shot (Anamorphic)</strong>: Separates foreground and background planes to apply optical depth-of-field bokeh blur, Teal & Orange Hollywood LUT grading, horizontal anamorphic lens flares, and 2.39:1 widescreen letterbox bars.</li><li><strong>Skin Enhancer (Portrait)</strong>: Uses YCbCr chrominance skin-tone masking and frequency separation to smooth blemishes while preserving sharp eye, eyelash, and pore detail.</li><li><strong>Change Camera (Perspective)</strong>: Applies 3D projective homography matrices (Tilt Up, Tilt Down, Pan Left/Right, Dutch Roll) and radial Barrel/Pincushion lens profiles (24mm Wide, 16mm Fisheye, 85mm Telephoto).</li></ul>"
+    }
+  ];
+
   const blogListView = document.getElementById("blogListView");
   const blogArticleView = document.getElementById("blogArticleView");
   const blogPostsGrid = document.getElementById("blogPostsGrid");
@@ -90,22 +150,47 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function getFallbackBlogData() {
+    const categories = Array.from(new Set(FALLBACK_BLOG_POSTS.map(p => p.category)));
+    const posts = FALLBACK_BLOG_POSTS.filter(p => {
+      if (activeCategory && activeCategory !== "all" && p.category.toLowerCase() !== activeCategory.toLowerCase()) {
+        return false;
+      }
+      if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        return (
+          p.title.toLowerCase().includes(q) ||
+          p.excerpt.toLowerCase().includes(q) ||
+          p.tags.toLowerCase().includes(q) ||
+          p.category.toLowerCase().includes(q)
+        );
+      }
+      return true;
+    });
+    return { posts, categories };
+  }
+
   async function loadBlogIndex() {
     try {
       const params = new URLSearchParams();
       if (activeCategory && activeCategory !== "all") params.set("category", activeCategory);
       if (searchQuery) params.set("search", searchQuery);
 
-      const res = await fetch(`/api/blog?${params.toString()}`);
-      if (!res.ok) return;
-      const text = await res.text();
-      if (!text || text.trim().startsWith("<")) return;
-      let data = {};
+      let data = null;
       try {
-        data = JSON.parse(text);
-      } catch (_) {
-        return;
+        const res = await fetch(`/api/blog?${params.toString()}`);
+        if (res.ok) {
+          const text = await res.text();
+          if (text && !text.trim().startsWith("<")) {
+            data = JSON.parse(text);
+          }
+        }
+      } catch (_) {}
+
+      if (!data || !Array.isArray(data.posts)) {
+        data = getFallbackBlogData();
       }
+
       allPosts = data.posts || [];
 
       if (data.settings) {
@@ -121,6 +206,10 @@ document.addEventListener("DOMContentLoaded", () => {
       renderBlogList(allPosts);
     } catch (err) {
       console.error("Failed to load blog posts:", err);
+      const fallback = getFallbackBlogData();
+      allPosts = fallback.posts;
+      renderCategoryButtons(fallback.categories);
+      renderBlogList(allPosts);
     }
   }
 
@@ -251,26 +340,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function openArticleBySlug(slug, pushHistory = true) {
     try {
-      const res = await fetch(`/api/blog/${encodeURIComponent(slug)}`);
-      if (!res.ok) {
-        showToast("Blog article not found.", "error");
-        showListView(true);
-        return;
-      }
-      const text = await res.text();
-      if (!text || text.trim().startsWith("<")) {
-        showToast("Unable to display article content.", "error");
-        showListView(true);
-        return;
-      }
-      let data = {};
+      let data = null;
       try {
-        data = JSON.parse(text);
-      } catch (_) {
-        showToast("Invalid article format.", "error");
-        showListView(true);
-        return;
+        const res = await fetch(`/api/blog/${encodeURIComponent(slug)}`);
+        if (res.ok) {
+          const text = await res.text();
+          if (text && !text.trim().startsWith("<")) {
+            data = JSON.parse(text);
+          }
+        }
+      } catch (_) {}
+
+      if (!data || !data.post) {
+        const localPost = FALLBACK_BLOG_POSTS.find(p => p.slug === slug);
+        if (!localPost) {
+          showToast("Blog article not found.", "error");
+          showListView(true);
+          return;
+        }
+        data = {
+          post: localPost,
+          related: FALLBACK_BLOG_POSTS.filter(p => p.slug !== slug)
+        };
       }
+
       const post = data.post;
       const related = data.related || [];
       currentSlug = post.slug;

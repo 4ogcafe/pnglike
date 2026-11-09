@@ -1067,7 +1067,7 @@ document.addEventListener("DOMContentLoaded", () => {
   async function loadAdminPresets() {
     try {
       const res = await fetch("/api/presets");
-      const data = await res.json();
+      const data = await safeJsonFromRes(res);
       const list = document.getElementById("adminPresetsList");
       list.innerHTML = "";
 
@@ -1227,7 +1227,7 @@ document.addEventListener("DOMContentLoaded", () => {
   async function loadDatabaseTab() {
     try {
       const res = await fetch("/api/status");
-      const data = await res.json();
+      const data = await safeJsonFromRes(res);
       const db = data.database || {};
       document.getElementById("admDbHost").value = db.host || "127.0.0.1";
       document.getElementById("admDbPort").value = db.port || 3306;
@@ -1798,7 +1798,7 @@ document.addEventListener("DOMContentLoaded", () => {
         headers: { "X-Admin-Token": adminToken },
         body: formData,
       });
-      const data = await res.json();
+      const data = await safeJsonFromRes(res);
       if (!res.ok) throw new Error(data.detail || "Failed to upload avatar");
       currentAdminProfile = data.profile;
       updateAdminIdentityUI(currentAdminProfile);
