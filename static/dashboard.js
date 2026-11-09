@@ -411,14 +411,42 @@ function getLocalUsers() {
     created_at: "2026-11-01 00:00:00",
     last_login: new Date().toISOString().slice(0, 19).replace("T", " ")
   };
+  const defaultAdminUser = {
+    id: 2,
+    username: "4ogcafe@gmail.com",
+    email: "4ogcafe@gmail.com",
+    password: "password123",
+    full_name: "Div Sri (System Administrator)",
+    bio: "Managing PngLike 9-in-1 AI Image Suite engine, ONNX neural models, and cloud infrastructure.",
+    avatar_color: "#4f46e5",
+    plan_tier: "Enterprise",
+    preferred_format: "png",
+    dark_mode_pref: "system",
+    is_active: true,
+    created_at: "2026-11-01 00:00:00",
+    last_login: new Date().toISOString().slice(0, 19).replace("T", " ")
+  };
   try {
     const stored = JSON.parse(localStorage.getItem("pnglike_local_users") || "[]");
-    if (!stored.some(u => u.username === "demo")) {
+    if (!stored.some(u => (u.username || "").toLowerCase() === "demo")) {
       stored.unshift(defaultDemo);
+    }
+    const admIdx = stored.findIndex(
+      u => (u.username || "").toLowerCase() === "4ogcafe@gmail.com" || (u.email || "").toLowerCase() === "4ogcafe@gmail.com"
+    );
+    if (admIdx === -1) {
+      stored.unshift(defaultAdminUser);
+    } else {
+      stored[admIdx] = Object.assign({}, defaultAdminUser, stored[admIdx], {
+        username: "4ogcafe@gmail.com",
+        email: "4ogcafe@gmail.com",
+        password: stored[admIdx].password || "password123",
+        is_active: true
+      });
     }
     return stored;
   } catch (_) {
-    return [defaultDemo];
+    return [defaultAdminUser, defaultDemo];
   }
 }
 

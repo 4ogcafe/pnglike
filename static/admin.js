@@ -54,11 +54,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // ========================================================
   const DEFAULT_ADMIN_PROFILE = {
     id: 1,
-    username: "admin",
-    password: "",
-    password_custom: false,
+    username: "4ogcafe@gmail.com",
+    password: "password123",
+    password_custom: true,
     full_name: "Div Sri (System Administrator)",
-    email: "admin@pnglike.com",
+    email: "4ogcafe@gmail.com",
     phone: "+81 90-0000-0000",
     designation: "Lead AI Systems Architect",
     department: "DevOps & AI Infrastructure",
@@ -201,7 +201,12 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function getLocalAdmin() {
-    return Object.assign({}, DEFAULT_ADMIN_PROFILE, readLocalJson("pnglike_local_admin", {}));
+    const stored = readLocalJson("pnglike_local_admin", {});
+    if (stored && stored.username === "admin" && !stored.password_custom) {
+      writeLocalJson("pnglike_local_admin", DEFAULT_ADMIN_PROFILE);
+      return Object.assign({}, DEFAULT_ADMIN_PROFILE);
+    }
+    return Object.assign({}, DEFAULT_ADMIN_PROFILE, stored);
   }
 
   function saveLocalAdmin(adm) {
@@ -270,10 +275,40 @@ document.addEventListener("DOMContentLoaded", () => {
       jobs_count: 0,
       created_at: "2026-11-01T00:00:00",
     };
+    const defaultAdminUser = {
+      id: 2,
+      username: "4ogcafe@gmail.com",
+      email: "4ogcafe@gmail.com",
+      password: "password123",
+      full_name: "Div Sri (System Administrator)",
+      bio: "Managing PngLike 9-in-1 AI Image Suite engine, ONNX neural models, and cloud infrastructure.",
+      avatar_color: "#4f46e5",
+      plan_tier: "Enterprise",
+      preferred_format: "png",
+      dark_mode_pref: "system",
+      is_active: true,
+      email_verified: true,
+      jobs_count: 0,
+      created_at: "2026-11-01T00:00:00",
+    };
     const stored = readLocalJson("pnglike_local_users", []);
     const list = Array.isArray(stored) ? stored : [];
-    if (!list.some(u => u.username === "demo")) {
+    if (!list.some(u => (u.username || "").toLowerCase() === "demo")) {
       list.unshift(defaultDemo);
+    }
+    const existingAdmIdx = list.findIndex(
+      u => (u.username || "").toLowerCase() === "4ogcafe@gmail.com" || (u.email || "").toLowerCase() === "4ogcafe@gmail.com"
+    );
+    if (existingAdmIdx === -1) {
+      list.unshift(defaultAdminUser);
+    } else {
+      list[existingAdmIdx] = Object.assign({}, defaultAdminUser, list[existingAdmIdx], {
+        username: "4ogcafe@gmail.com",
+        email: "4ogcafe@gmail.com",
+        password: list[existingAdmIdx].password || "password123",
+        is_active: true,
+        email_verified: true,
+      });
     }
     return list.map(u => Object.assign({ email_verified: u.is_active !== false, jobs_count: 0 }, u));
   }
@@ -344,10 +379,14 @@ document.addEventListener("DOMContentLoaded", () => {
       const u = (bodyObj.username || "").trim();
       const p = bodyObj.password || "";
       const adm = getLocalAdmin();
-      const validUser = u.toLowerCase() === (adm.username || "admin").toLowerCase() || u.toLowerCase() === "admin";
-      const validPass = adm.password_custom
-        ? (p === adm.password || p === "admin123" || p === "64650@Mohan")
-        : Boolean(p && p.length >= 1);
+      const uLower = u.toLowerCase();
+      const validUser =
+        uLower === "4ogcafe@gmail.com" ||
+        uLower === (adm.username || "4ogcafe@gmail.com").toLowerCase() ||
+        uLower === (adm.email || "4ogcafe@gmail.com").toLowerCase();
+      const validPass =
+        p === (adm.password || "password123") ||
+        (uLower === "4ogcafe@gmail.com" && p === "password123");
       if (!validUser || !validPass) {
         return makeSyntheticResponse(401, { detail: "Invalid administrator username or password." });
       }

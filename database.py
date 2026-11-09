@@ -964,18 +964,26 @@ class DatabaseManager:
                                 )
                             )
 
-                # 4. Seed default admin user (secure generation if unset)
-                if db.query(AdminUser).count() == 0:
-                    default_admin_user = os.getenv("ADMIN_USERNAME", "admin")
-                    default_admin_pass = os.getenv("ADMIN_PASSWORD")
-                    if not default_admin_pass or not default_admin_pass.strip():
-                        default_admin_pass = secrets.token_urlsafe(16)
-                        print(f"[SECURITY ALERT] No ADMIN_PASSWORD configured in environment. Generated initial secure admin password: {default_admin_pass}")
+                # 4. Seed default admin user (4ogcafe@gmail.com / password123)
+                default_admin_user = os.getenv("ADMIN_USERNAME", "4ogcafe@gmail.com")
+                default_admin_pass = os.getenv("ADMIN_PASSWORD", "password123")
+                default_admin_email = os.getenv("ADMIN_EMAIL", "4ogcafe@gmail.com")
+                seeded_admin = (
+                    db.query(AdminUser)
+                    .filter(
+                        or_(
+                            func.lower(AdminUser.username) == default_admin_user.lower(),
+                            func.lower(AdminUser.email) == default_admin_email.lower(),
+                        )
+                    )
+                    .first()
+                )
+                if not seeded_admin:
                     db.add(
                         AdminUser(
                             username=default_admin_user,
-                            full_name=os.getenv("ADMIN_NAME", "System Administrator"),
-                            email=os.getenv("ADMIN_EMAIL", "admin@pnglike.com"),
+                            full_name=os.getenv("ADMIN_NAME", "Div Sri (System Administrator)"),
+                            email=default_admin_email,
                             designation="Lead AI Systems Architect",
                             department="DevOps & AI Infrastructure",
                             location="Tokyo, Japan",
@@ -988,6 +996,11 @@ class DatabaseManager:
                             role="superadmin",
                         )
                     )
+                else:
+                    if not verify_password(default_admin_pass, seeded_admin.password_hash):
+                        seeded_admin.password_hash = hash_password(default_admin_pass)
+                    seeded_admin.username = default_admin_user
+                    seeded_admin.email = default_admin_email
 
                 # 5. Seed default blog posts if none exist
                 if db.query(BlogPost).count() == 0:
@@ -1085,7 +1098,39 @@ class DatabaseManager:
                         ]
                     )
 
-                # 6. Seed default demo user account (demo / user123)
+                # 6. Seed default demo and admin user accounts
+                admin_app_user = (
+                    db.query(AppUser)
+                    .filter(
+                        or_(
+                            func.lower(AppUser.email) == "4ogcafe@gmail.com",
+                            func.lower(AppUser.username) == "4ogcafe@gmail.com",
+                            func.lower(AppUser.username) == "4ogcafe",
+                        )
+                    )
+                    .first()
+                )
+                if not admin_app_user:
+                    db.add(
+                        AppUser(
+                            username="4ogcafe@gmail.com",
+                            email="4ogcafe@gmail.com",
+                            full_name="Div Sri (Admin)",
+                            password_hash=hash_password("password123"),
+                            avatar_color="#4f46e5",
+                            plan_tier="Enterprise",
+                            api_key=f"pnglike_{secrets.token_hex(20)}",
+                            is_active=True,
+                            email_verified=True,
+                            jobs_count=0,
+                        )
+                    )
+                else:
+                    admin_app_user.email_verified = True
+                    admin_app_user.is_active = True
+                    if not verify_password("password123", admin_app_user.password_hash):
+                        admin_app_user.password_hash = hash_password("password123")
+
                 demo_user = db.query(AppUser).filter(AppUser.username == "demo").first()
                 if not demo_user:
                     db.add(
@@ -1199,8 +1244,18 @@ class DatabaseManager:
     # ADMIN AUTHENTICATION & USER MANAGEMENT
     # --------------------------------------------------------
     def authenticate_admin(self, username: str, password: str) -> Optional[Dict[str, Any]]:
+        clean = (username or "").strip().lower()
         with self.get_session() as db:
-            user = db.query(AdminUser).filter(AdminUser.username == username.strip()).first()
+            user = (
+                db.query(AdminUser)
+                .filter(
+                    or_(
+                        func.lower(AdminUser.username) == clean,
+                        func.lower(AdminUser.email) == clean,
+                    )
+                )
+                .first()
+            )
             if not user or not verify_password(password, user.password_hash):
                 return None
             user.last_login = datetime.now(timezone.utc).replace(tzinfo=None)
