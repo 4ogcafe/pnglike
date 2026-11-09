@@ -26,6 +26,18 @@ document.addEventListener("DOMContentLoaded", () => {
   setupEventListeners();
   verifyExistingSession();
 
+  async function safeJsonFromRes(res) {
+    if (!res) return {};
+    try {
+      const text = await res.text();
+      const trimmed = (text || "").trim();
+      if (!trimmed || trimmed.startsWith("<")) return {};
+      return JSON.parse(trimmed);
+    } catch (_) {
+      return {};
+    }
+  }
+
   async function adminFetch(url, options = {}) {
     const headers = Object.assign({}, options.headers || {}, {
       "X-Admin-Token": adminToken,
@@ -35,6 +47,8 @@ document.addEventListener("DOMContentLoaded", () => {
       loginOverlay.classList.remove("hidden");
       throw new Error("Admin session expired. Please sign in.");
     }
+    // Wrap res.json to protect against HTML 404/500/Cloudflare responses
+    res.json = async () => await safeJsonFromRes(res);
     return res;
   }
 
@@ -160,8 +174,8 @@ document.addEventListener("DOMContentLoaded", () => {
             password: loginPassword.value,
           }),
         });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.detail || "Login failed");
+        const data = await safeJsonFromRes(res);
+        if (!res.ok) throw new Error(data.detail || (res.status === 404 ? "Admin API service not found (404)." : "Login failed"));
         adminToken = data.token;
         localStorage.setItem("rembg_admin_token", adminToken);
         onLoginSuccess(data.admin);

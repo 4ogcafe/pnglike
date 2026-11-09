@@ -97,7 +97,15 @@ document.addEventListener("DOMContentLoaded", () => {
       if (searchQuery) params.set("search", searchQuery);
 
       const res = await fetch(`/api/blog?${params.toString()}`);
-      const data = await res.json();
+      if (!res.ok) return;
+      const text = await res.text();
+      if (!text || text.trim().startsWith("<")) return;
+      let data = {};
+      try {
+        data = JSON.parse(text);
+      } catch (_) {
+        return;
+      }
       allPosts = data.posts || [];
 
       if (data.settings) {
@@ -249,7 +257,20 @@ document.addEventListener("DOMContentLoaded", () => {
         showListView(true);
         return;
       }
-      const data = await res.json();
+      const text = await res.text();
+      if (!text || text.trim().startsWith("<")) {
+        showToast("Unable to display article content.", "error");
+        showListView(true);
+        return;
+      }
+      let data = {};
+      try {
+        data = JSON.parse(text);
+      } catch (_) {
+        showToast("Invalid article format.", "error");
+        showListView(true);
+        return;
+      }
       const post = data.post;
       const related = data.related || [];
       currentSlug = post.slug;

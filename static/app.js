@@ -1,5 +1,21 @@
 // PngLike Studio Client Application Logic
 document.addEventListener("DOMContentLoaded", () => {
+  // Safe JSON response parser guarding against non-JSON / HTML 404/500/Cloudflare responses
+  async function safeJson(response) {
+    if (!response) return null;
+    try {
+      const text = await response.text();
+      if (!text || !text.trim()) return null;
+      const trimmed = text.trim();
+      if (trimmed.startsWith("<") || trimmed.startsWith("<!DOCTYPE")) {
+        return null;
+      }
+      return JSON.parse(trimmed);
+    } catch (_) {
+      return null;
+    }
+  }
+
   // Default 9 IMAGE Tools Catalog (Free tools listed first; Background Remover is default)
   const DEFAULT_TOOLS = [
     { id: "bg-remover", name: "Background Remover", badge: "Free • Default", is_free: true, requires_image: true, desc: "Instant AI background cutout with hair-level alpha refinement, mask preview, and studio backdrop replacement." },
@@ -651,7 +667,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const headers = activeUserToken ? { "X-User-Token": activeUserToken } : {};
       const res = await fetch("/api/user/quota", { headers });
       if (!res.ok) return;
-      const data = await res.json();
+      const data = await safeJson(res);
+      if (!data) return;
       userQuotaCache = data;
 
       const pill = document.getElementById("accessQuotaPill");
@@ -728,7 +745,8 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const res = await fetch("/api/site-config");
       if (!res.ok) return;
-      const data = await res.json();
+      const data = await safeJson(res);
+      if (!data) return;
       const s = data.settings || {};
 
       // Apply Dynamic Branding & Copy
@@ -847,7 +865,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const savedUserToken = localStorage.getItem("rembg_user_token") || "";
       if (savedUserToken) {
         fetch("/api/auth/me", { headers: { "X-User-Token": savedUserToken } })
-          .then(r => (r.ok ? r.json() : null))
+          .then(async r => (r.ok ? await safeJson(r) : null))
           .then(uData => {
             if (uData && uData.user) {
               const authLbl = document.getElementById("headerUserAuthLabel");
@@ -1188,7 +1206,8 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const res = await fetch("/api/status");
       if (!res.ok) throw new Error("Status " + res.status);
-      const data = await res.json();
+      const data = await safeJson(res);
+      if (!data) throw new Error("Invalid status response");
       if (data.status === "online" && modelStatusText) {
         modelStatusText.innerText = `${data.default_model.toUpperCase()} Loaded • Ready`;
       }
@@ -1215,8 +1234,8 @@ document.addEventListener("DOMContentLoaded", () => {
         renderDefaultSamples();
         return;
       }
-      const data = await res.json();
-      if (!data.samples || data.samples.length === 0) {
+      const data = await safeJson(res);
+      if (!data || !data.samples || data.samples.length === 0) {
         renderDefaultSamples();
         return;
       }
@@ -2240,7 +2259,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!presetSelect) return;
     try {
       const res = await fetch("/api/presets");
-      const data = await res.json();
+      if (!res.ok) return;
+      const data = await safeJson(res);
+      if (!data) return;
       savedPresets = data.presets || [];
       presetSelect.innerHTML = `<option value="">-- Select Saved Studio Preset --</option>`;
       savedPresets.forEach(p => {
@@ -2313,7 +2334,8 @@ document.addEventListener("DOMContentLoaded", () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      if (!res.ok) throw new Error("Failed to save preset");
+      const data = await safeJson(res);
+      if (!res.ok || !data) throw new Error(data?.detail || "Failed to save preset");
       await loadPresets();
       showToast(`Saved studio preset "${name.trim()}"!`, "success");
     } catch (e) {
@@ -2324,11 +2346,11 @@ document.addEventListener("DOMContentLoaded", () => {
   async function loadHistoryAndAnalytics() {
     try {
       const [dbRes, histRes] = await Promise.all([
-        fetch("/api/db/status"),
-        fetch("/api/history?limit=48"),
+        fetch("/api/db/status").catch(() => null),
+        fetch("/api/history?limit=48").catch(() => null),
       ]);
-      const dbStats = await dbRes.json();
-      const histData = await histRes.json();
+      const dbStats = (dbRes && dbRes.ok) ? ((await safeJson(dbRes)) || {}) : {};
+      const histData = (histRes && histRes.ok) ? ((await safeJson(histRes)) || {}) : {};
 
       metricTotalJobs.innerText = dbStats.total_jobs ?? 0;
       metricAvgTime.innerText = `${dbStats.avg_process_time_ms ?? 0} ms`;
@@ -2391,8 +2413,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 showToast(`Deleted job #${job.id} from MySQL`, "info");
                 loadHistoryAndAnalytics();
               } else {
-                const errData = await delRes.json().catch(() => ({}));
-                showToast(errData.detail || "Failed to delete record", "error");
+                const errData = await safeJson(delRes);
+                showToast(errData?.detail || "Failed to delete record", "error");
               }
             } catch (err) {
               showToast("Failed to delete record", "error");
@@ -2419,8 +2441,8 @@ document.addEventListener("DOMContentLoaded", () => {
         showToast("Cleared all job history from MySQL.", "success");
         loadHistoryAndAnalytics();
       } else {
-        const errData = await res.json().catch(() => ({}));
-        showToast(errData.detail || "Admin authentication required to clear all history.", "error");
+        const errData = await safeJson(res);
+        showToast(errData?.detail || "Admin authentication required to clear all history.", "error");
       }
     } catch (e) {
       showToast("Failed to clear history", "error");
@@ -2431,7 +2453,9 @@ document.addEventListener("DOMContentLoaded", () => {
     dbConfigModal.classList.remove("hidden");
     try {
       const res = await fetch("/api/status");
-      const data = await res.json();
+      if (!res.ok) throw new Error("Status " + res.status);
+      const data = await safeJson(res);
+      if (!data) throw new Error("Unable to parse database status");
       const db = data.database || {};
       dbHostInput.value = db.host || "127.0.0.1";
       dbPortInput.value = db.port || 3306;
@@ -2466,7 +2490,10 @@ document.addEventListener("DOMContentLoaded", () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      const data = await res.json();
+      const data = await safeJson(res);
+      if (!res.ok || !data) {
+        throw new Error(data?.detail || "Could not connect to database.");
+      }
       updateDbBadge(data);
       if (data.connected) {
         dbModalStatusBanner.className = "text-xs p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-mono break-all";

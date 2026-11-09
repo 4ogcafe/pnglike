@@ -45,6 +45,31 @@ function hideAuthAlert() {
   if (box) box.classList.add("hidden");
 }
 
+async function safeJsonFromRes(res) {
+  if (!res) return { ok: false, status: 0, data: {}, detail: "No response from server" };
+  try {
+    const text = await res.text();
+    const trimmed = (text || "").trim();
+    if (trimmed && !trimmed.startsWith("<")) {
+      const parsed = JSON.parse(trimmed);
+      return {
+        ok: res.ok,
+        status: res.status,
+        data: parsed,
+        detail: parsed.detail || parsed.message || parsed.error
+      };
+    }
+  } catch (_) {}
+  return {
+    ok: res.ok,
+    status: res.status,
+    data: {},
+    detail: res.status === 404
+      ? "API endpoint not found (404). Backend service is not reachable."
+      : `Server returned error (${res.status}).`
+  };
+}
+
 async function userFetch(url, options = {}) {
   const headers = Object.assign({}, options.headers || {}, {
     "X-User-Token": userToken,
@@ -359,7 +384,8 @@ async function loadUserDashboard() {
   try {
     const res = await userFetch("/api/user/dashboard");
     if (!res.ok) throw new Error("Failed to load dashboard");
-    const data = await res.json();
+    const { data } = await safeJsonFromRes(res);
+    if (!data || !data.user) throw new Error("Invalid dashboard data");
 
     document.getElementById("userAuthOverlay")?.classList.add("hidden");
     populateUserIdentity(data.user);
@@ -445,18 +471,18 @@ document.addEventListener("DOMContentLoaded", () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ identifier, password }),
       });
-      const data = await res.json();
-      if (!res.ok) {
-        if (res.status === 403) {
+      const { ok, status, data, detail } = await safeJsonFromRes(res);
+      if (!ok) {
+        if (status === 403) {
           // Account not active yet (requires email verification)
           if (identifier.includes("@")) {
             pendingVerificationEmail = identifier;
           }
           switchAuthMode("verify");
-          showAuthAlert(data.detail || "Your account is not active yet. Please enter your 6-digit verification code to activate it.");
+          showAuthAlert(detail || "Your account is not active yet. Please enter your 6-digit verification code to activate it.");
           return;
         }
-        showAuthAlert(data.detail || "Invalid login credentials");
+        showAuthAlert(detail || "Invalid login credentials");
         return;
       }
       userToken = data.token;
@@ -631,9 +657,9 @@ document.addEventListener("DOMContentLoaded", () => {
           website: honeypot
         }),
       });
-      const data = await res.json();
-      if (!res.ok) {
-        showAuthAlert(data.detail || "Could not create account.");
+      const { ok, data, detail } = await safeJsonFromRes(res);
+      if (!ok) {
+        showAuthAlert(detail || "Could not create account.");
         return;
       }
 
@@ -688,9 +714,9 @@ document.addEventListener("DOMContentLoaded", () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: pendingVerificationEmail, code }),
       });
-      const data = await res.json();
-      if (!res.ok) {
-        showAuthAlert(data.detail || "Invalid or expired verification code.");
+      const { ok, data, detail } = await safeJsonFromRes(res);
+      if (!ok) {
+        showAuthAlert(detail || "Invalid or expired verification code.");
         return;
       }
 
@@ -718,9 +744,9 @@ document.addEventListener("DOMContentLoaded", () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: pendingVerificationEmail }),
       });
-      const data = await res.json();
-      if (!res.ok) {
-        showAuthAlert(data.detail || "Could not resend code. Please try again.");
+      const { ok, data, detail } = await safeJsonFromRes(res);
+      if (!ok) {
+        showAuthAlert(detail || "Could not resend code. Please try again.");
         return;
       }
 
@@ -884,10 +910,10 @@ document.addEventListener("DOMContentLoaded", () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      const data = await res.json();
-      if (!res.ok) {
+      const { ok, data, detail } = await safeJsonFromRes(res);
+      if (!ok) {
         if (errEl && errMsg) {
-          errMsg.textContent = data.detail || "Failed to update profile";
+          errMsg.textContent = detail || "Failed to update profile";
           errEl.classList.remove("hidden");
         }
         return;
@@ -919,7 +945,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const res = await userFetch("/api/user/export");
       if (!res.ok) throw new Error("Could not export account data");
-      const data = await res.json();
+      const { data } = await safeJsonFromRes(res);
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -952,9 +978,9 @@ document.addEventListener("DOMContentLoaded", () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ confirm_phrase: confirmPhrase, password }),
       });
-      const data = await res.json();
-      if (!res.ok) {
-        alert(data.detail || "Account deletion failed");
+      const { ok, detail } = await safeJsonFromRes(res);
+      if (!ok) {
+        alert(detail || "Account deletion failed");
         return;
       }
       localStorage.removeItem("rembg_user_token");
@@ -972,8 +998,8 @@ document.addEventListener("DOMContentLoaded", () => {
     (async () => {
       try {
         const res = await fetch(`/api/auth/verify?token=${encodeURIComponent(verifyToken)}`);
-        const data = await res.json();
-        if (res.ok && data.token) {
+        const { ok, data, detail } = await safeJsonFromRes(res);
+        if (ok && data.token) {
           userToken = data.token;
           localStorage.setItem("rembg_user_token", userToken);
           window.history.replaceState({}, document.title, window.location.pathname);
@@ -981,7 +1007,7 @@ document.addEventListener("DOMContentLoaded", () => {
           await loadUserDashboard();
           return;
         } else {
-          showAuthAlert(data.detail || "Verification link is invalid or has expired.");
+          showAuthAlert(detail || "Verification link is invalid or has expired.");
           switchAuthMode("verify");
         }
       } catch (err) {
