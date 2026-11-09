@@ -743,9 +743,19 @@ document.addEventListener("DOMContentLoaded", () => {
   // ----------------------------------------------------
   async function loadSiteConfig() {
     try {
-      const res = await fetch("/api/site-config");
-      if (!res.ok) return;
-      const data = await safeJson(res);
+      let data = null;
+      try {
+        const res = await fetch("/api/site-config");
+        if (res.ok) {
+          data = await safeJson(res);
+        }
+      } catch (_) {}
+      if (!data) {
+        try {
+          const localSettings = JSON.parse(localStorage.getItem("pnglike_local_cms_settings") || "null");
+          if (localSettings) data = { settings: localSettings };
+        } catch (_) {}
+      }
       if (!data) return;
       const s = data.settings || {};
 
@@ -1246,10 +1256,17 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function renderDefaultSamples() {
-    const defaults = [
-      { name: "Coffee Mug", category: "Object", filename: "coffee_mug.jpg", url: "/static/samples/coffee_mug.jpg" },
-      { name: "Portrait Person", category: "Portrait", filename: "portrait_person.jpg", url: "/static/samples/portrait_person.jpg" },
-      { name: "Sneaker Shoe", category: "Product", filename: "sneaker_shoe.jpg", url: "/static/samples/sneaker_shoe.jpg" }
+    let customSamples = null;
+    try {
+      const stored = JSON.parse(localStorage.getItem("pnglike_local_samples") || "null");
+      if (Array.isArray(stored) && stored.length > 0) {
+        customSamples = stored.filter(s => s.is_active !== false);
+      }
+    } catch (_) {}
+    const defaults = customSamples || [
+      { name: "Coffee Mug", title: "Coffee Mug", category: "Object", filename: "coffee_mug.jpg", url: "/static/samples/coffee_mug.jpg" },
+      { name: "Portrait Person", title: "Portrait Person", category: "Portrait", filename: "portrait_person.jpg", url: "/static/samples/portrait_person.jpg" },
+      { name: "Product Sneaker", title: "Product Sneaker", category: "Product", filename: "product_sneaker.jpg", url: "/static/samples/product_sneaker.jpg" }
     ];
     renderSampleCards(defaults);
   }
@@ -2263,10 +2280,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function getLocalFallbackPresets() {
     let custom = [];
+    let deletedIds = new Set();
     try {
       custom = JSON.parse(localStorage.getItem("pnglike_custom_presets") || "[]");
+      deletedIds = new Set(JSON.parse(localStorage.getItem("pnglike_deleted_preset_ids") || "[]"));
     } catch (_) {}
-    return [...DEFAULT_STUDIO_PRESETS, ...custom];
+    return [...DEFAULT_STUDIO_PRESETS.filter(p => !deletedIds.has(p.id)), ...custom];
   }
 
   async function loadPresets() {

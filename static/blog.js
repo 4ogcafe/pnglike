@@ -150,9 +150,20 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function getSourceBlogPosts() {
+    try {
+      const stored = JSON.parse(localStorage.getItem("pnglike_local_blog_posts") || "null");
+      if (Array.isArray(stored) && stored.length > 0) {
+        return stored.filter(p => p.is_published !== false);
+      }
+    } catch (_) {}
+    return FALLBACK_BLOG_POSTS;
+  }
+
   function getFallbackBlogData() {
-    const categories = Array.from(new Set(FALLBACK_BLOG_POSTS.map(p => p.category)));
-    const posts = FALLBACK_BLOG_POSTS.filter(p => {
+    const sourcePosts = getSourceBlogPosts();
+    const categories = Array.from(new Set(sourcePosts.map(p => p.category)));
+    const posts = sourcePosts.filter(p => {
       if (activeCategory && activeCategory !== "all" && p.category.toLowerCase() !== activeCategory.toLowerCase()) {
         return false;
       }
@@ -167,7 +178,11 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       return true;
     });
-    return { posts, categories };
+    let settings = null;
+    try {
+      settings = JSON.parse(localStorage.getItem("pnglike_local_cms_settings") || "null");
+    } catch (_) {}
+    return { posts, categories, settings };
   }
 
   async function loadBlogIndex() {
@@ -352,7 +367,8 @@ document.addEventListener("DOMContentLoaded", () => {
       } catch (_) {}
 
       if (!data || !data.post) {
-        const localPost = FALLBACK_BLOG_POSTS.find(p => p.slug === slug);
+        const sourcePosts = getSourceBlogPosts();
+        const localPost = sourcePosts.find(p => p.slug === slug);
         if (!localPost) {
           showToast("Blog article not found.", "error");
           showListView(true);
@@ -360,7 +376,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         data = {
           post: localPost,
-          related: FALLBACK_BLOG_POSTS.filter(p => p.slug !== slug)
+          related: sourcePosts.filter(p => p.slug !== slug)
         };
       }
 
