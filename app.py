@@ -2109,9 +2109,9 @@ async def register_user_account(payload: UserRegisterPayload, request: Request):
         ),
         "email_sent": mail_res.get("sent", False),
     }
-    # Provide dev fallback code only when explicitly configured in development mode
+    # Provide dev fallback code when configured in development mode or when SMTP is not configured
     is_dev = os.getenv("ENVIRONMENT", "production").lower() in ("dev", "development", "local")
-    if is_dev and (not mail_res.get("smtp_configured") or not mail_res.get("sent")):
+    if (is_dev or not mail_res.get("smtp_configured")) and (not mail_res.get("smtp_configured") or not mail_res.get("sent")):
         response["dev_code"] = user["verification_code"]
         response["dev_token"] = user["verification_token"]
         response["dev_verify_url"] = mail_res.get("verify_url")
@@ -2204,7 +2204,7 @@ async def resend_verification_email_code(payload: UserResendVerificationPayload,
         "email_sent": mail_res.get("sent", False),
     }
     is_dev = os.getenv("ENVIRONMENT", "production").lower() in ("dev", "development", "local")
-    if is_dev and (not mail_res.get("smtp_configured") or not mail_res.get("sent")):
+    if (is_dev or not mail_res.get("smtp_configured")) and (not mail_res.get("smtp_configured") or not mail_res.get("sent")):
         res["dev_code"] = user["verification_code"]
         res["dev_token"] = user["verification_token"]
         res["dev_verify_url"] = mail_res.get("verify_url")
