@@ -6,17 +6,13 @@
   <!-- 1. Core Homepage & 9-in-1 AI Image Suite Tools -->
   <url>
     <loc>https://pnglike.com/</loc>
-    <lastmod>2026-11-07</lastmod>
+    <lastmod>2025-02-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://pnglike.com/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://pnglike.com/" />
-    <xhtml:link rel="alternate" hreflang="es" href="https://pnglike.com/?lang=es" />
-    <xhtml:link rel="alternate" hreflang="ja" href="https://pnglike.com/?lang=ja" />
-    <xhtml:link rel="alternate" hreflang="de" href="https://pnglike.com/?lang=de" />
-    <xhtml:link rel="alternate" hreflang="fr" href="https://pnglike.com/?lang=fr" />
     <image:image>
-      <image:loc>https://pnglike.com/static/brand/logo-dark-text.svg</image:loc>
+      <image:loc>https://pnglike.com/static/brand/og-preview.png</image:loc>
       <image:title>PngLike — 9-in-1 AI Image Suite &amp; Background Remover</image:title>
       <image:caption>High-precision neural cutout and computer vision pipelines powered by Div Sri.</image:caption>
     </image:image>
@@ -25,7 +21,7 @@
   <!-- 2. Blog & Tutorials Index -->
   <url>
     <loc>https://pnglike.com/blog</loc>
-    <lastmod>2026-11-07</lastmod>
+    <lastmod>2025-02-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://pnglike.com/blog" />
@@ -35,7 +31,7 @@
   <!-- 3. Company & Product Resources -->
   <url>
     <loc>https://pnglike.com/about</loc>
-    <lastmod>2026-11-07</lastmod>
+    <lastmod>2025-02-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://pnglike.com/about" />
@@ -44,7 +40,7 @@
 
   <url>
     <loc>https://pnglike.com/faq</loc>
-    <lastmod>2026-11-07</lastmod>
+    <lastmod>2025-02-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://pnglike.com/faq" />
@@ -53,7 +49,7 @@
 
   <url>
     <loc>https://pnglike.com/contact</loc>
-    <lastmod>2026-11-07</lastmod>
+    <lastmod>2025-02-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://pnglike.com/contact" />
@@ -63,7 +59,7 @@
   <!-- 4. Legal & Trust -->
   <url>
     <loc>https://pnglike.com/privacy</loc>
-    <lastmod>2026-11-07</lastmod>
+    <lastmod>2025-02-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://pnglike.com/privacy" />
@@ -72,7 +68,7 @@
 
   <url>
     <loc>https://pnglike.com/terms</loc>
-    <lastmod>2026-11-07</lastmod>
+    <lastmod>2025-02-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://pnglike.com/terms" />
@@ -81,7 +77,7 @@
 
   <url>
     <loc>https://pnglike.com/cookies</loc>
-    <lastmod>2026-11-07</lastmod>
+    <lastmod>2025-02-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://pnglike.com/cookies" />
@@ -91,20 +87,24 @@
   <!-- 5. Published Blog Articles & Deep-Dive Tutorials -->
   <url>
     <loc>https://pnglike.com/blog/ecommerce-product-photography-pure-white-studio-catalogs</loc>
-    <lastmod>2026-11-07</lastmod>
+    <lastmod>2025-02-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://pnglike.com/blog/ecommerce-product-photography-pure-white-studio-catalogs" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://pnglike.com/blog/ecommerce-product-photography-pure-white-studio-catalogs" />
     <image:image>
-      <image:loc>https://pnglike.com/static/samples/sneaker_shoe.jpg</image:loc>
+      <image:loc>https://pnglike.com/static/samples/product_sneaker.jpg</image:loc>
       <image:title>E-Commerce Product Photography: Pure White Catalogs</image:title>
     </image:image>
   </url>
 
   <url>
     <loc>https://pnglike.com/blog/mastering-ai-background-removal-u2net-alpha-matting</loc>
-    <lastmod>2026-11-07</lastmod>
+    <lastmod>2025-02-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://pnglike.com/blog/mastering-ai-background-removal-u2net-alpha-matting" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://pnglike.com/blog/mastering-ai-background-removal-u2net-alpha-matting" />
     <image:image>
       <image:loc>https://pnglike.com/static/samples/portrait_person.jpg</image:loc>
       <image:title>Mastering Hair-Level AI Background Removal with U2-Net &amp; Alpha Matting</image:title>
@@ -113,9 +113,11 @@
 
   <url>
     <loc>https://pnglike.com/blog/inside-pnglike-9-in-1-ai-image-suite-3d-relight-cinematic</loc>
-    <lastmod>2026-11-07</lastmod>
+    <lastmod>2025-02-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://pnglike.com/blog/inside-pnglike-9-in-1-ai-image-suite-3d-relight-cinematic" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://pnglike.com/blog/inside-pnglike-9-in-1-ai-image-suite-3d-relight-cinematic" />
     <image:image>
       <image:loc>https://pnglike.com/static/samples/coffee_mug.jpg</image:loc>
       <image:title>Inside PngLike 9-in-1 AI Image Suite: 3D Relighting, Cinematic Bokeh &amp; Camera Warp</image:title>

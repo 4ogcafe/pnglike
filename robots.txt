@@ -11,6 +11,9 @@ Allow: /privacy
 Allow: /terms
 Allow: /cookies
 Allow: /static/
+Allow: /api/blog
+Allow: /api/tools
+Allow: /api/site-config
 Disallow: /admin
 Disallow: /admin.html
 Disallow: /api/admin/
@@ -18,46 +21,100 @@ Disallow: /dashboard
 Disallow: /dashboard.html
 Disallow: /api/user/
 Disallow: /api/db/
+Disallow: /api/auth/
 Disallow: /login
 Disallow: /register
 Disallow: /verify
 
+# Microsoft Bing & Bingbot (Full Crawl & API Rendering Access)
+User-agent: Bingbot
+Allow: /
+Allow: /blog
+Allow: /about
+Allow: /faq
+Allow: /contact
+Allow: /privacy
+Allow: /terms
+Allow: /cookies
+Allow: /static/
+Allow: /api/blog
+Allow: /api/tools
+Allow: /api/site-config
+Disallow: /admin
+Disallow: /admin.html
+Disallow: /dashboard
+Disallow: /dashboard.html
+Disallow: /api/admin/
+Disallow: /api/user/
+Disallow: /api/db/
+Disallow: /api/auth/
+Disallow: /login
+Disallow: /register
+Disallow: /verify
+
+User-agent: msnbot
+Allow: /
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /api/admin/
+Disallow: /api/user/
+Disallow: /api/db/
+
 # AI Search Engines & Conversational Agents (GEO / Answer Engines)
 User-agent: GPTBot
 Allow: /
+Allow: /api/blog
+Allow: /api/tools
+Allow: /api/site-config
 Disallow: /admin
 Disallow: /dashboard
-Disallow: /api/
+Disallow: /api/admin/
+Disallow: /api/user/
+Disallow: /api/db/
 
 User-agent: OAI-SearchBot
 Allow: /
+Allow: /api/blog
+Allow: /api/tools
+Allow: /api/site-config
 Disallow: /admin
 Disallow: /dashboard
-Disallow: /api/
+Disallow: /api/admin/
+Disallow: /api/user/
+Disallow: /api/db/
 
 User-agent: ClaudeBot
 Allow: /
+Allow: /api/blog
+Allow: /api/tools
+Allow: /api/site-config
 Disallow: /admin
 Disallow: /dashboard
-Disallow: /api/
+Disallow: /api/admin/
+Disallow: /api/user/
+Disallow: /api/db/
 
 User-agent: PerplexityBot
 Allow: /
+Allow: /api/blog
+Allow: /api/tools
+Allow: /api/site-config
 Disallow: /admin
 Disallow: /dashboard
-Disallow: /api/
+Disallow: /api/admin/
+Disallow: /api/user/
+Disallow: /api/db/
 
 User-agent: Google-Extended
 Allow: /
+Allow: /api/blog
+Allow: /api/tools
+Allow: /api/site-config
 Disallow: /admin
 Disallow: /dashboard
-Disallow: /api/
-
-User-agent: Bingbot
-Allow: /
-Disallow: /admin
-Disallow: /dashboard
-Disallow: /api/
+Disallow: /api/admin/
+Disallow: /api/user/
+Disallow: /api/db/
 
 # XML Sitemap
 Sitemap: https://pnglike.com/sitemap.xml

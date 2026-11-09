@@ -18,12 +18,16 @@ DirectoryIndex index.html index.php /static/index.html
     #     RewriteRule ^api/(.*)$ http://127.0.0.1:7860/api/$1 [P,L]
     # </IfModule>
 
-    # 2. If the exact requested file exists in root or static, serve it directly
-    RewriteCond %{REQUEST_FILENAME} -f [OR]
-    RewriteCond %{REQUEST_FILENAME} -d
+    # 2. If the exact requested file exists on disk (e.g. robots.txt, sitemap.xml, static/*), serve it directly
+    RewriteCond %{REQUEST_FILENAME} -f
     RewriteRule ^ - [L]
 
-    # 3. Clean SPA URLs -> map to root HTML files
+    # 3. Pre-rendered SEO Blog Article Pages (Self-referencing canonicals & full SSR content for Bingbot/Googlebot)
+    RewriteRule ^blog/mastering-ai-background-removal-u2net-alpha-matting/?$ /blog-mastering-ai-background-removal-u2net-alpha-matting.html [L]
+    RewriteRule ^blog/ecommerce-product-photography-pure-white-studio-catalogs/?$ /blog-ecommerce-product-photography-pure-white-studio-catalogs.html [L]
+    RewriteRule ^blog/inside-pnglike-9-in-1-ai-image-suite-3d-relight-cinematic/?$ /blog-inside-pnglike-9-in-1-ai-image-suite-3d-relight-cinematic.html [L]
+
+    # 4. Clean SPA URLs -> map to root HTML files
     RewriteRule ^$ /index.html [L]
     RewriteRule ^admin/?$ /admin.html [L]
     RewriteRule ^dashboard/?$ /dashboard.html [L]
@@ -51,15 +55,25 @@ DirectoryIndex index.html index.php /static/index.html
     AddType text/css .css
     AddType application/javascript .js
     AddType image/svg+xml .svg
+    AddType image/png .png
+    AddType image/jpeg .jpg .jpeg
     AddType image/webp .webp
     AddType application/json .json
     AddType application/xml .xml
     AddType text/plain .txt
 </IfModule>
 
-# Security Headers Fallback
+# Security & Crawler Indexing Headers
 <IfModule mod_headers.c>
     Header set X-Content-Type-Options "nosniff"
     Header set X-Frame-Options "SAMEORIGIN"
     Header set Permissions-Policy "camera=(), microphone=(), geolocation=(), unload=*"
+
+    # Explicitly instruct Bingbot & Googlebot to index public pages and skip auth portals
+    <FilesMatch "^(index|blog|blog-.*|about|contact|faq|privacy|terms|cookies)\.html$">
+        Header set X-Robots-Tag "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+    </FilesMatch>
+    <FilesMatch "^(admin|dashboard)\.html$">
+        Header set X-Robots-Tag "noindex, nofollow"
+    </FilesMatch>
 </IfModule>

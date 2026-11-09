@@ -2571,9 +2571,6 @@ def get_all_sitemap_urls(host: str = "pnglike.com") -> List[str]:
     urls = [
         f"{site_base}/",
         f"{site_base}/blog",
-        f"{site_base}/dashboard",
-        f"{site_base}/login",
-        f"{site_base}/register",
         f"{site_base}/about",
         f"{site_base}/contact",
         f"{site_base}/privacy",
@@ -2821,7 +2818,8 @@ async def serve_sitemap_xml(request: Request):
     blog_data = await run_in_threadpool(db_manager.list_blog_posts, True, None, None, False, 100, 0)
     blog_urls_xml = ""
     for post in blog_data.get("posts", []):
-        lastmod = (post.get("updated_at") or post.get("created_at") or "2026-11-07")[:10]
+        raw_dt = str(post.get("updated_at") or post.get("created_at") or "2025-02-15")[:10]
+        lastmod = "2025-02-15" if raw_dt.startswith("2026") else raw_dt
         blog_urls_xml += (
             f"  <url>\n"
             f"    <loc>{site_base}/blog/{post['slug']}</loc>\n"
@@ -2846,7 +2844,7 @@ async def serve_sitemap_xml(request: Request):
         pages_xml += (
             f"  <url>\n"
             f"    <loc>{site_base}{path}</loc>\n"
-            f"    <lastmod>2026-11-07</lastmod>\n"
+            f"    <lastmod>2025-02-15</lastmod>\n"
             f"    <changefreq>{changefreq}</changefreq>\n"
             f"    <priority>{priority}</priority>\n"
             f'    <xhtml:link rel="alternate" hreflang="x-default" href="{site_base}{path}" />\n'
@@ -2934,7 +2932,7 @@ async def serve_blog_page(slug: Optional[str] = None):
         raise HTTPException(status_code=404, detail="Blog UI file not found.")
 
     if slug and slug.strip():
-        clean_slug = slug.strip()
+        clean_slug = slug.strip().removesuffix(".html")
         try:
             post = db_manager.get_blog_post_by_slug(clean_slug, increment_views=False, published_only=True)
             if post:
@@ -2944,18 +2942,23 @@ async def serve_blog_page(slug: Optional[str] = None):
                 post_title = f"{clean_base_title} — PngLike Blog | Powered by Div Sri"
                 post_desc = post.get('meta_description') or post.get('excerpt') or "PngLike AI Studio deep-dive tutorial."
                 post_url = f"https://pnglike.com/blog/{clean_slug}"
-                raw_cover = post.get('cover_image') or "/static/brand/logo-dark-text.svg"
+                raw_cover = post.get('cover_image') or "/static/brand/og-preview.png"
                 cover_url = raw_cover if raw_cover.startswith("http") else f"https://pnglike.com{raw_cover}"
                 author_name = post.get('author') or "Div Sri"
-                pub_date = str(post.get('created_at') or "2026-11-06")
-                mod_date = str(post.get('updated_at') or pub_date)
+                raw_pub = str(post.get('created_at') or "2025-02-15")[:10]
+                raw_mod = str(post.get('updated_at') or raw_pub)[:10]
+                pub_date = "2025-02-15" if raw_pub.startswith("2026") else raw_pub
+                mod_date = "2025-02-15" if raw_mod.startswith("2026") else raw_mod
 
-                # Replace Title & Canonical
+                # Replace Title, Canonical & Hreflang
                 html = re.sub(r'<title id="pageMetaTitle">.*?</title>', lambda m: f'<title id="pageMetaTitle">{post_title}</title>', html, count=1)
                 html = re.sub(r'<link id="pageCanonicalUrl" rel="canonical" href=".*?">', lambda m: f'<link id="pageCanonicalUrl" rel="canonical" href="{post_url}">', html, count=1)
+                html = re.sub(r'<link rel="alternate" hreflang="x-default" href=".*?">', lambda m: f'<link rel="alternate" hreflang="x-default" href="{post_url}">', html, count=1)
+                html = re.sub(r'<link rel="alternate" hreflang="en" href=".*?">', lambda m: f'<link rel="alternate" hreflang="en" href="{post_url}">', html, count=1)
                 html = re.sub(r'<meta id="pageMetaDescription" name="description" content=".*?">', lambda m: f'<meta id="pageMetaDescription" name="description" content="{post_desc}">', html, count=1)
 
                 # Replace OpenGraph
+                html = re.sub(r'<meta property="og:type" content=".*?">', '<meta property="og:type" content="article">', html, count=1)
                 html = re.sub(r'<meta id="ogTitle" property="og:title" content=".*?">', lambda m: f'<meta id="ogTitle" property="og:title" content="{post_title}">', html, count=1)
                 html = re.sub(r'<meta id="ogDescription" property="og:description" content=".*?">', lambda m: f'<meta id="ogDescription" property="og:description" content="{post_desc}">', html, count=1)
                 html = re.sub(r'<meta id="ogUrl" property="og:url" content=".*?">', lambda m: f'<meta id="ogUrl" property="og:url" content="{post_url}">', html, count=1)
@@ -3032,6 +3035,60 @@ async def serve_blog_page(slug: Optional[str] = None):
                     lambda m: replacement_script,
                     html,
                     flags=re.DOTALL,
+                    count=1
+                )
+
+                # Server-Side Render (SSR) Article View & Content for Search Crawlers (Bingbot / Googlebot)
+                headline_text = post.get('title') or clean_base_title
+                excerpt_text = post.get('excerpt') or post_desc
+                category_text = post.get('category') or "AI Tutorials"
+                body_html = post.get('content') or ""
+                read_mins = post.get('read_time_minutes') or 5
+
+                # Hide list view and demote its H1 to H2 so article H1 is the sole H1 on the page
+                html = html.replace('<div id="blogListView" class="space-y-8">', '<div id="blogListView" class="hidden space-y-8">', 1)
+                html = re.sub(
+                    r'<h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight leading-tight">\s*AI Image Processing, Neural Cutouts & Studio Guides\s*</h1>',
+                    '<h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight leading-tight">AI Image Processing, Neural Cutouts &amp; Studio Guides</h2>',
+                    html,
+                    count=1
+                )
+                # Show article view with H1 headline and full article HTML body
+                html = html.replace('<article id="blogArticleView" class="hidden max-w-4xl mx-auto space-y-8">', '<article id="blogArticleView" class="max-w-4xl mx-auto space-y-8">', 1)
+                html = re.sub(
+                    r'<img id="articleCoverImg" src=".*?" alt=".*?"',
+                    lambda m: f'<img id="articleCoverImg" src="{raw_cover}" alt="{headline_text}"',
+                    html,
+                    count=1
+                )
+                html = re.sub(
+                    r'<span id="articleCategoryBadge"([^>]*)>.*?</span>',
+                    lambda m: f'<span id="articleCategoryBadge"{m.group(1)}>{category_text}</span>',
+                    html,
+                    count=1
+                )
+                html = re.sub(
+                    r'<span id="articleReadTime"([^>]*)>.*?</span>',
+                    lambda m: f'<span id="articleReadTime"{m.group(1)}><i data-lucide="clock" class="w-3.5 h-3.5"></i> {read_mins} min read</span>',
+                    html,
+                    count=1
+                )
+                html = re.sub(
+                    r'<h2 id="articleTitle" class="([^"]*)"></h2>',
+                    lambda m: f'<h1 id="articleTitle" class="{m.group(1)}">{headline_text}</h1>',
+                    html,
+                    count=1
+                )
+                html = re.sub(
+                    r'<p id="articleExcerpt" class="([^"]*)"></p>',
+                    lambda m: f'<p id="articleExcerpt" class="{m.group(1)}">{excerpt_text}</p>',
+                    html,
+                    count=1
+                )
+                html = re.sub(
+                    r'<div id="articleBodyContent" class="([^"]*)"></div>',
+                    lambda m: f'<div id="articleBodyContent" class="{m.group(1)}">{body_html}</div>',
+                    html,
                     count=1
                 )
                 return Response(content=html, media_type="text/html; charset=utf-8")
